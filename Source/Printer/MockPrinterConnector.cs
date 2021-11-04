@@ -11,5 +11,20 @@ namespace TK302FBPrinter.Printer
         {
             return true;
         }
+
+        public bool ShiftOpen()
+        {
+            return true;
+        }
+
+        public bool ShiftClose()
+        {
+            return true;
+        }
+
+        public bool PrintReceipt()
+        {
+            return true;
+        }
     }
 }

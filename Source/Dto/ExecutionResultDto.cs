@@ -2,15 +2,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TK302FBPrinter.Dto
 {
-    public class ExecutionResult
+    public class ExecutionResultDto
     {
-        public ExecutionResult()
+        public ExecutionResultDto()
         {
             Succeed = true;
             ErrorDescription = string.Empty;
         }
 
-        public ExecutionResult(string errorDescription)
+        public ExecutionResultDto(string errorDescription)
         {
             Succeed = false;
             ErrorDescription = errorDescription;

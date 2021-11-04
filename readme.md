@@ -15,13 +15,21 @@
 
 `GET /api/status`
 
+### Открыть смену
+
+`POST /api/shift/open`
+
+### Закрыть кассовую смену
+
+`POST /api/shift/close`
+
 ### Напечатать чек
 
-`POST /api/print/check`
+`POST /api/print/receipt`
 
 ### Напечатать чек возврата
 
-`POST /api/print/check/return`
+`POST /api/print/receipt/return`
 
 ### Напечатать слип-чек
 
@@ -34,7 +42,3 @@
 ### Напечатать x-отчет
 
 `POST /api/print/report/x`
-
-### Закрыть кассовую смену
-
-`POST /api/shift/close`

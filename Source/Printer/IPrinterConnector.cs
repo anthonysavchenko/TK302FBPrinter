@@ -5,5 +5,11 @@ namespace TK302FBPrinter.Printer
         string GetErrorDescription();
 
         bool Beep();
+
+        bool ShiftOpen();
+
+        bool ShiftClose();
+
+        bool PrintReceipt();
     }
 }

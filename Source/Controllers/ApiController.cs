@@ -17,13 +17,38 @@ namespace TK302FBPrinter
 
         // POST /api/beep
         [HttpPost("beep")]
-        public ActionResult Beep()
+        public ActionResult<ExecutionResultDto> Beep()
         {
-            if (_printerConnector.Beep())
-            {
-                return Ok(new ExecutionResult());
-            }
-            return Ok(new ExecutionResult(_printerConnector.GetErrorDescription()));
+            return !_printerConnector.Beep()
+                ? Ok(new ExecutionResultDto(_printerConnector.GetErrorDescription()))
+                : Ok(new ExecutionResultDto());
+        }
+
+        // POST /api/shift/open
+        [HttpPost("shift/open")]
+        public ActionResult<ExecutionResultDto> ShiftOpen()
+        {
+            return !_printerConnector.ShiftOpen()
+                ? Ok(new ExecutionResultDto(_printerConnector.GetErrorDescription()))
+                : Ok(new ExecutionResultDto());
+        }
+
+        // POST /api/shift/close
+        [HttpPost("shift/close")]
+        public ActionResult<ExecutionResultDto> ShiftClose()
+        {
+            return !_printerConnector.ShiftClose()
+                ? Ok(new ExecutionResultDto(_printerConnector.GetErrorDescription()))
+                : Ok(new ExecutionResultDto());
+        }
+
+        // POST /api/print/receipt
+        [HttpPost("print/receipt")]
+        public ActionResult<ExecutionResultDto> PrintReceipt(ReceiptDto receipt)
+        {
+            return !_printerConnector.PrintReceipt()
+                ? Ok(new ExecutionResultDto(_printerConnector.GetErrorDescription()))
+                : Ok(new ExecutionResultDto());
         }
     }
 }
