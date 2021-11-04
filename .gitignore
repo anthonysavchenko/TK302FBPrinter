@@ -7,3 +7,5 @@ Help/Utility Tool/
 
 Source/bin/
 Source/obj/
+
+!Source/References/Custom.Fiscal.RUSProtocolAPI.dll

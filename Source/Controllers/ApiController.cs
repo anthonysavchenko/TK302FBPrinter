@@ -15,7 +15,7 @@ namespace TK302FBPrinter
         }
 
         // POST /api/beep
-        [HttpPost]
+        [HttpPost("beep")]
         public ActionResult Beep()
         {
             if (_printerConnector.Beep())
