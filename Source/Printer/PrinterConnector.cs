@@ -15,7 +15,7 @@ namespace TK302FBPrinter.Printer
         {
             if (response.ErrorCode != 0)
             {
-                _errorDescription = $"{response.ErrorDescription}. Код оператора: {response.OperatorCode}";
+                _errorDescription = $"{response.ErrorDescription}. OperatorCode: {response.OperatorCode}";
                 return false;
             }
             return true;            
@@ -71,6 +71,11 @@ namespace TK302FBPrinter.Printer
             return CheckRespose(printerResponse);
         }
 
+        public string GetErrorDescription()
+        {
+            return _errorDescription;
+        }
+
         public bool Beep()
         {
             var operatorPassword = "999999";
@@ -86,7 +91,6 @@ namespace TK302FBPrinter.Printer
                 return false;
             }
             
-
             if (!Disconnect())
             {
                 return false;

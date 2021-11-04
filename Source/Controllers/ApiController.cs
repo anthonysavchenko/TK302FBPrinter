@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TK302FBPrinter.Dto;
 using TK302FBPrinter.Printer;
 
 namespace TK302FBPrinter
@@ -20,9 +21,9 @@ namespace TK302FBPrinter
         {
             if (_printerConnector.Beep())
             {
-                return Ok();
+                return Ok(new ExecutionResult());
             }
-            return NotFound();
+            return Ok(new ExecutionResult(_printerConnector.GetErrorDescription()));
         }
     }
 }
