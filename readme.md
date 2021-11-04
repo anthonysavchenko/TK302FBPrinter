@@ -9,32 +9,32 @@
 
 ### Издать звуковой сигнал
 
-`POST /beep`
+`POST /api/beep`
 
 ### Получить статус ККТ
 
-`GET /status`
+`GET /api/status`
 
 ### Напечатать чек
 
-`POST /print/check`
+`POST /api/print/check`
 
 ### Напечатать чек возврата
 
-`POST /print/check/return`
+`POST /api/print/check/return`
 
 ### Напечатать слип-чек
 
-`POST /print/slip`
+`POST /api/print/slip`
 
 ### Напечатать билет
 
-`POST /print/ticket`
+`POST /api/print/ticket`
 
 ### Напечатать x-отчет
 
-`POST /print/report/x`
+`POST /api/print/report/x`
 
 ### Закрыть кассовую смену
 
-`POST /shift/close`
+`POST /api/shift/close`

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TK302FBPrinter.Printer;
 
 namespace TK302FBPrinter
 {
@@ -25,6 +26,8 @@ namespace TK302FBPrinter
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<IPrinterConnector, MockPrinterConnector>();
+            // services.AddScoped<IPrinterConnector, PrinterConnector>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
