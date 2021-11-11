@@ -8,4 +8,5 @@ Help/Utility Tool/
 Source/bin/
 Source/obj/
 
+# В глобальном .gitignore автоматически добавлена строка *.dll
 !Source/References/Custom.Fiscal.RUSProtocolAPI.dll
