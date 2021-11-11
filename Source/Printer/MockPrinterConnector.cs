@@ -1,3 +1,6 @@
+using TK302FBPrinter.Configuration;
+using TK302FBPrinter.Dto;
+
 namespace TK302FBPrinter.Printer
 {
     public class MockPrinterConnector: IPrinterConnector
@@ -7,22 +10,22 @@ namespace TK302FBPrinter.Printer
             return string.Empty;
         }
 
-        public bool Beep()
+        public bool Beep(PrinterOptions printerOptions)
         {
             return true;
         }
 
-        public bool ShiftOpen()
+        public bool ShiftOpen(PrinterOptions printerOptions)
         {
             return true;
         }
 
-        public bool ShiftClose()
+        public bool ShiftClose(PrinterOptions printerOptions)
         {
             return true;
         }
 
-        public bool PrintReceipt()
+        public bool PrintReceipt(PrinterOptions printerOptions, ReceiptDto receipt)
         {
             return true;
         }

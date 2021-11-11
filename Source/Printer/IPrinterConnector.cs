@@ -1,15 +1,18 @@
+using TK302FBPrinter.Configuration;
+using TK302FBPrinter.Dto;
+
 namespace TK302FBPrinter.Printer
 {
     public interface IPrinterConnector
     {
         string GetErrorDescription();
 
-        bool Beep();
+        bool Beep(PrinterOptions printerOptions);
 
-        bool ShiftOpen();
+        bool ShiftOpen(PrinterOptions printerOptions);
 
-        bool ShiftClose();
+        bool ShiftClose(PrinterOptions printerOptions);
 
-        bool PrintReceipt();
+        bool PrintReceipt(PrinterOptions printerOptions, ReceiptDto receipt);
     }
 }
