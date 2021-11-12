@@ -176,7 +176,7 @@ namespace TK302FBPrinter.Printer
                 long quantity = item.Quantity; // Количество
                 long amount = item.Price; // Стоимость за единицу
                 
-                int deptNumber = 4; // Отдел (НДС)
+                int deptNumber = 3; // Отдел (НДС)
                 
                 var itemType = ReceiptItemTypeEnum.Sale; // Тип расчета - приход
 
