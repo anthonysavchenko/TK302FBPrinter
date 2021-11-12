@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO.Ports;
 using Custom.Fiscal.RUSProtocolAPI;
 using Custom.Fiscal.RUSProtocolAPI.Comunication;
@@ -12,14 +13,20 @@ namespace TK302FBPrinter.Printer
     public class PrinterConnector : IPrinterConnector
     {
         private ProtocolAPI _connection;
-        private string _errorDescription;
+        private List<string> _errors = new List<string>();
 
-        private bool CheckRespose(APIBaseResponse response)
+        private bool CheckRespose(APIBaseResponse response, bool disconnectOnError = true)
         {
             if (response.ErrorCode != 0)
             {
-                _errorDescription = $"ErrorCode: {response.ErrorCode}. "
-                    + $"ErrorDescription: {response.ErrorDescription}. OperatorCode: {response.OperatorCode}";
+                _errors.Add(
+                    $"ErrorCode: {response.ErrorCode}. "
+                        + $"ErrorDescription: {response.ErrorDescription}. "
+                        + $"OperatorCode: {response.OperatorCode}");
+                if (disconnectOnError)
+                {
+                    Disconnect();
+                }
                 return false;
             }
             return true;            
@@ -62,7 +69,7 @@ namespace TK302FBPrinter.Printer
 
             var printerResponse = _connection.OpenConnection();
 
-            return CheckRespose(printerResponse);
+            return CheckRespose(printerResponse, disconnectOnError: false);
         }
 
         private bool Disconnect()
@@ -72,7 +79,7 @@ namespace TK302FBPrinter.Printer
                 return true;
             }
             var printerResponse = _connection.CloseConnection();
-            return CheckRespose(printerResponse);
+            return CheckRespose(printerResponse, disconnectOnError: false);
         }
 
         private bool Execute(
@@ -102,7 +109,28 @@ namespace TK302FBPrinter.Printer
 
         public string GetErrorDescription()
         {
-            return _errorDescription;
+            if (_errors.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            if (_errors.Count == 1)
+            {
+                return $"{_errors[0]}";
+            }
+
+            string errorDescription = $"Errors quantity: {_errors.Count}";
+
+            for (var i = 0; i < _errors.Count; i++)
+            {
+                if (i > 0)
+                {
+                    errorDescription += "\r\n";
+                }
+                errorDescription += $"{i + 1}. ${_errors[i]}";
+            }
+
+            return errorDescription;
         }
 
         public bool Beep(PrinterOptions printerOptions)
