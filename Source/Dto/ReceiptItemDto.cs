@@ -9,7 +9,7 @@ namespace TK302FBPrinter.Dto
         public string Description { get; set; }
 
         [Required]
-        [Range(1, 1e3)]
+        [Range(1, 1e5)]
         public int Quantity { get; set; }
 
         [Required]
