@@ -53,7 +53,7 @@
 ```json
 {
     "succeed": false,
-    "errorDesription": "Ошибка"
+    "errorDesription": "ErrorCode: 5. ErrorDescription: Open connection failed. OperatorCode: -1"
 }
 ```
 
