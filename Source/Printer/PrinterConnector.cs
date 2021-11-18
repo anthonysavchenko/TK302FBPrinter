@@ -176,9 +176,27 @@ namespace TK302FBPrinter.Printer
 
             switch (receipt.Tax)
             {
-                case TaxType.patent:
-                default:
+                case TaxType.Traditional:
                     taxCode = TaxCodeEnum.PatentTaxSystem;
+                    break;
+                case TaxType.LightIncome:
+                    taxCode = TaxCodeEnum.LightIncome;
+                    break;
+                case TaxType.LightIncomeNoExpenses:
+                    taxCode = TaxCodeEnum.LightIncomeNoExpenses;
+                    break;
+                case TaxType.SingleTax:
+                    taxCode = TaxCodeEnum.SingleTax;
+                    break;
+                case TaxType.Agricultural:
+                    taxCode = TaxCodeEnum.AgriculturalTax;
+                    break;
+                case TaxType.Patent:
+                    taxCode = TaxCodeEnum.PatentTaxSystem;
+                    break;
+                case TaxType.AutomaticMode:
+                default:
+                    taxCode = TaxCodeEnum.AutomaticMode;
                     break;
             }
 
@@ -204,7 +222,30 @@ namespace TK302FBPrinter.Printer
                 long quantity = item.Quantity; // Количество
                 long amount = item.Price; // Стоимость за единицу
                 
-                int deptNumber = 3; // Отдел (НДС)
+                int deptNumber; // Отдел (НДС)
+
+                switch (item.VAT)
+                {
+                    case VATType.Percent0:
+                        deptNumber = 3;
+                        break;
+                    case VATType.Percent10:
+                        deptNumber = 2;
+                        break;
+                    case VATType.Percent20:
+                        deptNumber = 1;
+                        break;
+                    case VATType.Percent10from110:
+                        deptNumber = 6;
+                        break;
+                    case VATType.Percent20from120:
+                        deptNumber = 5;
+                        break;
+                    case VATType.NoVAT:
+                    default:
+                        deptNumber = 4;
+                        break;
+                }
                 
                 var itemType = ReceiptItemTypeEnum.Sale; // Тип расчета - приход
 

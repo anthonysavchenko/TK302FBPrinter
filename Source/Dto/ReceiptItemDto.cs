@@ -15,5 +15,9 @@ namespace TK302FBPrinter.Dto
         [Required]
         [Range(1, 1e7)]
         public int Price { get; set; }
+
+        [Required]
+        [EnumDataType(typeof(VATType))]
+        public VATType VAT { get; set; }
     }    
 }

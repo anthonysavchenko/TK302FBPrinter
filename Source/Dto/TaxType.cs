@@ -2,6 +2,12 @@ namespace TK302FBPrinter.Dto
 {
     public enum TaxType
     {
-        patent = 1
+        AutomaticMode,
+        Traditional,
+        LightIncome,
+        LightIncomeNoExpenses,
+        SingleTax,
+        Agricultural,
+        Patent
     }
 }
