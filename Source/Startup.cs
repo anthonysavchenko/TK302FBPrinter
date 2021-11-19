@@ -16,6 +16,7 @@ using TK302FBPrinter.Device.DeviceCommands.Beep;
 using TK302FBPrinter.Device.DeviceCommands.CancelLastItem;
 using TK302FBPrinter.Device.DeviceCommands.Connect;
 using TK302FBPrinter.Device.DeviceCommands.Disconnect;
+using TK302FBPrinter.Device.DeviceCommands.PrintCommand;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptCancel;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptClose;
@@ -25,6 +26,7 @@ using TK302FBPrinter.Device.DeviceCommands.ShiftOpen;
 using TK302FBPrinter.Device.Operations.Beep;
 using TK302FBPrinter.Device.Operations.PrintReceipt;
 using TK302FBPrinter.Device.Operations.PrintReceiptReturn;
+using TK302FBPrinter.Device.Operations.PrintSlip;
 using TK302FBPrinter.Device.Operations.ShiftClose;
 using TK302FBPrinter.Device.Operations.ShiftOpen;
 
@@ -75,6 +77,7 @@ namespace TK302FBPrinter
                 services.AddScoped<IReceiptAddItemCommand, ReceiptAddItemCommand>();
                 services.AddScoped<IReceiptCancelCommand, ReceiptCancelCommand>();
                 services.AddScoped<ICancelLastItemCommand, CancelLastItemCommand>();
+                services.AddScoped<IPrintTextCommand, PrintTextCommand>();
             }
 
             services.AddScoped<IBeepOperation, BeepOperation>();
@@ -82,6 +85,7 @@ namespace TK302FBPrinter
             services.AddScoped<IShiftCloseOperation, ShiftCloseOperation>();
             services.AddScoped<IPrintReceiptOperation, PrintReceiptOperation>();
             services.AddScoped<IPrintReceiptReturnOperation, PrintReceiptReturnOperation>();
+            services.AddScoped<IPrintSlipOperation, PrintSlipOperation>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TK302FBPrinter.Device.Operations.Beep;
 using TK302FBPrinter.Device.Operations.PrintReceipt;
 using TK302FBPrinter.Device.Operations.PrintReceiptReturn;
+using TK302FBPrinter.Device.Operations.PrintSlip;
 using TK302FBPrinter.Device.Operations.ShiftClose;
 using TK302FBPrinter.Device.Operations.ShiftOpen;
 using TK302FBPrinter.Dto;
@@ -17,19 +18,22 @@ namespace TK302FBPrinter
         private readonly IShiftCloseOperation _shiftCloseOperation;
         private readonly IPrintReceiptOperation _printReceiptOperation;
         private readonly IPrintReceiptReturnOperation _printReceiptReturnOperation;
+        private readonly IPrintSlipOperation _printSlipOperation;
 
         public ApiController(
             IBeepOperation beepOperation,
             IShiftOpenOperation shiftOpenOperation,
             IShiftCloseOperation shiftCloseOperation,
             IPrintReceiptOperation printReceiptOperation,
-            IPrintReceiptReturnOperation printReceiptReturnOperation)
+            IPrintReceiptReturnOperation printReceiptReturnOperation,
+            IPrintSlipOperation printSlipOperation)
         {
             _beepOperation = beepOperation;
             _shiftOpenOperation = shiftOpenOperation;
             _shiftCloseOperation = shiftCloseOperation;
             _printReceiptOperation = printReceiptOperation;
             _printReceiptReturnOperation = printReceiptReturnOperation;
+            _printSlipOperation = printSlipOperation;
         }
 
         // POST /api/beep
@@ -74,6 +78,15 @@ namespace TK302FBPrinter
         {
             return Ok(new ExecutionResultDto(!_printReceiptReturnOperation.Execute(receipt)
                 ? _printReceiptReturnOperation.ErrorDescriptions
+                : null));
+        }
+
+        // POST /api/print/slip
+        [HttpPost("print/slip")]
+        public ActionResult<ExecutionResultDto> PrintSlip(SlipContentDto content)
+        {
+            return Ok(new ExecutionResultDto(!_printSlipOperation.Execute(content.Text)
+                ? _printSlipOperation.ErrorDescriptions
                 : null));
         }
     }
