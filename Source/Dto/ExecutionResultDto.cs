@@ -10,10 +10,13 @@ namespace TK302FBPrinter.Dto
             ErrorDescription = string.Empty;
         }
 
-        public ExecutionResultDto(string errorDescription)
+        public ExecutionResultDto(string errorDescription) : base()
         {
-            Succeed = false;
-            ErrorDescription = errorDescription;
+            if (!string.IsNullOrEmpty(errorDescription))
+            {
+                Succeed = false;
+                ErrorDescription = errorDescription;
+            }
         }
 
         [Required]

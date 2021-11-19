@@ -12,7 +12,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TK302FBPrinter.Configuration;
-using TK302FBPrinter.Printer;
+using TK302FBPrinter.Device.DeviceCommands.Beep;
+using TK302FBPrinter.Device.DeviceCommands.CancelLastItem;
+using TK302FBPrinter.Device.DeviceCommands.Connect;
+using TK302FBPrinter.Device.DeviceCommands.Disconnect;
+using TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem;
+using TK302FBPrinter.Device.DeviceCommands.ReceiptClose;
+using TK302FBPrinter.Device.DeviceCommands.ReceiptOpen;
+using TK302FBPrinter.Device.DeviceCommands.ShiftClose;
+using TK302FBPrinter.Device.DeviceCommands.ShiftOpen;
+using TK302FBPrinter.Device.Operations.Beep;
+using TK302FBPrinter.Device.Operations.PrintReceipt;
+using TK302FBPrinter.Device.Operations.ShiftClose;
+using TK302FBPrinter.Device.Operations.ShiftOpen;
 
 namespace TK302FBPrinter
 {
@@ -38,12 +50,33 @@ namespace TK302FBPrinter
             var emulationModeEnabled = opt.GetValue<bool>("EmulationMode", false);
             if (emulationModeEnabled)
             {
-                services.AddScoped<IPrinterConnector, MockPrinterConnector>();
+                services.AddScoped<IConnectCommand, ConnectMockCommand>();
+                services.AddScoped<IDisconnectCommand, DisconnectMockCommand>();
+                services.AddScoped<IBeepCommand, BeepMockCommand>();
+                services.AddScoped<IShiftOpenCommand, ShiftOpenMockCommand>();
+                services.AddScoped<IShiftCloseCommand, ShiftCloseMockCommand>();
+                services.AddScoped<IReceiptOpenCommand, ReceiptOpenMockCommand>();
+                services.AddScoped<IReceiptCloseCommand, ReceiptCloseMockCommand>();
+                services.AddScoped<IReceiptAddItemCommand, ReceiptAddItemMockCommand>();
+                services.AddScoped<ICancelLastItemCommand, CancelLastItemMockCommand>();
             }
             else
             {
-                services.AddScoped<IPrinterConnector, PrinterConnector>();
+                services.AddScoped<IConnectCommand, ConnectCommand>();
+                services.AddScoped<IDisconnectCommand, DisconnectCommand>();
+                services.AddScoped<IBeepCommand, BeepCommand>();
+                services.AddScoped<IShiftOpenCommand, ShiftOpenCommand>();
+                services.AddScoped<IShiftCloseCommand, ShiftCloseCommand>();
+                services.AddScoped<IReceiptOpenCommand, ReceiptOpenCommand>();
+                services.AddScoped<IReceiptCloseCommand, ReceiptCloseCommand>();
+                services.AddScoped<IReceiptAddItemCommand, ReceiptAddItemCommand>();
+                services.AddScoped<ICancelLastItemCommand, CancelLastItemCommand>();
             }
+
+            services.AddScoped<IBeepOperation, BeepOperation>();
+            services.AddScoped<IShiftOpenOperation, ShiftOpenOperation>();
+            services.AddScoped<IShiftCloseOperation, ShiftCloseOperation>();
+            services.AddScoped<IPrintReceiptOperation, PrintReceiptOperation>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -6,7 +6,7 @@ namespace TK302FBPrinter.Dto
         Percent0,
         Percent10,
         Percent20,
-        Percent10from110,
-        Percent20from120,
+        Percent10Base110,
+        Percent20Base120,
     }
 }

@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using TK302FBPrinter.Configuration;
+using TK302FBPrinter.Device.Operations.Beep;
+using TK302FBPrinter.Device.Operations.PrintReceipt;
+using TK302FBPrinter.Device.Operations.ShiftClose;
+using TK302FBPrinter.Device.Operations.ShiftOpen;
 using TK302FBPrinter.Dto;
-using TK302FBPrinter.Printer;
 
 namespace TK302FBPrinter
 {
@@ -10,49 +11,57 @@ namespace TK302FBPrinter
     [ApiController]
     public class ApiController : ControllerBase
     {
-        private readonly PrinterOptions _printerOptions;
-        private readonly IPrinterConnector _printerConnector;
+        private readonly IBeepOperation _beepOperation;
+        private readonly IShiftOpenOperation _shiftOpenOperation;
+        private readonly IShiftCloseOperation _shiftCloseOperation;
+        private readonly IPrintReceiptOperation _printReceiptOperation;
 
-        public ApiController(IOptionsSnapshot<PrinterOptions> printerOptions, IPrinterConnector printerConnector)
+        public ApiController(
+            IBeepOperation beepOperation,
+            IShiftOpenOperation shiftOpenOperation,
+            IShiftCloseOperation shiftCloseOperation,
+            IPrintReceiptOperation printReceiptOperation)
         {
-            _printerOptions = printerOptions.Value;
-            _printerConnector = printerConnector;
+            _beepOperation = beepOperation;
+            _shiftOpenOperation = shiftOpenOperation;
+            _shiftCloseOperation = shiftCloseOperation;
+            _printReceiptOperation = printReceiptOperation;
         }
 
         // POST /api/beep
         [HttpPost("beep")]
         public ActionResult<ExecutionResultDto> Beep()
         {
-            return !_printerConnector.Beep(_printerOptions)
-                ? Ok(new ExecutionResultDto(_printerConnector.GetErrorDescription()))
-                : Ok(new ExecutionResultDto());
+            return Ok(new ExecutionResultDto(!_beepOperation.Execute()
+                ? _beepOperation.ErrorDescriptions
+                : null));
         }
 
         // POST /api/shift/open
         [HttpPost("shift/open")]
         public ActionResult<ExecutionResultDto> ShiftOpen()
         {
-            return !_printerConnector.ShiftOpen(_printerOptions)
-                ? Ok(new ExecutionResultDto(_printerConnector.GetErrorDescription()))
-                : Ok(new ExecutionResultDto());
+            return Ok(new ExecutionResultDto(!_shiftOpenOperation.Execute()
+                ? _shiftOpenOperation.ErrorDescriptions
+                : null));
         }
 
         // POST /api/shift/close
         [HttpPost("shift/close")]
         public ActionResult<ExecutionResultDto> ShiftClose()
         {
-            return !_printerConnector.ShiftClose(_printerOptions)
-                ? Ok(new ExecutionResultDto(_printerConnector.GetErrorDescription()))
-                : Ok(new ExecutionResultDto());
+            return Ok(new ExecutionResultDto(!_shiftCloseOperation.Execute()
+                ? _shiftCloseOperation.ErrorDescriptions
+                : null));
         }
 
         // POST /api/print/receipt
         [HttpPost("print/receipt")]
         public ActionResult<ExecutionResultDto> PrintReceipt(ReceiptDto receipt)
         {
-            return !_printerConnector.PrintReceipt(_printerOptions, receipt)
-                ? Ok(new ExecutionResultDto(_printerConnector.GetErrorDescription()))
-                : Ok(new ExecutionResultDto());
+            return Ok(new ExecutionResultDto(!_printReceiptOperation.Execute(receipt)
+                ? _printReceiptOperation.ErrorDescriptions
+                : null));
         }
     }
 }
