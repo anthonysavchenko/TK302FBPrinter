@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TK302FBPrinter.Device.Operations.Beep;
 using TK302FBPrinter.Device.Operations.PrintReceipt;
+using TK302FBPrinter.Device.Operations.PrintReceiptReturn;
 using TK302FBPrinter.Device.Operations.ShiftClose;
 using TK302FBPrinter.Device.Operations.ShiftOpen;
 using TK302FBPrinter.Dto;
@@ -15,17 +16,20 @@ namespace TK302FBPrinter
         private readonly IShiftOpenOperation _shiftOpenOperation;
         private readonly IShiftCloseOperation _shiftCloseOperation;
         private readonly IPrintReceiptOperation _printReceiptOperation;
+        private readonly IPrintReceiptReturnOperation _printReceiptReturnOperation;
 
         public ApiController(
             IBeepOperation beepOperation,
             IShiftOpenOperation shiftOpenOperation,
             IShiftCloseOperation shiftCloseOperation,
-            IPrintReceiptOperation printReceiptOperation)
+            IPrintReceiptOperation printReceiptOperation,
+            IPrintReceiptReturnOperation printReceiptReturnOperation)
         {
             _beepOperation = beepOperation;
             _shiftOpenOperation = shiftOpenOperation;
             _shiftCloseOperation = shiftCloseOperation;
             _printReceiptOperation = printReceiptOperation;
+            _printReceiptReturnOperation = printReceiptReturnOperation;
         }
 
         // POST /api/beep
@@ -61,6 +65,15 @@ namespace TK302FBPrinter
         {
             return Ok(new ExecutionResultDto(!_printReceiptOperation.Execute(receipt)
                 ? _printReceiptOperation.ErrorDescriptions
+                : null));
+        }
+
+        // POST /api/print/receipt/return
+        [HttpPost("print/receipt/return")]
+        public ActionResult<ExecutionResultDto> PrintReceiptReturn(ReceiptDto receipt)
+        {
+            return Ok(new ExecutionResultDto(!_printReceiptReturnOperation.Execute(receipt)
+                ? _printReceiptReturnOperation.ErrorDescriptions
                 : null));
         }
     }

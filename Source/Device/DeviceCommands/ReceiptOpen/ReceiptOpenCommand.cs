@@ -17,11 +17,14 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptOpen
             _printerOptions = printerOptions.Value;
         }
 
-        public bool Execute(ReceiptDto receipt)
+        public bool Execute(ReceiptDto receipt, bool isReturnReceipt = false)
         {
             bool print = true; // Печатать фискальный документ (ФД)
             bool saveOnFile = false; // Не сохранять ФД в памяти ККТ (формат документа .spl)
-            var docType = ReceiptTypeEnum.Sale; // Тип документа (приход, возврат и т.д.)
+
+            var docType = !isReturnReceipt // Тип документа (приход, возврат и т.д.)
+                ? ReceiptTypeEnum.Sale
+                : ReceiptTypeEnum.SaleReturn;
 
             TaxCodeEnum taxCode; // Система налогооблажения (СНО)
             switch (receipt.Tax)

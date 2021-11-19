@@ -4,6 +4,6 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem
 {
     public interface IReceiptAddItemCommand : IDeviceCommand
     {
-        bool Execute(ReceiptItemDto item);
+        bool Execute(ReceiptItemDto item, bool isReceiptReturn = false);
     }
 }

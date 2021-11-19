@@ -17,12 +17,14 @@ using TK302FBPrinter.Device.DeviceCommands.CancelLastItem;
 using TK302FBPrinter.Device.DeviceCommands.Connect;
 using TK302FBPrinter.Device.DeviceCommands.Disconnect;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem;
+using TK302FBPrinter.Device.DeviceCommands.ReceiptCancel;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptClose;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptOpen;
 using TK302FBPrinter.Device.DeviceCommands.ShiftClose;
 using TK302FBPrinter.Device.DeviceCommands.ShiftOpen;
 using TK302FBPrinter.Device.Operations.Beep;
 using TK302FBPrinter.Device.Operations.PrintReceipt;
+using TK302FBPrinter.Device.Operations.PrintReceiptReturn;
 using TK302FBPrinter.Device.Operations.ShiftClose;
 using TK302FBPrinter.Device.Operations.ShiftOpen;
 
@@ -58,6 +60,7 @@ namespace TK302FBPrinter
                 services.AddScoped<IReceiptOpenCommand, ReceiptOpenMockCommand>();
                 services.AddScoped<IReceiptCloseCommand, ReceiptCloseMockCommand>();
                 services.AddScoped<IReceiptAddItemCommand, ReceiptAddItemMockCommand>();
+                services.AddScoped<IReceiptCancelCommand, ReceiptCancelMockCommand>();
                 services.AddScoped<ICancelLastItemCommand, CancelLastItemMockCommand>();
             }
             else
@@ -70,6 +73,7 @@ namespace TK302FBPrinter
                 services.AddScoped<IReceiptOpenCommand, ReceiptOpenCommand>();
                 services.AddScoped<IReceiptCloseCommand, ReceiptCloseCommand>();
                 services.AddScoped<IReceiptAddItemCommand, ReceiptAddItemCommand>();
+                services.AddScoped<IReceiptCancelCommand, ReceiptCancelCommand>();
                 services.AddScoped<ICancelLastItemCommand, CancelLastItemCommand>();
             }
 
@@ -77,6 +81,7 @@ namespace TK302FBPrinter
             services.AddScoped<IShiftOpenOperation, ShiftOpenOperation>();
             services.AddScoped<IShiftCloseOperation, ShiftCloseOperation>();
             services.AddScoped<IPrintReceiptOperation, PrintReceiptOperation>();
+            services.AddScoped<IPrintReceiptReturnOperation, PrintReceiptReturnOperation>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

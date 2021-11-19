@@ -17,7 +17,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem
             _printerOptions = printerOptions.Value;
         }
 
-        public bool Execute(ReceiptItemDto item)
+        public bool Execute(ReceiptItemDto item, bool isReceiptReturn = false)
         {
             string text = item.Description; // Наименование предмета продажи
             long quantity = item.Quantity; // Количество
@@ -48,7 +48,9 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem
                     break;
             }
             
-            var itemType = ReceiptItemTypeEnum.Sale; // Тип расчета - приход
+            var itemType = !isReceiptReturn // Тип расчета - приход
+                ? ReceiptItemTypeEnum.Sale
+                : ReceiptItemTypeEnum.SaleReturn;
 
             var paymentSubject = PaymentSubjectEnum.GoodsForSelling; // Товар
             var paymentWayType = PaymentWayEnum.CompletePayment; // Полный расчет

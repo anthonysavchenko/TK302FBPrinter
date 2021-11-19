@@ -8,7 +8,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem
         {
         }
 
-        public bool Execute(ReceiptItemDto item)
+        public bool Execute(ReceiptItemDto item, bool isReceiptReturn = false)
         {
             return true;
         }
