@@ -10,11 +10,12 @@ using TK302FBPrinter.Device.DeviceCommands.Beep;
 using TK302FBPrinter.Device.DeviceCommands.CancelLastItem;
 using TK302FBPrinter.Device.DeviceCommands.Connect;
 using TK302FBPrinter.Device.DeviceCommands.Disconnect;
-using TK302FBPrinter.Device.DeviceCommands.PrintCommand;
+using TK302FBPrinter.Device.DeviceCommands.PrintTextCommand;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptCancel;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptClose;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptOpen;
+using TK302FBPrinter.Device.DeviceCommands.ReportXPrint;
 using TK302FBPrinter.Device.DeviceCommands.ShiftClose;
 using TK302FBPrinter.Device.DeviceCommands.ShiftOpen;
 using TK302FBPrinter.Device.DeviceCommands.TextDocClose;
@@ -22,6 +23,7 @@ using TK302FBPrinter.Device.DeviceCommands.TextDocOpen;
 using TK302FBPrinter.Device.Operations.Beep;
 using TK302FBPrinter.Device.Operations.PrintReceipt;
 using TK302FBPrinter.Device.Operations.PrintReceiptReturn;
+using TK302FBPrinter.Device.Operations.PrintReportX;
 using TK302FBPrinter.Device.Operations.PrintSlip;
 using TK302FBPrinter.Device.Operations.ShiftClose;
 using TK302FBPrinter.Device.Operations.ShiftOpen;
@@ -63,6 +65,7 @@ namespace TK302FBPrinter
                 services.AddScoped<ITextDocOpenCommand, TextDocOpenMockCommand>();
                 services.AddScoped<ITextDocCloseCommand, TextDocCloseMockCommand>();
                 services.AddScoped<IPrintTextCommand, PrintTextMockCommand>();
+                services.AddScoped<IReportXPrintCommand, ReportXPrintMockCommand>();
             }
             else
             {
@@ -81,6 +84,7 @@ namespace TK302FBPrinter
                 services.AddScoped<ITextDocOpenCommand, TextDocOpenCommand>();
                 services.AddScoped<ITextDocCloseCommand, TextDocCloseCommand>();
                 services.AddScoped<IPrintTextCommand, PrintTextCommand>();
+                services.AddScoped<IReportXPrintCommand, ReportXPrintCommand>();
             }
 
             services.AddScoped<IBeepOperation, BeepOperation>();
@@ -89,6 +93,7 @@ namespace TK302FBPrinter
             services.AddScoped<IPrintReceiptOperation, PrintReceiptOperation>();
             services.AddScoped<IPrintReceiptReturnOperation, PrintReceiptReturnOperation>();
             services.AddScoped<IPrintSlipOperation, PrintSlipOperation>();
+            services.AddScoped<IPrintReportXOperation, PrintReportXOperation>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

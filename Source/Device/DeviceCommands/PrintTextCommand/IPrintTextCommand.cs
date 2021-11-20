@@ -1,4 +1,4 @@
-namespace TK302FBPrinter.Device.DeviceCommands.PrintCommand
+namespace TK302FBPrinter.Device.DeviceCommands.PrintTextCommand
 {
     public interface IPrintTextCommand : IDeviceCommand
     {

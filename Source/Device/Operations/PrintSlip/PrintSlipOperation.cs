@@ -1,6 +1,6 @@
 using TK302FBPrinter.Device.DeviceCommands.Connect;
 using TK302FBPrinter.Device.DeviceCommands.Disconnect;
-using TK302FBPrinter.Device.DeviceCommands.PrintCommand;
+using TK302FBPrinter.Device.DeviceCommands.PrintTextCommand;
 using TK302FBPrinter.Device.DeviceCommands.TextDocClose;
 using TK302FBPrinter.Device.DeviceCommands.TextDocOpen;
 
