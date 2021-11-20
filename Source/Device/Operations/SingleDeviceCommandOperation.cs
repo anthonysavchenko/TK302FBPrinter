@@ -23,8 +23,6 @@ namespace TK302FBPrinter.Device.Operations
 
         public bool Execute()
         {
-            bool result = true;
-
             if (!_connectCommand.Execute())
             {
                 AddErrorDescription(_connectCommand.ErrorDescription);
@@ -34,16 +32,20 @@ namespace TK302FBPrinter.Device.Operations
             if (!_deviceCommand.Execute())
             {
                 AddErrorDescription(_deviceCommand.ErrorDescription);
-                result = false;
-            }
-
-            if (!_disconnectCommand.Execute())
-            {
-                AddErrorDescription(_disconnectCommand.ErrorDescription);
+                Disconnect();
                 return false;
             }
 
-            return result;
+            Disconnect();
+            return true;
+        }
+
+        private void Disconnect()
+        {
+            if (!_disconnectCommand.Execute())
+            {
+                AddErrorDescription(_disconnectCommand.ErrorDescription);
+            }
         }
     }
 }

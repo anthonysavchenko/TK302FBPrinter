@@ -48,10 +48,7 @@ namespace TK302FBPrinter.Device.Operations
             if (!_receiptOpenCommand.Execute(receipt, isReceiptReturn))
             {
                 AddErrorDescription(_receiptOpenCommand.ErrorDescription);
-                if (!_disconnectCommand.Execute())
-                {
-                    AddErrorDescription(_disconnectCommand.ErrorDescription);
-                }
+                Disconnect();
                 return false;
             }
 
@@ -76,12 +73,7 @@ namespace TK302FBPrinter.Device.Operations
                 return false;
             }
 
-            if (!_disconnectCommand.Execute())
-            {
-                AddErrorDescription(_disconnectCommand.ErrorDescription);
-                return false;
-            }
-
+            Disconnect();
             return true;
         }
 

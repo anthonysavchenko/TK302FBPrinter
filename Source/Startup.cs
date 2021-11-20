@@ -17,6 +17,8 @@ using TK302FBPrinter.Device.DeviceCommands.ReceiptClose;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptOpen;
 using TK302FBPrinter.Device.DeviceCommands.ShiftClose;
 using TK302FBPrinter.Device.DeviceCommands.ShiftOpen;
+using TK302FBPrinter.Device.DeviceCommands.TextDocClose;
+using TK302FBPrinter.Device.DeviceCommands.TextDocOpen;
 using TK302FBPrinter.Device.Operations.Beep;
 using TK302FBPrinter.Device.Operations.PrintReceipt;
 using TK302FBPrinter.Device.Operations.PrintReceiptReturn;
@@ -58,6 +60,8 @@ namespace TK302FBPrinter
                 services.AddScoped<IReceiptAddItemCommand, ReceiptAddItemMockCommand>();
                 services.AddScoped<IReceiptCancelCommand, ReceiptCancelMockCommand>();
                 services.AddScoped<ICancelLastItemCommand, CancelLastItemMockCommand>();
+                services.AddScoped<ITextDocOpenCommand, TextDocOpenMockCommand>();
+                services.AddScoped<ITextDocCloseCommand, TextDocCloseMockCommand>();
                 services.AddScoped<IPrintTextCommand, PrintTextMockCommand>();
             }
             else
@@ -74,6 +78,8 @@ namespace TK302FBPrinter
                 services.AddScoped<IReceiptAddItemCommand, ReceiptAddItemCommand>();
                 services.AddScoped<IReceiptCancelCommand, ReceiptCancelCommand>();
                 services.AddScoped<ICancelLastItemCommand, CancelLastItemCommand>();
+                services.AddScoped<ITextDocOpenCommand, TextDocOpenCommand>();
+                services.AddScoped<ITextDocCloseCommand, TextDocCloseCommand>();
                 services.AddScoped<IPrintTextCommand, PrintTextCommand>();
             }
 
