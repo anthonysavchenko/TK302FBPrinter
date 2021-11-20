@@ -5,7 +5,7 @@ namespace TK302FBPrinter.Dto
     public class SlipContentDto
     {
         [Required]
-        [MaxLength(250)]
+        [MaxLength(1000)]
         public string Text { get; set; }
     }
 }

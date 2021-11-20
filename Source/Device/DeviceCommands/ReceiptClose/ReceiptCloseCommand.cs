@@ -1,4 +1,4 @@
-using Custom.Fiscal.RUSProtocolAPI;
+using System;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
 using TK302FBPrinter.Dto;
@@ -10,8 +10,8 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptClose
         private readonly PrinterOptions _printerOptions;
 
         public ReceiptCloseCommand(
-            ProtocolAPI connection,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connection)
+            Connector connector,
+            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
         {
             _printerOptions = printerOptions.Value;
         }
@@ -31,22 +31,30 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptClose
             var receiverInn = ""; // Значение ИНН Покупателя #1228
             var subtotalRounding = false; // Округление подытога до целых рублей
 
-            var deviceResponse = _connection.CheckClosing(
-                _printerOptions.OperatorPassword,
-                amountPaymentCash,
-                amountPaymentCashless,
-                amountPaymentPrepay,
-                amountPaymentCredit,
-                amountPaymentOther,
-                hasAdditionalPropertyCheck,
-                additionalPropertyCheckText,
-                hasFieldReceiver,
-                receiver,
-                hasFieldReceiverInn,
-                receiverInn,
-                subtotalRounding);
+            try
+            {
+                var deviceResponse = _connector.Connection.CheckClosing(
+                    _printerOptions.OperatorPassword,
+                    amountPaymentCash,
+                    amountPaymentCashless,
+                    amountPaymentPrepay,
+                    amountPaymentCredit,
+                    amountPaymentOther,
+                    hasAdditionalPropertyCheck,
+                    additionalPropertyCheckText,
+                    hasFieldReceiver,
+                    receiver,
+                    hasFieldReceiverInn,
+                    receiverInn,
+                    subtotalRounding);
 
-            return !CheckRespose(deviceResponse);
+                return CheckRespose(deviceResponse);
+            }
+            catch (Exception exception)
+            {
+                AddException(exception);
+                return false;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-using Custom.Fiscal.RUSProtocolAPI;
+using System;
 using Custom.Fiscal.RUSProtocolAPI.Enums;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
@@ -10,28 +10,36 @@ namespace TK302FBPrinter.Device.DeviceCommands.PrintCommand
         private readonly PrinterOptions _printerOptions;
 
         public PrintTextCommand(
-            ProtocolAPI connection,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connection)
+            Connector connector,
+            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
         {
             _printerOptions = printerOptions.Value;
         }
 
         public bool Execute(string text)
         {
-            var deviceResponse = _connection.PrintText(
-                _printerOptions.OperatorPassword,
-                fontSize: FontSizeEnum.DefaultSize,
-                doubleWidth: false,
-                doubleHeigth: false,
-                halfWidth: false,
-                halfHeigth: false,
-                border: false,
-                bold: false,
-                italic: false,
-                automaticNewLine: true,
-                text: text);
+            try
+            {
+                var deviceResponse = _connector.Connection.PrintText(
+                    _printerOptions.OperatorPassword,
+                    fontSize: FontSizeEnum.DefaultSize,
+                    doubleWidth: false,
+                    doubleHeigth: false,
+                    halfWidth: false,
+                    halfHeigth: false,
+                    border: false,
+                    bold: false,
+                    italic: false,
+                    automaticNewLine: true,
+                    text: text);
 
-            return !CheckRespose(deviceResponse);
+                return CheckRespose(deviceResponse);
+            }
+            catch (Exception exception)
+            {
+                AddException(exception);
+                return false;
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ namespace TK302FBPrinter.Dto
 {
     public enum TaxType
     {
-        AutomaticMode,
+        AutomaticMode = 1,
         Traditional,
         LightIncome,
         LightIncomeNoExpenses,

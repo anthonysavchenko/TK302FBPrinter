@@ -1,3 +1,4 @@
+using System;
 using System.IO.Ports;
 using Custom.Fiscal.RUSProtocolAPI;
 using Custom.Fiscal.RUSProtocolAPI.Enums;
@@ -11,20 +12,20 @@ namespace TK302FBPrinter.Device.DeviceCommands.Connect
         private readonly PrinterOptions _printerOptions;
 
         public ConnectCommand(
-            ProtocolAPI connection,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connection)
+            Connector connector,
+            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
         {
             _printerOptions = printerOptions.Value;
         }
 
         public bool Execute()
         {
-            if (_connection != null)
+            if (_connector.Connection != null)
             {
                 return true;
             }
 
-            _connection = new ProtocolAPI()
+            _connector.Connection = new ProtocolAPI()
             {
                 ComunicationType = ComunicationTypeEnum.RS232,
                 ComunicationParams = new object[]
@@ -40,8 +41,16 @@ namespace TK302FBPrinter.Device.DeviceCommands.Connect
                 }
             };
 
-            var deviceResponse = _connection.OpenConnection();
-            return CheckRespose(deviceResponse);
+            try
+            {
+                var deviceResponse = _connector.Connection.OpenConnection();
+                return CheckRespose(deviceResponse);
+            }
+            catch (Exception exception)
+            {
+                AddException(exception);
+                return false;
+            }
         }
     }
 }

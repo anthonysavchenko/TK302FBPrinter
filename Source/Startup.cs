@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using TK302FBPrinter.Configuration;
+using TK302FBPrinter.Device;
 using TK302FBPrinter.Device.DeviceCommands.Beep;
 using TK302FBPrinter.Device.DeviceCommands.CancelLastItem;
 using TK302FBPrinter.Device.DeviceCommands.Connect;
@@ -64,9 +58,12 @@ namespace TK302FBPrinter
                 services.AddScoped<IReceiptAddItemCommand, ReceiptAddItemMockCommand>();
                 services.AddScoped<IReceiptCancelCommand, ReceiptCancelMockCommand>();
                 services.AddScoped<ICancelLastItemCommand, CancelLastItemMockCommand>();
+                services.AddScoped<IPrintTextCommand, PrintTextMockCommand>();
             }
             else
             {
+                services.AddScoped<Connector>();
+
                 services.AddScoped<IConnectCommand, ConnectCommand>();
                 services.AddScoped<IDisconnectCommand, DisconnectCommand>();
                 services.AddScoped<IBeepCommand, BeepCommand>();

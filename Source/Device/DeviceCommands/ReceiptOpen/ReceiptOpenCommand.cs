@@ -1,4 +1,4 @@
-using Custom.Fiscal.RUSProtocolAPI;
+using System;
 using Custom.Fiscal.RUSProtocolAPI.Enums;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
@@ -11,8 +11,8 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptOpen
         private readonly PrinterOptions _printerOptions;
         
         public ReceiptOpenCommand(
-            ProtocolAPI connection,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connection)
+            Connector connector,
+            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
         {
             _printerOptions = printerOptions.Value;
         }
@@ -53,9 +53,22 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptOpen
                     break;
             }
 
-            var deviceResponse =
-                _connection.OpenFiscalDocument(_printerOptions.OperatorPassword, print, saveOnFile, docType, taxCode);
-            return !CheckRespose(deviceResponse);
+            try
+            {
+                var deviceResponse = _connector.Connection.OpenFiscalDocument(
+                    _printerOptions.OperatorPassword,
+                    print,
+                    saveOnFile,
+                    docType,
+                    taxCode);
+
+                return CheckRespose(deviceResponse);
+            }
+            catch (Exception exception)
+            {
+                AddException(exception);
+                return false;
+            }
         }
     }
 }

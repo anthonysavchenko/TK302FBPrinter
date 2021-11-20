@@ -4,26 +4,23 @@ namespace TK302FBPrinter.Dto
 {
     public class ExecutionResultDto
     {
-        public ExecutionResultDto()
-        {
-            Succeed = true;
-            ErrorDescription = string.Empty;
-        }
-
-        public ExecutionResultDto(string errorDescription) : base()
+        public ExecutionResultDto(string errorDescription = null)
         {
             if (!string.IsNullOrEmpty(errorDescription))
             {
-                Succeed = false;
                 ErrorDescription = errorDescription;
+                Succeed = false;
+                return;
             }
+            ErrorDescription = string.Empty;
+            Succeed = true;
         }
 
         [Required]
         public bool Succeed { get; set; }
 
         [Required]
-        [MaxLength(250)]
+        [MaxLength(1000)]
         public string ErrorDescription { get; set; }
     }
 }

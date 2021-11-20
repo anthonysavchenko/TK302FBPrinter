@@ -1,21 +1,28 @@
-using Custom.Fiscal.RUSProtocolAPI;
+using System;
 
 namespace TK302FBPrinter.Device.DeviceCommands.Disconnect
 {
     public class DisconnectCommand : DeviceCommand, IDisconnectCommand
     {
-        public DisconnectCommand(ProtocolAPI connection) : base(connection)
-        {
-        }
+        public DisconnectCommand(Connector connector) : base(connector) {}
 
         public bool Execute()
         {
-            if (_connection == null)
+            if (_connector.Connection == null)
             {
                 return true;
             }
-            var deviceResponse = _connection.CloseConnection();
-            return CheckRespose(deviceResponse);
+
+            try
+            {
+                var deviceResponse = _connector.Connection.CloseConnection();
+                return CheckRespose(deviceResponse);
+            }
+            catch (Exception exception)
+            {
+                AddException(exception);
+                return false;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-using Custom.Fiscal.RUSProtocolAPI;
+using System;
 using Custom.Fiscal.RUSProtocolAPI.Enums;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
@@ -11,8 +11,8 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem
         private readonly PrinterOptions _printerOptions;
 
         public ReceiptAddItemCommand(
-            ProtocolAPI connection,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connection)
+            Connector connector,
+            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
         {
             _printerOptions = printerOptions.Value;
         }
@@ -77,36 +77,44 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem
             var goodsAssortmentSerial = ""; // Серийный номер кода маркировки. Игнорируется, если hasGoodsAssortment = false
             var numberCustomsDeclarationText = ""; // Номер дакларации. Игнорируется, если hasGoodsAssortment = false
 
-            var deviceResponse = _connection.PrintRecItem(
-                _printerOptions.OperatorPassword,
-                itemType,
-                hasDiscountAddon,
-                hasPaymentSubj,
-                hasGoodsAssortment,
-                hasNumberCustomsDeclaration,
-                excludeModifier,
-                paymentWayType,
-                paymentSubject,
-                codeCountryProducer,
-                quantity,
-                amount,
-                excise,
-                deptNumber,
-                discountAddonType1,
-                discountAddonType2,
-                discountAddonAmount,
-                text,
-                paymentSubjectText,
-                goodsType,
-                goodsAssortmentGTIN,
-                goodsAssortmentSerial,
-                numberCustomsDeclarationText,
-                hasDiscountAddon2,
-                discountAddonType3,
-                discountAddonType4,
-                discountAddonAmount2);
+            try
+            {
+                var deviceResponse = _connector.Connection.PrintRecItem(
+                    _printerOptions.OperatorPassword,
+                    itemType,
+                    hasDiscountAddon,
+                    hasPaymentSubj,
+                    hasGoodsAssortment,
+                    hasNumberCustomsDeclaration,
+                    excludeModifier,
+                    paymentWayType,
+                    paymentSubject,
+                    codeCountryProducer,
+                    quantity,
+                    amount,
+                    excise,
+                    deptNumber,
+                    discountAddonType1,
+                    discountAddonType2,
+                    discountAddonAmount,
+                    text,
+                    paymentSubjectText,
+                    goodsType,
+                    goodsAssortmentGTIN,
+                    goodsAssortmentSerial,
+                    numberCustomsDeclarationText,
+                    hasDiscountAddon2,
+                    discountAddonType3,
+                    discountAddonType4,
+                    discountAddonAmount2);
 
-            return !CheckRespose(deviceResponse);
+                return CheckRespose(deviceResponse);
+            }
+            catch (Exception exception)
+            {
+                AddException(exception);
+                return false;
+            }
         }
     }
 }

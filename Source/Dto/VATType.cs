@@ -2,7 +2,7 @@ namespace TK302FBPrinter.Dto
 {
     public enum VATType
     {
-        NoVAT,
+        NoVAT = 1,
         Percent0,
         Percent10,
         Percent20,
