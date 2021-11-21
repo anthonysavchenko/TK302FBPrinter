@@ -6,14 +6,9 @@ namespace TK302FBPrinter.Device.DeviceCommands.ShiftClose
 {
     public class ShiftCloseCommand : DeviceCommand, IShiftCloseCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public ShiftCloseCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute()
         {
@@ -22,7 +17,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.ShiftClose
             
             try
             {
-                var deviceResponse = _connector.Connection.ZReport(_printerOptions.OperatorPassword, print, saveOnFile);
+                var deviceResponse = _deviceConnector.Connection.ZReport(_deviceConfig.OperatorPassword, print, saveOnFile);
                 return CheckRespose(deviceResponse);
             }
             catch (Exception exception)

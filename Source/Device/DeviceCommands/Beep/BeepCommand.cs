@@ -6,20 +6,15 @@ namespace TK302FBPrinter.Device.DeviceCommands.Beep
 {
     public class BeepCommand : DeviceCommand, IBeepCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public BeepCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute()
         {
             try
             {
-                var deviceResponse = _connector.Connection.Beep(_printerOptions.OperatorPassword);
+                var deviceResponse = _deviceConnector.Connection.Beep(_deviceConfig.OperatorPassword);
                 return CheckRespose(deviceResponse);
             }
             catch (Exception exception)

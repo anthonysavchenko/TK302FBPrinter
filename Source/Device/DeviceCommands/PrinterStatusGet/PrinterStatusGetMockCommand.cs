@@ -4,7 +4,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.PrinterStatusGet
 {
     public class PrinterStatusGetMockCommand : DeviceCommand, IPrinterStatusGetCommand
     {
-        public PrinterStatusGetMockCommand() : base(null) {}
+        public PrinterStatusGetMockCommand() : base(null, null) {}
 
         public bool Execute(out PrinterStatusDto status)
         {

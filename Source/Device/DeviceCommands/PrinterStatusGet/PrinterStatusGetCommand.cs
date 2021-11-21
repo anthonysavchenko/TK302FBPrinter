@@ -7,14 +7,9 @@ namespace TK302FBPrinter.Device.DeviceCommands.PrinterStatusGet
 {
     public class PrinterStatusGetCommand : DeviceCommand, IPrinterStatusGetCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public PrinterStatusGetCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute(out PrinterStatusDto status)
         {
@@ -22,7 +17,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.PrinterStatusGet
 
             try
             {
-                var deviceResponse = _connector.Connection.GetPrinterStatus(_printerOptions.OperatorPassword);
+                var deviceResponse = _deviceConnector.Connection.GetPrinterStatus(_deviceConfig.OperatorPassword);
 
                 if (!CheckRespose(deviceResponse))
                 {

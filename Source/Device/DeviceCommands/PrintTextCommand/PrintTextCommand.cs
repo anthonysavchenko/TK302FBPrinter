@@ -7,21 +7,16 @@ namespace TK302FBPrinter.Device.DeviceCommands.PrintTextCommand
 {
     public class PrintTextCommand : DeviceCommand, IPrintTextCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public PrintTextCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute(string text)
         {
             try
             {
-                var deviceResponse = _connector.Connection.PrintText(
-                    _printerOptions.OperatorPassword,
+                var deviceResponse = _deviceConnector.Connection.PrintText(
+                    _deviceConfig.OperatorPassword,
                     fontSize: FontSizeEnum.DefaultSize,
                     doubleWidth: false,
                     doubleHeigth: false,

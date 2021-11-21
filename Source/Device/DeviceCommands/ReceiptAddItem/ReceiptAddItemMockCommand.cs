@@ -4,7 +4,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem
 {
     public class ReceiptAddItemMockCommand : DeviceCommand, IReceiptAddItemCommand
     {
-        public ReceiptAddItemMockCommand() : base(null) {}
+        public ReceiptAddItemMockCommand() : base(null, null) {}
 
         public bool Execute(ReceiptItemDto item, bool isReceiptReturn = false)
         {

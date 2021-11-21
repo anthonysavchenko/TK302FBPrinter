@@ -7,14 +7,9 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptClose
 {
     public class ReceiptCloseCommand : DeviceCommand, IReceiptCloseCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public ReceiptCloseCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute(ReceiptDto receipt)
         {
@@ -33,8 +28,8 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptClose
 
             try
             {
-                var deviceResponse = _connector.Connection.CheckClosing(
-                    _printerOptions.OperatorPassword,
+                var deviceResponse = _deviceConnector.Connection.CheckClosing(
+                    _deviceConfig.OperatorPassword,
                     amountPaymentCash,
                     amountPaymentCashless,
                     amountPaymentPrepay,

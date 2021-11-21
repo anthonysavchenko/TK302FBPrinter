@@ -1,10 +1,10 @@
 namespace TK302FBPrinter.Configuration
 {
-    public class PrinterOptions
+    public class DeviceConfig
     {
-        public const string Printer = "Printer";
+        public const string Device = "Device";
 
-        public bool EmulationMode { get; set; } = true;
+        public bool EmulationMode { get; set; } = false;
         
         public string OperatorPassword { get; set; } = string.Empty;
 

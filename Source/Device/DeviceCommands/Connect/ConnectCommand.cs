@@ -9,23 +9,18 @@ namespace TK302FBPrinter.Device.DeviceCommands.Connect
 {
     public class ConnectCommand : DeviceCommand, IConnectCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public ConnectCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute()
         {
-            if (_connector.Connection != null)
+            if (_deviceConnector.Connection != null)
             {
                 return true;
             }
 
-            _connector.Connection = new ProtocolAPI()
+            _deviceConnector.Connection = new ProtocolAPI()
             {
                 ComunicationType = ComunicationTypeEnum.RS232,
                 ComunicationParams = new object[]
@@ -34,7 +29,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.Connect
                     8, // DataBits
                     Handshake.None, // Handshake
                     Parity.None, // Parity
-                    _printerOptions.PortName, // PortName
+                    _deviceConfig.PortName, // PortName
                     StopBits.One, // StopBits
                     false, // Dtr
                     false // Rts
@@ -43,7 +38,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.Connect
 
             try
             {
-                var deviceResponse = _connector.Connection.OpenConnection();
+                var deviceResponse = _deviceConnector.Connection.OpenConnection();
                 return CheckRespose(deviceResponse);
             }
             catch (Exception exception)

@@ -1,21 +1,25 @@
 using System;
+using Microsoft.Extensions.Options;
+using TK302FBPrinter.Configuration;
 
 namespace TK302FBPrinter.Device.DeviceCommands.Disconnect
 {
     public class DisconnectCommand : DeviceCommand, IDisconnectCommand
     {
-        public DisconnectCommand(Connector connector) : base(connector) {}
+        public DisconnectCommand(
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute()
         {
-            if (_connector.Connection == null)
+            if (_deviceConnector.Connection == null)
             {
                 return true;
             }
 
             try
             {
-                var deviceResponse = _connector.Connection.CloseConnection();
+                var deviceResponse = _deviceConnector.Connection.CloseConnection();
                 return CheckRespose(deviceResponse);
             }
             catch (Exception exception)

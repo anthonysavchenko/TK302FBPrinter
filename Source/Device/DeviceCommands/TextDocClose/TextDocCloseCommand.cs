@@ -6,21 +6,16 @@ namespace TK302FBPrinter.Device.DeviceCommands.TextDocClose
 {
     public class TextDocCloseCommand : DeviceCommand, ITextDocCloseCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public TextDocCloseCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute()
         {
             try
             {
-                var deviceResponse = _connector.Connection.CloseNotFiscallDocument(
-                    _printerOptions.OperatorPassword,
+                var deviceResponse = _deviceConnector.Connection.CloseNotFiscallDocument(
+                    _deviceConfig.OperatorPassword,
                     printSerialNum: false,
                     paperCut: true);
 

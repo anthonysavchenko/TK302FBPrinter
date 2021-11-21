@@ -6,21 +6,16 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReportXPrint
 {
     public class ReportXPrintCommand : DeviceCommand, IReportXPrintCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public ReportXPrintCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute()
         {
             try
             {
-                var deviceResponse = _connector.Connection.XReport(
-                    _printerOptions.OperatorPassword,
+                var deviceResponse = _deviceConnector.Connection.XReport(
+                    _deviceConfig.OperatorPassword,
                     AddCashDrawer: false);
 
                 return CheckRespose(deviceResponse);

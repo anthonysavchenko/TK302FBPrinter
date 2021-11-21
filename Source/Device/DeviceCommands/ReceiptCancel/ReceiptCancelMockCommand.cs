@@ -4,7 +4,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptCancel
 {
     public class ReceiptCancelMockCommand : DeviceCommand, IReceiptCancelCommand
     {
-        public ReceiptCancelMockCommand() : base(null) {}
+        public ReceiptCancelMockCommand() : base(null, null) {}
 
         public bool Execute()
         {

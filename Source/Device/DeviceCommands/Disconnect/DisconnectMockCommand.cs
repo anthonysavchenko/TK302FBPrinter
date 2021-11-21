@@ -2,7 +2,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.Disconnect
 {
     public class DisconnectMockCommand : DeviceCommand, IDisconnectCommand
     {
-        public DisconnectMockCommand() : base(null)
+        public DisconnectMockCommand() : base(null, null)
         {
         }
 

@@ -4,7 +4,7 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptClose
 {
     public class ReceiptCloseMockCommand : DeviceCommand, IReceiptCloseCommand
     {
-        public ReceiptCloseMockCommand() : base(null) {}
+        public ReceiptCloseMockCommand() : base(null, null) {}
 
         public bool Execute(ReceiptDto receipt)
         {

@@ -8,14 +8,9 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem
 {
     public class ReceiptAddItemCommand : DeviceCommand, IReceiptAddItemCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public ReceiptAddItemCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute(ReceiptItemDto item, bool isReceiptReturn = false)
         {
@@ -79,8 +74,8 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem
 
             try
             {
-                var deviceResponse = _connector.Connection.PrintRecItem(
-                    _printerOptions.OperatorPassword,
+                var deviceResponse = _deviceConnector.Connection.PrintRecItem(
+                    _deviceConfig.OperatorPassword,
                     itemType,
                     hasDiscountAddon,
                     hasPaymentSubj,

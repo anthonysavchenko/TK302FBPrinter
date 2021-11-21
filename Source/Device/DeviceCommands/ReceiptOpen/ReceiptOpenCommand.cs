@@ -8,14 +8,9 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptOpen
 {
     public class ReceiptOpenCommand : DeviceCommand, IReceiptOpenCommand
     {
-        private readonly PrinterOptions _printerOptions;
-        
         public ReceiptOpenCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute(ReceiptDto receipt, bool isReturnReceipt = false)
         {
@@ -55,8 +50,8 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptOpen
 
             try
             {
-                var deviceResponse = _connector.Connection.OpenFiscalDocument(
-                    _printerOptions.OperatorPassword,
+                var deviceResponse = _deviceConnector.Connection.OpenFiscalDocument(
+                    _deviceConfig.OperatorPassword,
                     print,
                     saveOnFile,
                     docType,

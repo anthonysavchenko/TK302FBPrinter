@@ -6,20 +6,15 @@ namespace TK302FBPrinter.Device.DeviceCommands.CancelLastItem
 {
     public class CancelLastItemCommand : DeviceCommand, ICancelLastItemCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public CancelLastItemCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute()
         {
             try
             {
-                var deviceResponse = _connector.Connection.VoidLastItem(_printerOptions.OperatorPassword);
+                var deviceResponse = _deviceConnector.Connection.VoidLastItem(_deviceConfig.OperatorPassword);
                 return CheckRespose(deviceResponse);
             }
             catch (Exception exception)

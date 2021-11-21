@@ -6,14 +6,9 @@ namespace TK302FBPrinter.Device.DeviceCommands.ShiftOpen
 {
     public class ShiftOpenCommand : DeviceCommand, IShiftOpenCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public ShiftOpenCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute()
         {
@@ -22,8 +17,8 @@ namespace TK302FBPrinter.Device.DeviceCommands.ShiftOpen
             
             try
             {
-                var deviceResponse = _connector.Connection.OpenFiscalDay(
-                    _printerOptions.OperatorPassword,
+                var deviceResponse = _deviceConnector.Connection.OpenFiscalDay(
+                    _deviceConfig.OperatorPassword,
                     print,
                     saveOnFile);
 

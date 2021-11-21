@@ -6,21 +6,16 @@ namespace TK302FBPrinter.Device.DeviceCommands.TextDocOpen
 {
     public class TextDocOpenCommand : DeviceCommand, ITextDocOpenCommand
     {
-        private readonly PrinterOptions _printerOptions;
-
         public TextDocOpenCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute()
         {
             try
             {
-                var deviceResponse = _connector.Connection.OpenNotFiscalDocument(
-                    _printerOptions.OperatorPassword,
+                var deviceResponse = _deviceConnector.Connection.OpenNotFiscalDocument(
+                    _deviceConfig.OperatorPassword,
                     printOperator: false,
                     printSerialNum: false,
                     printHeader: false,

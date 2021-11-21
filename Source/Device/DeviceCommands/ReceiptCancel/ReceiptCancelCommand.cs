@@ -6,20 +6,15 @@ namespace TK302FBPrinter.Device.DeviceCommands.ReceiptCancel
 {
     public class ReceiptCancelCommand : DeviceCommand, IReceiptCancelCommand
     {
-        private readonly PrinterOptions _printerOptions;
- 
         public ReceiptCancelCommand(
-            Connector connector,
-            IOptionsSnapshot<PrinterOptions> printerOptions) : base(connector)
-        {
-            _printerOptions = printerOptions.Value;
-        }
+            DeviceConnector deviceConnector,
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
         public bool Execute()
         {
             try
             {
-                var deviceResponse = _connector.Connection.CheckCancellation(_printerOptions.OperatorPassword);
+                var deviceResponse = _deviceConnector.Connection.CheckCancellation(_deviceConfig.OperatorPassword);
                 return CheckRespose(deviceResponse);
             }
             catch (Exception exception)
