@@ -4,6 +4,7 @@ using TK302FBPrinter.Business.Operations.GetStatusOperation;
 using TK302FBPrinter.Business.Operations.PrintReceipt;
 using TK302FBPrinter.Business.Operations.PrintReportX;
 using TK302FBPrinter.Business.Operations.PrintSlip;
+using TK302FBPrinter.Business.Operations.PrintTicket;
 using TK302FBPrinter.Business.Operations.ShiftClose;
 using TK302FBPrinter.Business.Operations.ShiftOpen;
 using TK302FBPrinter.Dto;
@@ -21,6 +22,7 @@ namespace TK302FBPrinter
         private readonly IPrintSlipOperation _printSlipOperation;
         private readonly IPrintReportXOperation _printReportXOperation;
         private readonly IGetStatusOperation _getStatusOperation;
+        private readonly IPrintTicketOperation _printTicketOperation;
 
         public ApiController(
             IBeepOperation beepOperation,
@@ -29,7 +31,8 @@ namespace TK302FBPrinter
             IPrintReceiptOperation printReceiptOperation,
             IPrintSlipOperation printSlipOperation,
             IPrintReportXOperation printReportXOperation,
-            IGetStatusOperation getStatusOperation)
+            IGetStatusOperation getStatusOperation,
+            IPrintTicketOperation printTicketOperation)
         {
             _beepOperation = beepOperation;
             _shiftOpenOperation = shiftOpenOperation;
@@ -38,6 +41,7 @@ namespace TK302FBPrinter
             _printSlipOperation = printSlipOperation;
             _printReportXOperation = printReportXOperation;
             _getStatusOperation = getStatusOperation;
+            _printTicketOperation = printTicketOperation;
         }
 
         // GET /api/status
@@ -102,6 +106,14 @@ namespace TK302FBPrinter
         {
             return Ok(new ExecutionResultDto(!_printReportXOperation.Execute()
                 ? _printReportXOperation.ErrorDescriptions
+                : null));
+        }
+
+        [HttpPost("print/ticket")]
+        public ActionResult<ExecutionResultDto> PrintTicket(TicketContent content)
+        {
+            return Ok(new ExecutionResultDto(!_printTicketOperation.Execute(content.Text)
+                ? _printTicketOperation.ErrorDescriptions
                 : null));
         }
     }
