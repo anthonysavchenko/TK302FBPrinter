@@ -1,7 +1,7 @@
-using TK302FBPrinter.Device.Commands.CancelLastItem;
 using TK302FBPrinter.Device.Commands.Connect;
 using TK302FBPrinter.Device.Commands.Disconnect;
-using TK302FBPrinter.Device.Commands.ReceiptAddItem;
+using TK302FBPrinter.Device.Commands.ReceiptItemAdd;
+using TK302FBPrinter.Device.Commands.ReceiptItemCancel;
 using TK302FBPrinter.Device.Commands.ReceiptCancel;
 using TK302FBPrinter.Device.Commands.ReceiptClose;
 using TK302FBPrinter.Device.Commands.ReceiptOpen;
@@ -15,26 +15,26 @@ namespace TK302FBPrinter.Business.Operations
         private readonly IDisconnectCommand _disconnectCommand;
         private readonly IReceiptOpenCommand _receiptOpenCommand;
         private readonly IReceiptCloseCommand _receiptCloseCommand;
-        private readonly IReceiptAddItemCommand _receiptAddItemCommand;
+        private readonly IReceiptItemAddCommand _receiptItemAddCommand;
         private readonly IReceiptCancelCommand _receiptCancelCommand;
-        private readonly ICancelLastItemCommand _cancelLastItemCommand;
+        private readonly IReceiptItemCancelCommand _receiptItemCancelCommand;
 
         public BasePrintReceiptOperation(
             IConnectCommand connectCommand,
             IDisconnectCommand disconnectCommand,
             IReceiptOpenCommand receiptOpenCommand,
             IReceiptCloseCommand receiptCloseCommand,
-            IReceiptAddItemCommand receiptAddItemCommand,
+            IReceiptItemAddCommand receiptItemAddCommand,
             IReceiptCancelCommand receiptCancelCommand,
-            ICancelLastItemCommand cancelLastItemCommand)
+            IReceiptItemCancelCommand receiptItemCancelCommand)
         {
             _connectCommand = connectCommand;
             _disconnectCommand = disconnectCommand;
             _receiptOpenCommand = receiptOpenCommand;
             _receiptCloseCommand = receiptCloseCommand;
-            _receiptAddItemCommand = receiptAddItemCommand;
+            _receiptItemAddCommand = receiptItemAddCommand;
             _receiptCancelCommand = receiptCancelCommand;
-            _cancelLastItemCommand = cancelLastItemCommand;
+            _receiptItemCancelCommand = receiptItemCancelCommand;
         }
 
         public bool Execute(ReceiptDto receipt, bool isReceiptReturn = false)
@@ -54,9 +54,9 @@ namespace TK302FBPrinter.Business.Operations
 
             for (int i = 0; i < receipt.Items.Count; i++)
             {
-                if (!_receiptAddItemCommand.Execute(receipt.Items[i], isReceiptReturn))
+                if (!_receiptItemAddCommand.Execute(receipt.Items[i], isReceiptReturn))
                 {
-                    AddErrorDescription(_receiptAddItemCommand.ErrorDescription);
+                    AddErrorDescription(_receiptItemAddCommand.ErrorDescription);
                     RemoveItems(i - 1);
                     CancelReceipt();
                     Disconnect();
@@ -89,9 +89,9 @@ namespace TK302FBPrinter.Business.Operations
         {
             for (int i = 0; i < tillIndex; i++)
             {
-                if (!_cancelLastItemCommand.Execute())
+                if (!_receiptItemCancelCommand.Execute())
                 {
-                    AddErrorDescription(_cancelLastItemCommand.ErrorDescription);
+                    AddErrorDescription(_receiptItemCancelCommand.ErrorDescription);
                 }
             }
         }

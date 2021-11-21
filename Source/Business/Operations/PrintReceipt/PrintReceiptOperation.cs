@@ -1,7 +1,7 @@
-using TK302FBPrinter.Device.Commands.CancelLastItem;
 using TK302FBPrinter.Device.Commands.Connect;
 using TK302FBPrinter.Device.Commands.Disconnect;
-using TK302FBPrinter.Device.Commands.ReceiptAddItem;
+using TK302FBPrinter.Device.Commands.ReceiptItemAdd;
+using TK302FBPrinter.Device.Commands.ReceiptItemCancel;
 using TK302FBPrinter.Device.Commands.ReceiptCancel;
 using TK302FBPrinter.Device.Commands.ReceiptClose;
 using TK302FBPrinter.Device.Commands.ReceiptOpen;
@@ -16,17 +16,17 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
             IDisconnectCommand disconnectCommand,
             IReceiptOpenCommand receiptOpenCommand,
             IReceiptCloseCommand receiptCloseCommand,
-            IReceiptAddItemCommand receiptAddItemCommand,
+            IReceiptItemAddCommand receiptItemAddCommand,
             IReceiptCancelCommand receiptCancelCommand,
-            ICancelLastItemCommand cancelLastItemCommand)
+            IReceiptItemCancelCommand receiptItemCancelCommand)
                 : base(
                     connectCommand,
                     disconnectCommand,
                     receiptOpenCommand,
                     receiptCloseCommand,
-                    receiptAddItemCommand,
+                    receiptItemAddCommand,
                     receiptCancelCommand,
-                    cancelLastItemCommand) {}
+                    receiptItemCancelCommand) {}
 
         public bool Execute(ReceiptDto receipt)
         {

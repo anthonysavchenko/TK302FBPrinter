@@ -2,11 +2,11 @@ using System;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
 
-namespace TK302FBPrinter.Device.Commands.CancelLastItem
+namespace TK302FBPrinter.Device.Commands.ReceiptItemCancel
 {
-    public class CancelLastItemCommand : DeviceCommand, ICancelLastItemCommand
+    public class ReceiptItemCancelCommand : DeviceCommand, IReceiptItemCancelCommand
     {
-        public CancelLastItemCommand(
+        public ReceiptItemCancelCommand(
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 

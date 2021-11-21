@@ -4,11 +4,11 @@ using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
 using TK302FBPrinter.Dto;
 
-namespace TK302FBPrinter.Device.Commands.ReceiptAddItem
+namespace TK302FBPrinter.Device.Commands.ReceiptItemAdd
 {
-    public class ReceiptAddItemCommand : DeviceCommand, IReceiptAddItemCommand
+    public class ReceiptItemAddCommand : DeviceCommand, IReceiptItemAddCommand
     {
-        public ReceiptAddItemCommand(
+        public ReceiptItemAddCommand(
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
