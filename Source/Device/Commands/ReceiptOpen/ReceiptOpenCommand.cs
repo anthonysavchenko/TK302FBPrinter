@@ -12,12 +12,12 @@ namespace TK302FBPrinter.Device.Commands.ReceiptOpen
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
 
-        public bool Execute(ReceiptDto receipt, bool isReturnReceipt = false)
+        public bool Execute(ReceiptDto receipt)
         {
             bool print = true; // Печатать фискальный документ (ФД)
             bool saveOnFile = false; // Не сохранять ФД в памяти ККТ (формат документа .spl)
 
-            var docType = !isReturnReceipt // Тип документа (приход, возврат и т.д.)
+            var docType = !receipt.IsReturn // Тип документа (приход, возврат и т.д.)
                 ? ReceiptTypeEnum.Sale
                 : ReceiptTypeEnum.SaleReturn;
 

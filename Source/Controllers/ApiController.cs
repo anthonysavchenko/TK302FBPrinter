@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using TK302FBPrinter.Business.Operations.Beep;
 using TK302FBPrinter.Business.Operations.GetStatusOperation;
 using TK302FBPrinter.Business.Operations.PrintReceipt;
-using TK302FBPrinter.Business.Operations.PrintReceiptReturn;
 using TK302FBPrinter.Business.Operations.PrintReportX;
 using TK302FBPrinter.Business.Operations.PrintSlip;
 using TK302FBPrinter.Business.Operations.ShiftClose;
@@ -19,7 +18,6 @@ namespace TK302FBPrinter
         private readonly IShiftOpenOperation _shiftOpenOperation;
         private readonly IShiftCloseOperation _shiftCloseOperation;
         private readonly IPrintReceiptOperation _printReceiptOperation;
-        private readonly IPrintReceiptReturnOperation _printReceiptReturnOperation;
         private readonly IPrintSlipOperation _printSlipOperation;
         private readonly IPrintReportXOperation _printReportXOperation;
         private readonly IGetStatusOperation _getStatusOperation;
@@ -29,7 +27,6 @@ namespace TK302FBPrinter
             IShiftOpenOperation shiftOpenOperation,
             IShiftCloseOperation shiftCloseOperation,
             IPrintReceiptOperation printReceiptOperation,
-            IPrintReceiptReturnOperation printReceiptReturnOperation,
             IPrintSlipOperation printSlipOperation,
             IPrintReportXOperation printReportXOperation,
             IGetStatusOperation getStatusOperation)
@@ -38,7 +35,6 @@ namespace TK302FBPrinter
             _shiftOpenOperation = shiftOpenOperation;
             _shiftCloseOperation = shiftCloseOperation;
             _printReceiptOperation = printReceiptOperation;
-            _printReceiptReturnOperation = printReceiptReturnOperation;
             _printSlipOperation = printSlipOperation;
             _printReportXOperation = printReportXOperation;
             _getStatusOperation = getStatusOperation;
@@ -88,15 +84,6 @@ namespace TK302FBPrinter
         {
             return Ok(new ExecutionResultDto(!_printReceiptOperation.Execute(receipt)
                 ? _printReceiptOperation.ErrorDescriptions
-                : null));
-        }
-
-        // POST /api/print/receipt/return
-        [HttpPost("print/receipt/return")]
-        public ActionResult<ExecutionResultDto> PrintReceiptReturn(ReceiptDto receipt)
-        {
-            return Ok(new ExecutionResultDto(!_printReceiptReturnOperation.Execute(receipt)
-                ? _printReceiptReturnOperation.ErrorDescriptions
                 : null));
         }
 

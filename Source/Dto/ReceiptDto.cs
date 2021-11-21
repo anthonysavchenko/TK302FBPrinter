@@ -11,6 +11,8 @@ namespace TK302FBPrinter.Dto
         [Required]
         [EnumDataType(typeof(TaxType))]
         public TaxType Tax { get; set; }
+        
+        public bool IsReturn { get; set; }
 
         [Required]
         [Range(1, 1e7)]

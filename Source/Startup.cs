@@ -24,7 +24,6 @@ using TK302FBPrinter.Device.Commands.TextDocOpen;
 using TK302FBPrinter.Business.Operations.Beep;
 using TK302FBPrinter.Business.Operations.GetStatusOperation;
 using TK302FBPrinter.Business.Operations.PrintReceipt;
-using TK302FBPrinter.Business.Operations.PrintReceiptReturn;
 using TK302FBPrinter.Business.Operations.PrintReportX;
 using TK302FBPrinter.Business.Operations.PrintSlip;
 using TK302FBPrinter.Business.Operations.ShiftClose;
@@ -95,7 +94,6 @@ namespace TK302FBPrinter
             services.AddScoped<IShiftOpenOperation, ShiftOpenOperation>();
             services.AddScoped<IShiftCloseOperation, ShiftCloseOperation>();
             services.AddScoped<IPrintReceiptOperation, PrintReceiptOperation>();
-            services.AddScoped<IPrintReceiptReturnOperation, PrintReceiptReturnOperation>();
             services.AddScoped<IPrintSlipOperation, PrintSlipOperation>();
             services.AddScoped<IPrintReportXOperation, PrintReportXOperation>();
             services.AddScoped<IGetStatusOperation, GetStatusOperation>();
