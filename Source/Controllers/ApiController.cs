@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using TK302FBPrinter.Device.Operations.Beep;
-using TK302FBPrinter.Device.Operations.GetStatusOperation;
-using TK302FBPrinter.Device.Operations.PrintReceipt;
-using TK302FBPrinter.Device.Operations.PrintReceiptReturn;
-using TK302FBPrinter.Device.Operations.PrintReportX;
-using TK302FBPrinter.Device.Operations.PrintSlip;
-using TK302FBPrinter.Device.Operations.ShiftClose;
-using TK302FBPrinter.Device.Operations.ShiftOpen;
+using TK302FBPrinter.Business.Operations.Beep;
+using TK302FBPrinter.Business.Operations.GetStatusOperation;
+using TK302FBPrinter.Business.Operations.PrintReceipt;
+using TK302FBPrinter.Business.Operations.PrintReceiptReturn;
+using TK302FBPrinter.Business.Operations.PrintReportX;
+using TK302FBPrinter.Business.Operations.PrintSlip;
+using TK302FBPrinter.Business.Operations.ShiftClose;
+using TK302FBPrinter.Business.Operations.ShiftOpen;
 using TK302FBPrinter.Dto;
 
 namespace TK302FBPrinter
