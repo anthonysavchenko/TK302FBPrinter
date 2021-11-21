@@ -10,6 +10,7 @@ using TK302FBPrinter.Device.DeviceCommands.Beep;
 using TK302FBPrinter.Device.DeviceCommands.CancelLastItem;
 using TK302FBPrinter.Device.DeviceCommands.Connect;
 using TK302FBPrinter.Device.DeviceCommands.Disconnect;
+using TK302FBPrinter.Device.DeviceCommands.PrinterStatusGet;
 using TK302FBPrinter.Device.DeviceCommands.PrintTextCommand;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptAddItem;
 using TK302FBPrinter.Device.DeviceCommands.ReceiptCancel;
@@ -21,6 +22,7 @@ using TK302FBPrinter.Device.DeviceCommands.ShiftOpen;
 using TK302FBPrinter.Device.DeviceCommands.TextDocClose;
 using TK302FBPrinter.Device.DeviceCommands.TextDocOpen;
 using TK302FBPrinter.Device.Operations.Beep;
+using TK302FBPrinter.Device.Operations.GetStatusOperation;
 using TK302FBPrinter.Device.Operations.PrintReceipt;
 using TK302FBPrinter.Device.Operations.PrintReceiptReturn;
 using TK302FBPrinter.Device.Operations.PrintReportX;
@@ -66,6 +68,7 @@ namespace TK302FBPrinter
                 services.AddScoped<ITextDocCloseCommand, TextDocCloseMockCommand>();
                 services.AddScoped<IPrintTextCommand, PrintTextMockCommand>();
                 services.AddScoped<IReportXPrintCommand, ReportXPrintMockCommand>();
+                services.AddScoped<IPrinterStatusGetCommand, PrinterStatusGetMockCommand>();
             }
             else
             {
@@ -85,6 +88,7 @@ namespace TK302FBPrinter
                 services.AddScoped<ITextDocCloseCommand, TextDocCloseCommand>();
                 services.AddScoped<IPrintTextCommand, PrintTextCommand>();
                 services.AddScoped<IReportXPrintCommand, ReportXPrintCommand>();
+                services.AddScoped<IPrinterStatusGetCommand, PrinterStatusGetCommand>();
             }
 
             services.AddScoped<IBeepOperation, BeepOperation>();
@@ -94,6 +98,7 @@ namespace TK302FBPrinter
             services.AddScoped<IPrintReceiptReturnOperation, PrintReceiptReturnOperation>();
             services.AddScoped<IPrintSlipOperation, PrintSlipOperation>();
             services.AddScoped<IPrintReportXOperation, PrintReportXOperation>();
+            services.AddScoped<IGetStatusOperation, GetStatusOperation>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

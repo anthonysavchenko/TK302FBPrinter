@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TK302FBPrinter.Device.Operations.Beep;
+using TK302FBPrinter.Device.Operations.GetStatusOperation;
 using TK302FBPrinter.Device.Operations.PrintReceipt;
 using TK302FBPrinter.Device.Operations.PrintReceiptReturn;
 using TK302FBPrinter.Device.Operations.PrintReportX;
@@ -21,6 +22,7 @@ namespace TK302FBPrinter
         private readonly IPrintReceiptReturnOperation _printReceiptReturnOperation;
         private readonly IPrintSlipOperation _printSlipOperation;
         private readonly IPrintReportXOperation _printReportXOperation;
+        private readonly IGetStatusOperation _getStatusOperation;
 
         public ApiController(
             IBeepOperation beepOperation,
@@ -29,7 +31,8 @@ namespace TK302FBPrinter
             IPrintReceiptOperation printReceiptOperation,
             IPrintReceiptReturnOperation printReceiptReturnOperation,
             IPrintSlipOperation printSlipOperation,
-            IPrintReportXOperation printReportXOperation)
+            IPrintReportXOperation printReportXOperation,
+            IGetStatusOperation getStatusOperation)
         {
             _beepOperation = beepOperation;
             _shiftOpenOperation = shiftOpenOperation;
@@ -38,6 +41,18 @@ namespace TK302FBPrinter
             _printReceiptReturnOperation = printReceiptReturnOperation;
             _printSlipOperation = printSlipOperation;
             _printReportXOperation = printReportXOperation;
+            _getStatusOperation = getStatusOperation;
+        }
+
+        // GET /api/status
+        [HttpGet("status")]
+        public ActionResult<PrinterStatusResultDto> Status()
+        {
+            return Ok(new PrinterStatusResultDto(
+                !_getStatusOperation.Execute(out PrinterStatusDto status)
+                    ? _getStatusOperation.ErrorDescriptions
+                    : null,
+                status));
         }
 
         // POST /api/beep

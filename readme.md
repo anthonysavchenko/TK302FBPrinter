@@ -53,7 +53,7 @@
 ```json
 {
     "succeed": false,
-    "errorDesription": "ErrorCode: 5. ErrorDescription: Open connection failed. OperatorCode: -1"
+    "errorDesription": "DeviceError. ErrorCode: 5. ErrorDescription: Open connection failed. OperatorCode: -1"
 }
 ```
 
@@ -68,7 +68,87 @@
 
 `GET /api/status`
 
-Еще не реализован.
+
+#### Содержимое запроса
+
+Пустое содержимое запроса.
+
+
+#### Содержимое ответа
+
+- `printerStatus` - структура, содержащая параметры принтера. Если при получения статуса принтера произошла ошибка, то значением будет `null`. Содержит следующие параметры (*примечание: более полное пояснение параметров нужно уточнять у производителя ККТ*):
+
+    - `printerError` - ошибка принтера.
+
+    - `coverOpen` - крышка открыта.
+    
+    - `paperPresent` - наличие бумаги.
+
+    - `paperNearEnd` - бумага скоро закончится.
+
+    - `cutterError` - ошибка отрезчика.
+
+    - `shiftOpen` - смена открыта.
+
+    - `dateNotSet` - дата не установлена.
+
+    - `printing` - печать.
+
+    - `resetNeeded` - требуется перезагрузка.
+
+    - `paperJam` - замятие.
+
+    - `printerIdle` - режим ожидания.
+
+    - `fwUpadteWaiting` - ожидание обновления ПО.
+
+    - `ticketOut` - чек в принтере.
+
+    - `virtualPaperNearEnd` - виртуальный NPE.
+
+    - `hwInitJumperOn` - режим инициализации.
+
+    - `serialized` - регистрация.
+
+  - `succeed` - аналогично `succeed` в стандартном содержимом ответа.
+
+  - `errorDescription` - аналогично `errorDescription` в стандартном содержимом ответа.
+
+
+Примеры:
+
+```json
+{
+  "printerStatus": {
+    "printerError": false,
+    "coverOpen": false,
+    "paperPresent": true,
+    "paperNearEnd": true,
+    "cutterError": false,
+    "shiftOpen": false,
+    "dateNotSet": false,
+    "printing": false,
+    "resetNeeded": false,
+    "paperJam": false,
+    "printerIdle": true,
+    "fwUpadteWaiting": false,
+    "ticketOut": false,
+    "virtualPaperNearEnd": true,
+    "hwInitJumperOn": false,
+    "serialized": true
+  },
+  "succeed": true,
+  "errorDescription": ""
+}
+```
+
+```json
+{
+  "printerStatus": null,
+  "succeed": false,
+  "errorDescription": "DeviceError. ErrorCode: 5. ErrorDescription: Open connection failed. OperatorCode: -1"
+}
+```
 
 
 ### Открыть смену
@@ -218,4 +298,4 @@
 
 `POST /api/print/report/x`
 
-Еще не реализован.
+Пустое содержимое запроса, стандартное содержимое ответа.
