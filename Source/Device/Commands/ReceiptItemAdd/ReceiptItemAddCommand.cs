@@ -10,7 +10,7 @@ namespace TK302FBPrinter.Device.Commands.ReceiptItemAdd
     {
         public ReceiptItemAddCommand(
             DeviceConnector deviceConnector,
-            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
         public bool Execute(ReceiptItemDto item, bool isReceiptReturn = false)
         {

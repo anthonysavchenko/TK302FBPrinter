@@ -9,7 +9,7 @@ namespace TK302FBPrinter.Device.Commands.TextPrintCommand
     {
         public TextPrintCommand(
             DeviceConnector deviceConnector,
-            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
         public bool Execute(string text)
         {

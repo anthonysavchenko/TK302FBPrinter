@@ -8,7 +8,7 @@ namespace TK302FBPrinter.Device.Commands.TicketClose
     {
         public TicketCloseCommand(
             DeviceConnector deviceConnector,
-            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
         public bool Execute()
         {

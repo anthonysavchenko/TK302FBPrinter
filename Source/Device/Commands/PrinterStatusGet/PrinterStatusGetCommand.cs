@@ -9,7 +9,7 @@ namespace TK302FBPrinter.Device.Commands.PrinterStatusGet
     {
         public PrinterStatusGetCommand(
             DeviceConnector deviceConnector,
-            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
         public bool Execute(out PrinterStatusDto status)
         {

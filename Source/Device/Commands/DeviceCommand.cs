@@ -1,6 +1,5 @@
 using System;
 using Custom.Fiscal.RUSProtocolAPI.CustomRU;
-using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
 
 namespace TK302FBPrinter.Device.Commands
@@ -12,10 +11,10 @@ namespace TK302FBPrinter.Device.Commands
 
         public string ErrorDescription { get; private set; }
         
-        public DeviceCommand(DeviceConnector deviceConnector, IOptionsSnapshot<DeviceConfig> deviceConfig)
+        public DeviceCommand(DeviceConnector deviceConnector, DeviceConfig deviceConfig)
         {
             _deviceConnector = deviceConnector;
-            _deviceConfig = deviceConfig.Value;
+            _deviceConfig = deviceConfig;
         }
 
         protected bool CheckRespose(APIBaseResponse response)

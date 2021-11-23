@@ -9,7 +9,7 @@ namespace TK302FBPrinter.Device.Commands.ReceiptClose
     {
         public ReceiptCloseCommand(
             DeviceConnector deviceConnector,
-            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig) {}
+            IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
         public bool Execute(ReceiptDto receipt)
         {

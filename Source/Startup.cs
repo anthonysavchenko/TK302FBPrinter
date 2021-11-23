@@ -72,9 +72,9 @@ namespace TK302FBPrinter
                 services.AddScoped<ITextPrintCommand, TextPrintMockCommand>();
                 services.AddScoped<IReportXPrintCommand, ReportXPrintMockCommand>();
                 services.AddScoped<IPrinterStatusGetCommand, PrinterStatusGetMockCommand>();
-                services.AddScoped<ITicketOpenCommand, TicketOpenCommand>();
-                services.AddScoped<ITicketCloseCommand, TicketCloseCommand>();
-                services.AddScoped<ITicketTextAddCommand, TicketTextAddCommand>();
+                services.AddScoped<ITicketOpenCommand, TicketOpenMockCommand>();
+                services.AddScoped<ITicketCloseCommand, TicketCloseMockCommand>();
+                services.AddScoped<ITicketTextAddCommand, TicketTextAddMockCommand>();
             }
             else
             {
@@ -95,9 +95,9 @@ namespace TK302FBPrinter
                 services.AddScoped<ITextPrintCommand, TextPrintCommand>();
                 services.AddScoped<IReportXPrintCommand, ReportXPrintCommand>();
                 services.AddScoped<IPrinterStatusGetCommand, PrinterStatusGetCommand>();
-                services.AddScoped<ITicketOpenCommand, TicketOpenMockCommand>();
-                services.AddScoped<ITicketCloseCommand, TicketCloseMockCommand>();
-                services.AddScoped<ITicketTextAddCommand, TicketTextAddMockCommand>();
+                services.AddScoped<ITicketOpenCommand, TicketOpenCommand>();
+                services.AddScoped<ITicketCloseCommand, TicketCloseCommand>();
+                services.AddScoped<ITicketTextAddCommand, TicketTextAddCommand>();
             }
 
             services.AddScoped<IBeepOperation, BeepOperation>();
