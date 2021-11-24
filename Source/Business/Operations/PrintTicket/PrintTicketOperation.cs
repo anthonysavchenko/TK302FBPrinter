@@ -43,7 +43,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (!_ticketTextAddCommand.Execute(text, 575, 1099))
+            if (!_ticketTextAddCommand.Execute(text, 300, 150))
             {
                 AddErrorDescription(_ticketTextAddCommand.ErrorDescription);
                 Disconnect();

@@ -16,7 +16,7 @@ namespace TK302FBPrinter.Device.Commands.TicketOpen
             {
                 var deviceResponse = _deviceConnector.Connection.GraphicTicketOpen(
                     _deviceConfig.OperatorPassword,
-                    ticketName: string.Empty,
+                    ticketName: "ticket",
                     ticketRotation: false,
                     ticketXSize: xSize,
                     ticketYSize: ySize);
