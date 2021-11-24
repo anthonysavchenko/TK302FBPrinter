@@ -25,7 +25,7 @@ namespace TK302FBPrinter.Device.Commands.ReceiptOpen
             switch (receipt.Tax)
             {
                 case TaxType.Traditional:
-                    taxCode = TaxCodeEnum.PatentTaxSystem;
+                    taxCode = TaxCodeEnum.Traditional;
                     break;
                 case TaxType.LightIncome:
                     taxCode = TaxCodeEnum.LightIncome;
