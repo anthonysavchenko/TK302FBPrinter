@@ -3,11 +3,11 @@ using Custom.Fiscal.RUSProtocolAPI.Enums;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
 
-namespace TK302FBPrinter.Device.Commands.TextDocTextPrint
+namespace TK302FBPrinter.Device.Commands.TextDocTextAdd
 {
-    public class TextDocTextPrintCommand : DeviceCommand, ITextDocTextPrintCommand
+    public class TextDocTextAddCommand : DeviceCommand, ITextDocTextAddCommand
     {
-        public TextDocTextPrintCommand(
+        public TextDocTextAddCommand(
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
