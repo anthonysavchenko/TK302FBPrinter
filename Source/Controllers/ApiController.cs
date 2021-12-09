@@ -110,9 +110,9 @@ namespace TK302FBPrinter
         }
 
         [HttpPost("print/ticket")]
-        public ActionResult<ExecutionResultDto> PrintTicket(TicketDto content)
+        public ActionResult<ExecutionResultDto> PrintTicket(TicketDto ticket)
         {
-            return Ok(new ExecutionResultDto(!_printTicketOperation.Execute(content.Text)
+            return Ok(new ExecutionResultDto(!_printTicketOperation.Execute(ticket)
                 ? _printTicketOperation.ErrorDescriptions
                 : null));
         }

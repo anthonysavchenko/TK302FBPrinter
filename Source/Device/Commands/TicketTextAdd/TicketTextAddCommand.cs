@@ -10,7 +10,15 @@ namespace TK302FBPrinter.Device.Commands.TicketTextAdd
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
-        public bool Execute(string text, int xPosition, int yPosition)
+        public bool Execute(
+            string text,
+            int rotation = 2,
+            int positionX = 1,
+            int positionY = 1,
+            int fontSize = 3,
+            int scaleX = 1,
+            int scaleY = 1,
+            int fontStyle = 11)
         {
             try
             {
@@ -18,13 +26,13 @@ namespace TK302FBPrinter.Device.Commands.TicketTextAdd
                     _deviceConfig.OperatorPassword,
                     Print: true,
                     SaveOnFile: false,
-                    TextRotation: 2, // 0 - 0 градусов, 1 - 90 градусов, 2 - 180 градусов, 3 - 270 градусов
-                    TextX: xPosition,
-                    TextY: yPosition,
-                    TextScaleX: 2, // 1 - 3?
-                    TextScaleY: 2, // 1 - 3?
-                    FontSize: 3, // 1 - 5
-                    FontStyle: 10, // 10 - bold, 11 - no bold, 12 - italic, 13 - no italic
+                    TextRotation: rotation, // 0 - 0 градусов, 1 - 90 градусов, 2 - 180 градусов, 3 - 270 градусов
+                    TextX: positionX,
+                    TextY: positionY,
+                    TextScaleX: scaleX, // 1 - 3?
+                    TextScaleY: scaleY, // 1 - 3?
+                    FontSize: fontSize, // 1 - 5
+                    FontStyle: fontStyle, // 10 - bold, 11 - no bold, 12 - italic, 13 - no italic
                     Text: text);
 
                 return CheckRespose(deviceResponse);

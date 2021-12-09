@@ -51,13 +51,13 @@ namespace TK302FBPrinter
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-            services.Configure<SlipConfig>(Configuration.GetSection(SlipConfig.SectionName));
-
             var deviceConfig = Configuration.GetSection(DeviceConfig.SectionName);
-            services.Configure<DeviceConfig>(deviceConfig);
 
-            var emulationModeEnabled = deviceConfig.GetValue<bool>("EmulationMode", false);
-            if (emulationModeEnabled)
+            services.Configure<DeviceConfig>(deviceConfig);
+            services.Configure<SlipConfig>(Configuration.GetSection(SlipConfig.SectionName));
+            services.Configure<TicketConfig>(Configuration.GetSection(TicketConfig.SectionName));
+
+            if (deviceConfig.GetValue<bool>("EmulationMode", false))
             {
                 services.AddScoped<IConnectCommand, ConnectMockCommand>();
                 services.AddScoped<IDisconnectCommand, DisconnectMockCommand>();
