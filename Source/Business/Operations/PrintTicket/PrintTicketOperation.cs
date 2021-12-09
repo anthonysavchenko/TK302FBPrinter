@@ -50,7 +50,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (!_ticketCloseCommand.Execute())
+            if (!_ticketCloseCommand.Execute(cut: true))
             {
                 AddErrorDescription(_ticketCloseCommand.ErrorDescription);
                 Disconnect();
