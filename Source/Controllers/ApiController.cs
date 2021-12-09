@@ -82,24 +82,6 @@ namespace TK302FBPrinter
                 : null));
         }
 
-        // POST /api/print/receipt
-        [HttpPost("print/receipt")]
-        public ActionResult<ExecutionResultDto> PrintReceipt(ReceiptDto receipt)
-        {
-            return Ok(new ExecutionResultDto(!_printReceiptOperation.Execute(receipt)
-                ? _printReceiptOperation.ErrorDescriptions
-                : null));
-        }
-
-        // POST /api/print/slip
-        [HttpPost("print/slip")]
-        public ActionResult<ExecutionResultDto> PrintSlip(SlipContentDto content)
-        {
-            return Ok(new ExecutionResultDto(!_printSlipOperation.Execute(content.Text)
-                ? _printSlipOperation.ErrorDescriptions
-                : null));
-        }
-
         // POST /api/print/report/x
         [HttpPost("print/report/x")]
         public ActionResult<ExecutionResultDto> PrintReportX()
@@ -109,8 +91,26 @@ namespace TK302FBPrinter
                 : null));
         }
 
+        // POST /api/print/slip
+        [HttpPost("print/slip")]
+        public ActionResult<ExecutionResultDto> PrintSlip(SlipDto slip)
+        {
+            return Ok(new ExecutionResultDto(!_printSlipOperation.Execute(slip)
+                ? _printSlipOperation.ErrorDescriptions
+                : null));
+        }
+
+        // POST /api/print/receipt
+        [HttpPost("print/receipt")]
+        public ActionResult<ExecutionResultDto> PrintReceipt(ReceiptDto receipt)
+        {
+            return Ok(new ExecutionResultDto(!_printReceiptOperation.Execute(receipt)
+                ? _printReceiptOperation.ErrorDescriptions
+                : null));
+        }
+
         [HttpPost("print/ticket")]
-        public ActionResult<ExecutionResultDto> PrintTicket(TicketContent content)
+        public ActionResult<ExecutionResultDto> PrintTicket(TicketDto content)
         {
             return Ok(new ExecutionResultDto(!_printTicketOperation.Execute(content.Text)
                 ? _printTicketOperation.ErrorDescriptions

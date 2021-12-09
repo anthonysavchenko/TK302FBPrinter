@@ -51,7 +51,9 @@ namespace TK302FBPrinter
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-            var deviceConfig = Configuration.GetSection(DeviceConfig.Device);
+            services.Configure<SlipConfig>(Configuration.GetSection(SlipConfig.SectionName));
+
+            var deviceConfig = Configuration.GetSection(DeviceConfig.SectionName);
             services.Configure<DeviceConfig>(deviceConfig);
 
             var emulationModeEnabled = deviceConfig.GetValue<bool>("EmulationMode", false);

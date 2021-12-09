@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TK302FBPrinter.Dto
 {
-    public class TicketContent
+    public class TicketDto
     {
         [Required]
         [MaxLength(1000)]
