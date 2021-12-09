@@ -1,6 +1,6 @@
 using TK302FBPrinter.Device.Commands.Connect;
 using TK302FBPrinter.Device.Commands.Disconnect;
-using TK302FBPrinter.Device.Commands.TextPrintCommand;
+using TK302FBPrinter.Device.Commands.TextDocTextPrint;
 using TK302FBPrinter.Device.Commands.TextDocClose;
 using TK302FBPrinter.Device.Commands.TextDocOpen;
 
@@ -11,20 +11,20 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
         private readonly IConnectCommand _connectCommand;
         private readonly IDisconnectCommand _disconnectCommand;
         private readonly ITextDocOpenCommand _textDocOpenCommand;
-        private readonly ITextPrintCommand _textPrintCommand;
+        private readonly ITextDocTextPrintCommand _textDocTextPrintCommand;
         private readonly ITextDocCloseCommand _textDocCloseCommand;
 
         public PrintSlipOperation(
             IConnectCommand connectCommand,
             IDisconnectCommand disconnectCommand,
             ITextDocOpenCommand textDocOpenCommand,
-            ITextPrintCommand textPrintCommand,
+            ITextDocTextPrintCommand textDocTextPrintCommand,
             ITextDocCloseCommand textDocCloseCommand)
         {
             _connectCommand = connectCommand;
             _disconnectCommand = disconnectCommand;
             _textDocOpenCommand = textDocOpenCommand;
-            _textPrintCommand = textPrintCommand;
+            _textDocTextPrintCommand = textDocTextPrintCommand;
             _textDocCloseCommand = textDocCloseCommand;
         }
         
@@ -43,9 +43,9 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
                 return false;
             }
 
-            if (!_textPrintCommand.Execute(text))
+            if (!_textDocTextPrintCommand.Execute(text))
             {
-                AddErrorDescription(_textPrintCommand.ErrorDescription);
+                AddErrorDescription(_textDocTextPrintCommand.ErrorDescription);
                 CloseDoc();
                 Disconnect();
                 return false;

@@ -11,7 +11,7 @@ using TK302FBPrinter.Device.Commands.ReceiptItemCancel;
 using TK302FBPrinter.Device.Commands.Connect;
 using TK302FBPrinter.Device.Commands.Disconnect;
 using TK302FBPrinter.Device.Commands.PrinterStatusGet;
-using TK302FBPrinter.Device.Commands.TextPrintCommand;
+using TK302FBPrinter.Device.Commands.TextDocTextPrint;
 using TK302FBPrinter.Device.Commands.ReceiptItemAdd;
 using TK302FBPrinter.Device.Commands.ReceiptCancel;
 using TK302FBPrinter.Device.Commands.ReceiptClose;
@@ -69,7 +69,7 @@ namespace TK302FBPrinter
                 services.AddScoped<IReceiptItemCancelCommand, ReceiptItemCancelMockCommand>();
                 services.AddScoped<ITextDocOpenCommand, TextDocOpenMockCommand>();
                 services.AddScoped<ITextDocCloseCommand, TextDocCloseMockCommand>();
-                services.AddScoped<ITextPrintCommand, TextPrintMockCommand>();
+                services.AddScoped<ITextDocTextPrintCommand, TextDocTextPrintMockCommand>();
                 services.AddScoped<IReportXPrintCommand, ReportXPrintMockCommand>();
                 services.AddScoped<IPrinterStatusGetCommand, PrinterStatusGetMockCommand>();
                 services.AddScoped<ITicketOpenCommand, TicketOpenMockCommand>();
@@ -92,7 +92,7 @@ namespace TK302FBPrinter
                 services.AddScoped<IReceiptItemCancelCommand, ReceiptItemCancelCommand>();
                 services.AddScoped<ITextDocOpenCommand, TextDocOpenCommand>();
                 services.AddScoped<ITextDocCloseCommand, TextDocCloseCommand>();
-                services.AddScoped<ITextPrintCommand, TextPrintCommand>();
+                services.AddScoped<ITextDocTextPrintCommand, TextDocTextPrintCommand>();
                 services.AddScoped<IReportXPrintCommand, ReportXPrintCommand>();
                 services.AddScoped<IPrinterStatusGetCommand, PrinterStatusGetCommand>();
                 services.AddScoped<ITicketOpenCommand, TicketOpenCommand>();
