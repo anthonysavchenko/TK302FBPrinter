@@ -10,7 +10,7 @@ namespace TK302FBPrinter.Device.Commands.TicketClose
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
-        public bool Execute()
+        public bool Execute(bool cut)
         {
             try
             {
@@ -18,7 +18,7 @@ namespace TK302FBPrinter.Device.Commands.TicketClose
                     _deviceConfig.OperatorPassword,
                     Print: true,
                     saveOnFile: false,
-                    cutPaper: true);
+                    cutPaper: cut);
 
                 return CheckRespose(deviceResponse);
             }
