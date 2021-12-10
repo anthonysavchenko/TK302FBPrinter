@@ -2,7 +2,7 @@ using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
 using TK302FBPrinter.Device.Commands.Connect;
 using TK302FBPrinter.Device.Commands.Disconnect;
-using TK302FBPrinter.Device.Commands.TicketClose;
+using TK302FBPrinter.Device.Commands.GraphicDocClose;
 using TK302FBPrinter.Device.Commands.GraphicDocOpen;
 using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
 using TK302FBPrinter.Dto;
@@ -15,7 +15,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
         private readonly IConnectCommand _connectCommand;
         private readonly IDisconnectCommand _disconnectCommand;
         private readonly IGraphicDocOpenCommand _graphicDocOpenCommand;
-        private readonly ITicketCloseCommand _ticketCloseCommand;
+        private readonly IGraphicDocCloseCommand _graphicDocCloseCommand;
         private readonly IGraphicDocTextAddCommand _graphicDocTextAddCommand;
 
         public PrintTicketOperation(
@@ -23,14 +23,14 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             IConnectCommand connectCommand,
             IDisconnectCommand disconnectCommand,
             IGraphicDocOpenCommand graphicDocOpenCommand,
-            ITicketCloseCommand ticketCloseCommand,
+            IGraphicDocCloseCommand graphicDocCloseCommand,
             IGraphicDocTextAddCommand graphicDocTextAddCommand)
         {
             _ticketConfig = ticketConfig.Value;
             _connectCommand = connectCommand;
             _disconnectCommand = disconnectCommand;
             _graphicDocOpenCommand = graphicDocOpenCommand;
-            _ticketCloseCommand = ticketCloseCommand;
+            _graphicDocCloseCommand = graphicDocCloseCommand;
             _graphicDocTextAddCommand = graphicDocTextAddCommand;
         }
 
@@ -76,9 +76,9 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 }
             }
 
-            if (!_ticketCloseCommand.Execute(cut: true))
+            if (!_graphicDocCloseCommand.Execute(cut: true))
             {
-                AddErrorDescription(_ticketCloseCommand.ErrorDescription);
+                AddErrorDescription(_graphicDocCloseCommand.ErrorDescription);
                 Disconnect();
                 return false;
             }

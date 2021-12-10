@@ -2,11 +2,11 @@ using System;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
 
-namespace TK302FBPrinter.Device.Commands.TicketClose
+namespace TK302FBPrinter.Device.Commands.GraphicDocClose
 {
-    public class TicketCloseCommand : DeviceCommand, ITicketCloseCommand
+    public class GraphicDocCloseCommand : DeviceCommand, IGraphicDocCloseCommand
     {
-        public TicketCloseCommand(
+        public GraphicDocCloseCommand(
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 

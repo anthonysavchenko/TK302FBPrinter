@@ -29,7 +29,7 @@ using TK302FBPrinter.Business.Operations.PrintSlip;
 using TK302FBPrinter.Business.Operations.ShiftClose;
 using TK302FBPrinter.Business.Operations.ShiftOpen;
 using TK302FBPrinter.Device.Commands.GraphicDocOpen;
-using TK302FBPrinter.Device.Commands.TicketClose;
+using TK302FBPrinter.Device.Commands.GraphicDocClose;
 using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
 using TK302FBPrinter.Business.Operations.PrintTicket;
 
@@ -75,7 +75,7 @@ namespace TK302FBPrinter
                 services.AddScoped<IReportXPrintCommand, ReportXPrintMockCommand>();
                 services.AddScoped<IPrinterStatusGetCommand, PrinterStatusGetMockCommand>();
                 services.AddScoped<IGraphicDocOpenCommand, GraphicDocOpenMockCommand>();
-                services.AddScoped<ITicketCloseCommand, TicketCloseMockCommand>();
+                services.AddScoped<IGraphicDocCloseCommand, GraphicDocCloseMockCommand>();
                 services.AddScoped<IGraphicDocTextAddCommand, GraphicDocTextAddMockCommand>();
             }
             else
@@ -98,7 +98,7 @@ namespace TK302FBPrinter
                 services.AddScoped<IReportXPrintCommand, ReportXPrintCommand>();
                 services.AddScoped<IPrinterStatusGetCommand, PrinterStatusGetCommand>();
                 services.AddScoped<IGraphicDocOpenCommand, GraphicDocOpenCommand>();
-                services.AddScoped<ITicketCloseCommand, TicketCloseCommand>();
+                services.AddScoped<IGraphicDocCloseCommand, GraphicDocCloseCommand>();
                 services.AddScoped<IGraphicDocTextAddCommand, GraphicDocTextAddCommand>();
             }
 
