@@ -4,7 +4,7 @@ using TK302FBPrinter.Device.Commands.Connect;
 using TK302FBPrinter.Device.Commands.Disconnect;
 using TK302FBPrinter.Device.Commands.TicketClose;
 using TK302FBPrinter.Device.Commands.TicketOpen;
-using TK302FBPrinter.Device.Commands.TicketTextAdd;
+using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
 using TK302FBPrinter.Dto;
 
 namespace TK302FBPrinter.Business.Operations.PrintTicket
@@ -16,7 +16,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
         private readonly IDisconnectCommand _disconnectCommand;
         private readonly ITicketOpenCommand _ticketOpenCommand;
         private readonly ITicketCloseCommand _ticketCloseCommand;
-        private readonly ITicketTextAddCommand _ticketTextAddCommand;
+        private readonly IGraphicDocTextAddCommand _graphicDocTextAddCommand;
 
         public PrintTicketOperation(
             IOptions<TicketConfig> ticketConfig,
@@ -24,14 +24,14 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             IDisconnectCommand disconnectCommand,
             ITicketOpenCommand ticketOpenCommand,
             ITicketCloseCommand ticketCloseCommand,
-            ITicketTextAddCommand ticketTextAddCommand)
+            IGraphicDocTextAddCommand graphicDocTextAddCommand)
         {
             _ticketConfig = ticketConfig.Value;
             _connectCommand = connectCommand;
             _disconnectCommand = disconnectCommand;
             _ticketOpenCommand = ticketOpenCommand;
             _ticketCloseCommand = ticketCloseCommand;
-            _ticketTextAddCommand = ticketTextAddCommand;
+            _graphicDocTextAddCommand = graphicDocTextAddCommand;
         }
 
         public bool Execute(TicketDto ticket)
@@ -60,7 +60,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     text = text.Replace(placeholder.Key, placeholder.Replacement);
                 }
 
-                if (!_ticketTextAddCommand.Execute(
+                if (!_graphicDocTextAddCommand.Execute(
                     text,
                     textLine.Rotation,
                     textLine.PositionX,
@@ -70,7 +70,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     textLine.ScaleY,
                     textLine.FontStyle))
                 {
-                    AddErrorDescription(_ticketTextAddCommand.ErrorDescription);
+                    AddErrorDescription(_graphicDocTextAddCommand.ErrorDescription);
                     Disconnect();
                     return false;
                 }

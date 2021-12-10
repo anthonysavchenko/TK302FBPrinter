@@ -1,8 +1,6 @@
-using TK302FBPrinter.Configuration;
-
-namespace TK302FBPrinter.Device.Commands.TicketTextAdd
+namespace TK302FBPrinter.Device.Commands.GraphicDocTextAdd
 {
-    public interface ITicketTextAddCommand : IDeviceCommand
+    public interface IGraphicDocTextAddCommand : IDeviceCommand
     {
         bool Execute(
             string text,
