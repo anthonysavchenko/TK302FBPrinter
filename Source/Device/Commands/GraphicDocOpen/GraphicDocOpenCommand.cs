@@ -2,11 +2,11 @@ using System;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
 
-namespace TK302FBPrinter.Device.Commands.TicketOpen
+namespace TK302FBPrinter.Device.Commands.GraphicDocOpen
 {
-    public class TicketOpenCommand : DeviceCommand, ITicketOpenCommand
+    public class GraphicDocOpenCommand : DeviceCommand, IGraphicDocOpenCommand
     {
-        public TicketOpenCommand(
+        public GraphicDocOpenCommand(
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
