@@ -1,5 +1,17 @@
 namespace TK302FBPrinter.Configuration
 {
+    public class Line
+    {
+        public int PositionX1 { get; set; } = 1;
+
+        public int PositionY1 { get; set; } = 1;
+
+        public int PositionX2 { get; set; } = 1;
+
+        public int PositionY2 { get; set; } = 1;
+
+        public int Width { get; set; } = 1;
+    }
     public class TextLine
     {
         public string Text { get; set; } = string.Empty;
@@ -26,6 +38,8 @@ namespace TK302FBPrinter.Configuration
         public int SizeX { get; set; } = 1;
 
         public int SizeY { get; set; } = 1;
+
+        public Line[] Lines { get; set; } = {};
 
         public TextLine[] TextLines { get; set; } = {};
     }

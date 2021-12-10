@@ -5,6 +5,7 @@ using TK302FBPrinter.Device.Commands.Disconnect;
 using TK302FBPrinter.Device.Commands.GraphicDocClose;
 using TK302FBPrinter.Device.Commands.GraphicDocOpen;
 using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
+using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
 using TK302FBPrinter.Dto;
 
 namespace TK302FBPrinter.Business.Operations.PrintTicket
@@ -17,6 +18,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
         private readonly IGraphicDocOpenCommand _graphicDocOpenCommand;
         private readonly IGraphicDocCloseCommand _graphicDocCloseCommand;
         private readonly IGraphicDocTextAddCommand _graphicDocTextAddCommand;
+        private readonly IGraphicDocLineAddCommand _graphicDocLineAddCommand;
 
         public PrintTicketOperation(
             IOptions<TicketConfig> ticketConfig,
@@ -24,7 +26,8 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             IDisconnectCommand disconnectCommand,
             IGraphicDocOpenCommand graphicDocOpenCommand,
             IGraphicDocCloseCommand graphicDocCloseCommand,
-            IGraphicDocTextAddCommand graphicDocTextAddCommand)
+            IGraphicDocTextAddCommand graphicDocTextAddCommand,
+            IGraphicDocLineAddCommand graphicDocLineAddCommand)
         {
             _ticketConfig = ticketConfig.Value;
             _connectCommand = connectCommand;
@@ -32,6 +35,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             _graphicDocOpenCommand = graphicDocOpenCommand;
             _graphicDocCloseCommand = graphicDocCloseCommand;
             _graphicDocTextAddCommand = graphicDocTextAddCommand;
+            _graphicDocLineAddCommand = graphicDocLineAddCommand;
         }
 
         public bool Execute(TicketDto ticket)
@@ -49,6 +53,21 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 AddErrorDescription(_graphicDocOpenCommand.ErrorDescription);
                 Disconnect();
                 return false;
+            }
+
+            foreach (var line in template.Lines)
+            {
+                if (!_graphicDocLineAddCommand.Execute(
+                    line.PositionX1,
+                    line.PositionY1,
+                    line.PositionX2,
+                    line.PositionY2,
+                    line.Width))
+                {
+                    AddErrorDescription(_graphicDocLineAddCommand.ErrorDescription);
+                    Disconnect();
+                    return false;
+                }
             }
 
             foreach (var textLine in template.TextLines)
