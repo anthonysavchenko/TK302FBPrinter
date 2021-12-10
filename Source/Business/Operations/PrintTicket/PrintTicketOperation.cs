@@ -8,6 +8,7 @@ using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
 using TK302FBPrinter.Dto;
 using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
+using TK302FBPrinter.Device.Commands.GraphicDocBitmapAdd;
 
 namespace TK302FBPrinter.Business.Operations.PrintTicket
 {
@@ -21,6 +22,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
         private readonly IGraphicDocTextAddCommand _graphicDocTextAddCommand;
         private readonly IGraphicDocLineAddCommand _graphicDocLineAddCommand;
         private readonly IGraphicDocQrCodeAddCommand _graphicDocQrCodeAddCommand;
+        private readonly IGraphicDocBitmapAddCommand _graphicDocBitmapAddCommand;
 
         public PrintTicketOperation(
             IOptions<TicketConfig> ticketConfig,
@@ -30,7 +32,8 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             IGraphicDocCloseCommand graphicDocCloseCommand,
             IGraphicDocTextAddCommand graphicDocTextAddCommand,
             IGraphicDocLineAddCommand graphicDocLineAddCommand,
-            IGraphicDocQrCodeAddCommand graphicDocQrCodeAddCommand)
+            IGraphicDocQrCodeAddCommand graphicDocQrCodeAddCommand,
+            IGraphicDocBitmapAddCommand graphicDocBitmapAddCommand)
         {
             _ticketConfig = ticketConfig.Value;
             _connectCommand = connectCommand;
@@ -40,6 +43,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             _graphicDocTextAddCommand = graphicDocTextAddCommand;
             _graphicDocLineAddCommand = graphicDocLineAddCommand;
             _graphicDocQrCodeAddCommand = graphicDocQrCodeAddCommand;
+            _graphicDocBitmapAddCommand = graphicDocBitmapAddCommand;
         }
 
         public bool Execute(TicketDto ticket)
@@ -110,6 +114,22 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 ))
                 {
                     AddErrorDescription(_graphicDocQrCodeAddCommand.ErrorDescription);
+                    Disconnect();
+                    return false;
+                }
+            }
+
+            foreach (var bitmap in template.Bitmaps)
+            {
+                if (!_graphicDocBitmapAddCommand.Execute(
+                    bitmap.BitmapId,
+                    bitmap.Rotation,
+                    bitmap.PositionX,
+                    bitmap.PositionY,
+                    bitmap.ScaleX,
+                    bitmap.ScaleY))
+                {
+                    AddErrorDescription(_graphicDocBitmapAddCommand.ErrorDescription);
                     Disconnect();
                     return false;
                 }

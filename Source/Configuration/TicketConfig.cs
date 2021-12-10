@@ -44,6 +44,21 @@ namespace TK302FBPrinter.Configuration
         public int Scale { get; set; } = 1;
     }
 
+    public class Bitmap
+    {
+        public int BitmapId { get; set; } = 1;
+
+        public int Rotation { get; set; } = 2;
+
+        public int PositionX { get; set; } = 1;
+
+        public int PositionY { get; set; } = 1;
+
+        public int ScaleX { get; set; } = 1;
+        
+        public int ScaleY { get; set; } = 1;
+    }
+
     public class Template
     {
         public string TemplateName { get; set; } = string.Empty;
@@ -57,6 +72,8 @@ namespace TK302FBPrinter.Configuration
         public TextLine[] TextLines { get; set; } = {};
 
         public QrCode[] QrCodes { get; set; } = {};
+
+        public Bitmap[] Bitmaps { get; set; } = {};
     }
 
     public class TicketConfig
