@@ -6,9 +6,9 @@ using TK302FBPrinter.Device.Commands.GraphicDocClose;
 using TK302FBPrinter.Device.Commands.GraphicDocOpen;
 using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
-using TK302FBPrinter.Dto;
 using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocBitmapAdd;
+using TK302FBPrinter.Business.Models;
 
 namespace TK302FBPrinter.Business.Operations.PrintTicket
 {
@@ -46,7 +46,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             _graphicDocBitmapAddCommand = graphicDocBitmapAddCommand;
         }
 
-        public bool Execute(TicketDto ticket)
+        public bool Execute(Ticket ticket)
         {
             var template = System.Array.Find(_ticketConfig.Templates, t => t.TemplateName == ticket.TemplateName);
 
