@@ -44,7 +44,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (!_graphicDocOpenCommand.Execute(576, 1100))
+            if (!_graphicDocOpenCommand.Execute(template.SizeX, template.SizeY))
             {
                 AddErrorDescription(_graphicDocOpenCommand.ErrorDescription);
                 Disconnect();

@@ -10,7 +10,7 @@ namespace TK302FBPrinter.Device.Commands.GraphicDocOpen
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
-        public bool Execute(int xSize, int ySize)
+        public bool Execute(int sizeX, int sizeY)
         {
             try
             {
@@ -18,8 +18,8 @@ namespace TK302FBPrinter.Device.Commands.GraphicDocOpen
                     _deviceConfig.OperatorPassword,
                     ticketName: "ticket",
                     ticketRotation: true,
-                    ticketXSize: xSize,
-                    ticketYSize: ySize);
+                    ticketXSize: sizeX,
+                    ticketYSize: sizeY);
 
                 return CheckRespose(deviceResponse);
             }

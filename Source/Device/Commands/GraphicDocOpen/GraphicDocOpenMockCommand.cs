@@ -4,7 +4,7 @@ namespace TK302FBPrinter.Device.Commands.GraphicDocOpen
     {
         public GraphicDocOpenMockCommand() : base(null, null) {}
 
-        public bool Execute(int xSize, int ySize)
+        public bool Execute(int sizeX, int sizeY)
         {
             return true;
         }

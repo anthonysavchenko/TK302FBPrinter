@@ -22,6 +22,10 @@ namespace TK302FBPrinter.Configuration
     public class Template
     {
         public string TemplateName { get; set; } = string.Empty;
+        
+        public int SizeX { get; set; } = 1;
+
+        public int SizeY { get; set; } = 1;
 
         public TextLine[] TextLines { get; set; } = {};
     }
