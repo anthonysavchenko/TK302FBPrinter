@@ -33,6 +33,7 @@ using TK302FBPrinter.Device.Commands.GraphicDocClose;
 using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
 using TK302FBPrinter.Business.Operations.PrintTicket;
 using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
+using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
 
 namespace TK302FBPrinter
 {
@@ -79,6 +80,7 @@ namespace TK302FBPrinter
                 services.AddScoped<IGraphicDocCloseCommand, GraphicDocCloseMockCommand>();
                 services.AddScoped<IGraphicDocTextAddCommand, GraphicDocTextAddMockCommand>();
                 services.AddScoped<IGraphicDocLineAddCommand, GraphicDocLineAddMockCommand>();
+                services.AddScoped<IGraphicDocQrCodeAddCommand, GraphicDocQrCodeAddMockCommand>();
             }
             else
             {
@@ -103,6 +105,7 @@ namespace TK302FBPrinter
                 services.AddScoped<IGraphicDocCloseCommand, GraphicDocCloseCommand>();
                 services.AddScoped<IGraphicDocTextAddCommand, GraphicDocTextAddCommand>();
                 services.AddScoped<IGraphicDocLineAddCommand, GraphicDocLineAddCommand>();
+                services.AddScoped<IGraphicDocQrCodeAddCommand, GraphicDocQrCodeAddCommand>();
             }
 
             services.AddScoped<IBeepOperation, BeepOperation>();

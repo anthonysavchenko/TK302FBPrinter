@@ -31,6 +31,19 @@ namespace TK302FBPrinter.Configuration
         public int FontStyle { get; set; } = 11;
     }
 
+    public class QrCode
+    {
+        public string Text { get; set; } = string.Empty;
+
+        public int Rotation { get; set; } = 2;
+
+        public int PositionX { get; set; } = 1;
+
+        public int PositionY { get; set; } = 1;
+
+        public int Scale { get; set; } = 1;
+    }
+
     public class Template
     {
         public string TemplateName { get; set; } = string.Empty;
@@ -42,6 +55,8 @@ namespace TK302FBPrinter.Configuration
         public Line[] Lines { get; set; } = {};
 
         public TextLine[] TextLines { get; set; } = {};
+
+        public QrCode[] QrCodes { get; set; } = {};
     }
 
     public class TicketConfig

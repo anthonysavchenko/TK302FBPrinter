@@ -7,6 +7,7 @@ using TK302FBPrinter.Device.Commands.GraphicDocOpen;
 using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
 using TK302FBPrinter.Dto;
+using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
 
 namespace TK302FBPrinter.Business.Operations.PrintTicket
 {
@@ -19,6 +20,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
         private readonly IGraphicDocCloseCommand _graphicDocCloseCommand;
         private readonly IGraphicDocTextAddCommand _graphicDocTextAddCommand;
         private readonly IGraphicDocLineAddCommand _graphicDocLineAddCommand;
+        private readonly IGraphicDocQrCodeAddCommand _graphicDocQrCodeAddCommand;
 
         public PrintTicketOperation(
             IOptions<TicketConfig> ticketConfig,
@@ -27,7 +29,8 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             IGraphicDocOpenCommand graphicDocOpenCommand,
             IGraphicDocCloseCommand graphicDocCloseCommand,
             IGraphicDocTextAddCommand graphicDocTextAddCommand,
-            IGraphicDocLineAddCommand graphicDocLineAddCommand)
+            IGraphicDocLineAddCommand graphicDocLineAddCommand,
+            IGraphicDocQrCodeAddCommand graphicDocQrCodeAddCommand)
         {
             _ticketConfig = ticketConfig.Value;
             _connectCommand = connectCommand;
@@ -36,6 +39,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             _graphicDocCloseCommand = graphicDocCloseCommand;
             _graphicDocTextAddCommand = graphicDocTextAddCommand;
             _graphicDocLineAddCommand = graphicDocLineAddCommand;
+            _graphicDocQrCodeAddCommand = graphicDocQrCodeAddCommand;
         }
 
         public bool Execute(TicketDto ticket)
@@ -90,6 +94,22 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     textLine.FontStyle))
                 {
                     AddErrorDescription(_graphicDocTextAddCommand.ErrorDescription);
+                    Disconnect();
+                    return false;
+                }
+            }
+
+            foreach (var qrCode in template.QrCodes)
+            {
+                if (!_graphicDocQrCodeAddCommand.Execute(
+                    qrCode.Text,
+                    qrCode.Rotation,
+                    qrCode.PositionX,
+                    qrCode.PositionY,
+                    qrCode.Scale
+                ))
+                {
+                    AddErrorDescription(_graphicDocQrCodeAddCommand.ErrorDescription);
                     Disconnect();
                     return false;
                 }

@@ -25,7 +25,7 @@ namespace TK302FBPrinter.Device.Commands.GraphicDocLineAdd
                     LineWidth: width,
                     LineReverse: 0,
                     LinePattern: 0,
-                    FillingPattern: 2); // 0 - прозрачный внутренний фон, 1 - заполненный
+                    FillingPattern: 0); // 0 - прозрачный внутренний фон, 1 - заполненный
 
                 return CheckRespose(deviceResponse);
             }
