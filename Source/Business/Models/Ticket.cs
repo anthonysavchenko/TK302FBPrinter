@@ -4,7 +4,7 @@ namespace TK302FBPrinter.Business.Models
     {
         public string Key { get; set; }
 
-        public string Replacement { get; set; }
+        public string Value { get; set; }
     }
 
     public class Ticket

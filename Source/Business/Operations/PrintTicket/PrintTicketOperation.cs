@@ -84,7 +84,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
 
                 foreach (var placeholder in ticket.Placeholders)
                 {
-                    text = text.Replace(placeholder.Key, placeholder.Replacement);
+                    text = text.Replace(placeholder.Key, placeholder.Value);
                 }
 
                 if (!_graphicDocTextAddCommand.Execute(

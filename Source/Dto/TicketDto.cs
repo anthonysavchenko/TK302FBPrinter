@@ -10,7 +10,7 @@ namespace TK302FBPrinter.Dto
 
         [Required]
         [MaxLength(250)]
-        public string Replacement { get; set; }
+        public string Value { get; set; }
     }
 
     public class TicketDto

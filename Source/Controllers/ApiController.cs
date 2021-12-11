@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using TK302FBPrinter.Business.Models;
@@ -126,10 +125,10 @@ namespace TK302FBPrinter
                 Placeholders =
                     ticketDto.Placeholders
                         .Select(x =>
-                            new Business.Models.Placeholder
+                            new Placeholder
                             {
                                 Key = x.Key,
-                                Replacement = x.Replacement
+                                Value = x.Value
                             })
                         .ToArray()
             };
@@ -145,20 +144,14 @@ namespace TK302FBPrinter
         {
             var ticketCinema = new TicketCinema()
             {
-                Ticket = new Ticket()
-                {
-                    TemplateName = ticketCinemaDto.TemplateName,
-                    Placeholders =
-                        new List<Business.Models.Placeholder>
-                        {
-                            new Business.Models.Placeholder()
-                            {
-                                Key = "[" + nameof(ticketCinemaDto.Theatre).ToUpper() + "]",
-                                Replacement = ticketCinemaDto.Theatre
-                            }
-                        }
-                        .ToArray()
-                }
+                TemplateName = ticketCinemaDto.TemplateName,
+                Theatre = ticketCinemaDto.Theatre,
+                CompanyName = ticketCinemaDto.CompanyName,
+                CompanyAddress = ticketCinemaDto.CompanyAddress,
+                OGRN = ticketCinemaDto.OGRN,
+                INN = ticketCinemaDto.INN,
+                Movie = ticketCinemaDto.Movie,
+                Format = ticketCinemaDto.Format
             };
 
             return Ok(new ExecutionResultDto(!_printTicketCinemaOperation.Execute(ticketCinema)
