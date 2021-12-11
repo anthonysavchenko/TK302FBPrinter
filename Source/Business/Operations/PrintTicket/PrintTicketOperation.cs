@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
 using TK302FBPrinter.Device.Commands.Connect;
@@ -63,7 +64,50 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            foreach (var line in template.Lines)
+            if (!PrintLines(template.Lines))
+            {
+                Disconnect();
+                return false;
+            }
+
+            if (!PrintTextLines(template.TextLines, ticket.Placeholders))
+            {
+                Disconnect();
+                return false;
+            }
+
+            if (!PrintSeats(ticket.Seats, template.SeatTextLines))
+            {
+                Disconnect();
+                return false;
+            }
+
+            if (!PrintQrCodes(template.QrCodes))
+            {
+                Disconnect();
+                return false;
+            }
+
+            if (!PrintBitmaps(template.Bitmaps))
+            {
+                Disconnect();
+                return false;
+            }
+
+            if (!_graphicDocCloseCommand.Execute(cut: true))
+            {
+                AddErrorDescription(_graphicDocCloseCommand.ErrorDescription);
+                Disconnect();
+                return false;
+            }
+
+            Disconnect();
+            return true;
+        }
+
+        private bool PrintLines(Line[] lines)
+        {
+            foreach (var line in lines)
             {
                 if (!_graphicDocLineAddCommand.Execute(
                     line.PositionX1,
@@ -73,16 +117,20 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     line.Width))
                 {
                     AddErrorDescription(_graphicDocLineAddCommand.ErrorDescription);
-                    Disconnect();
                     return false;
                 }
             }
 
-            foreach (var textLine in template.TextLines)
+            return true;
+        }
+
+        private bool PrintTextLines(TextLine[] textLines, Placeholder[] placeholders)
+        {
+            foreach (var textLine in textLines)
             {
                 var text = textLine.Text;
 
-                foreach (var placeholder in ticket.Placeholders)
+                foreach (var placeholder in placeholders)
                 {
                     text = text.Replace(placeholder.Key, placeholder.Value);
                 }
@@ -98,12 +146,66 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     textLine.FontStyle))
                 {
                     AddErrorDescription(_graphicDocTextAddCommand.ErrorDescription);
-                    Disconnect();
                     return false;
                 }
             }
 
-            foreach (var qrCode in template.QrCodes)
+            return true;
+        }
+
+        private bool PrintSeats(Seat[] seats, TextLine[] seatTextLines)
+        {
+            var seatNames = seats
+                .Select(x => _ticketConfig.SeatsName
+                    .Replace(_ticketConfig.SeatsRowPlaceholder, x.Row.ToString())
+                    .Replace(_ticketConfig.SeatsPlaceholder, x.Place.ToString()))
+                .ToArray();
+
+            foreach (var textLine in seatTextLines)
+            {
+                var text = textLine.Text;
+
+                for (var index = 0; index < seatNames.Length; index++)
+                {
+                    var seatName = seatNames[index];
+
+                    if (index == 0 && !string.IsNullOrEmpty(seatName))
+                    {
+                        seatName = seatName.Substring(0, 1).ToUpper() + seatName.Substring(1);
+                    }
+
+                    if (index + 1 < seatNames.Length)
+                    {
+                        seatName += _ticketConfig.SeatsSeparator;
+                    }
+                    
+                    text = text.Replace(_ticketConfig.SeatsPlaceholder.Replace("1", $"{index + 1}"), seatName);
+                }
+
+                if (text != textLine.Text)
+                {
+                    if (!_graphicDocTextAddCommand.Execute(
+                        text,
+                        textLine.Rotation,
+                        textLine.PositionX,
+                        textLine.PositionY,
+                        textLine.FontSize,
+                        textLine.ScaleX,
+                        textLine.ScaleY,
+                        textLine.FontStyle))
+                    {
+                        AddErrorDescription(_graphicDocTextAddCommand.ErrorDescription);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool PrintQrCodes(QrCode[] qrCodes)
+        {
+            foreach (var qrCode in qrCodes)
             {
                 if (!_graphicDocQrCodeAddCommand.Execute(
                     qrCode.Text,
@@ -114,12 +216,16 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 ))
                 {
                     AddErrorDescription(_graphicDocQrCodeAddCommand.ErrorDescription);
-                    Disconnect();
                     return false;
                 }
             }
 
-            foreach (var bitmap in template.Bitmaps)
+            return true;
+        }
+
+        private bool PrintBitmaps(Bitmap[] bitmaps)
+        {
+            foreach (var bitmap in bitmaps)
             {
                 if (!_graphicDocBitmapAddCommand.Execute(
                     bitmap.BitmapId,
@@ -135,14 +241,6 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 }
             }
 
-            if (!_graphicDocCloseCommand.Execute(cut: true))
-            {
-                AddErrorDescription(_graphicDocCloseCommand.ErrorDescription);
-                Disconnect();
-                return false;
-            }
-
-            Disconnect();
             return true;
         }
 

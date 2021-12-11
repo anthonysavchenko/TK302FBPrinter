@@ -70,6 +70,8 @@ namespace TK302FBPrinter.Configuration
         public Line[] Lines { get; set; } = {};
 
         public TextLine[] TextLines { get; set; } = {};
+        
+        public TextLine[] SeatTextLines { get; set; } = {};
 
         public QrCode[] QrCodes { get; set; } = {};
 
@@ -79,6 +81,16 @@ namespace TK302FBPrinter.Configuration
     public class TicketConfig
     {
         public const string SectionName = "Ticket";
+
+        public string SeatsPlaceholder { get; set; }
+
+        public string SeatsSeparator { get; set; }
+
+        public string SeatsRowPlaceholder { get; set; }
+
+        public string SeatsPlacePlaceholder { get; set; }
+
+        public string SeatsName { get; set; }
 
         public Template[] Templates { get; set; } = {};
     }

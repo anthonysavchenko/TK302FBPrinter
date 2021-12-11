@@ -13,6 +13,17 @@ namespace TK302FBPrinter.Dto
         public string Value { get; set; }
     }
 
+    public class SeatDto
+    {
+        [Required]
+        [Range(1, 100)]
+        public int Row { get; set; }
+
+        [Required]
+        [Range(1, 1000)]
+        public int Place { get; set; }
+    }
+
     public class TicketDto
     {
         [Required]
@@ -20,5 +31,7 @@ namespace TK302FBPrinter.Dto
         public string TemplateName { get; set; }
 
         public PlaceholderDto[] Placeholders { get; set; } = {};
+
+        public SeatDto[] Seats { get; set; } = {};
     }
 }

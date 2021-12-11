@@ -7,7 +7,6 @@ using TK302FBPrinter.Business.Operations.PrintReceipt;
 using TK302FBPrinter.Business.Operations.PrintReportX;
 using TK302FBPrinter.Business.Operations.PrintSlip;
 using TK302FBPrinter.Business.Operations.PrintTicket;
-using TK302FBPrinter.Business.Operations.PrintTicketCinema;
 using TK302FBPrinter.Business.Operations.ShiftClose;
 using TK302FBPrinter.Business.Operations.ShiftOpen;
 using TK302FBPrinter.Dto;
@@ -26,7 +25,6 @@ namespace TK302FBPrinter
         private readonly IPrintReportXOperation _printReportXOperation;
         private readonly IGetStatusOperation _getStatusOperation;
         private readonly IPrintTicketOperation _printTicketOperation;
-        private readonly IPrintTicketCinemaOperation _printTicketCinemaOperation;
 
         public ApiController(
             IBeepOperation beepOperation,
@@ -36,8 +34,7 @@ namespace TK302FBPrinter
             IPrintSlipOperation printSlipOperation,
             IPrintReportXOperation printReportXOperation,
             IGetStatusOperation getStatusOperation,
-            IPrintTicketOperation printTicketOperation,
-            IPrintTicketCinemaOperation printTicketCinemaOperation)
+            IPrintTicketOperation printTicketOperation)
         {
             _beepOperation = beepOperation;
             _shiftOpenOperation = shiftOpenOperation;
@@ -47,7 +44,6 @@ namespace TK302FBPrinter
             _printReportXOperation = printReportXOperation;
             _getStatusOperation = getStatusOperation;
             _printTicketOperation = printTicketOperation;
-            _printTicketCinemaOperation = printTicketCinemaOperation;
         }
 
         // GET /api/status
@@ -122,40 +118,26 @@ namespace TK302FBPrinter
             var ticket = new Ticket()
             {
                 TemplateName = ticketDto.TemplateName,
-                Placeholders =
-                    ticketDto.Placeholders
-                        .Select(x =>
-                            new Placeholder
-                            {
-                                Key = x.Key,
-                                Value = x.Value
-                            })
-                        .ToArray()
+                Placeholders = ticketDto.Placeholders
+                    .Select(x =>
+                        new Placeholder
+                        {
+                            Key = x.Key,
+                            Value = x.Value
+                        })
+                    .ToArray(),
+                Seats = ticketDto.Seats
+                    .Select(x =>
+                        new Seat
+                        {
+                            Row = x.Row,
+                            Place = x.Place
+                        })
+                    .ToArray()
             };
 
             return Ok(new ExecutionResultDto(!_printTicketOperation.Execute(ticket)
                 ? _printTicketOperation.ErrorDescriptions
-                : null));
-        }
-
-        // POST /api/print/ticket/cinema
-        [HttpPost("print/ticket/cinema")]
-        public ActionResult<ExecutionResultDto> PrintTicketCinema(TicketCinemaDto ticketCinemaDto)
-        {
-            var ticketCinema = new TicketCinema()
-            {
-                TemplateName = ticketCinemaDto.TemplateName,
-                Theatre = ticketCinemaDto.Theatre,
-                CompanyName = ticketCinemaDto.CompanyName,
-                CompanyAddress = ticketCinemaDto.CompanyAddress,
-                OGRN = ticketCinemaDto.OGRN,
-                INN = ticketCinemaDto.INN,
-                Movie = ticketCinemaDto.Movie,
-                Format = ticketCinemaDto.Format
-            };
-
-            return Ok(new ExecutionResultDto(!_printTicketCinemaOperation.Execute(ticketCinema)
-                ? _printTicketCinemaOperation.ErrorDescriptions
                 : null));
         }
     }
