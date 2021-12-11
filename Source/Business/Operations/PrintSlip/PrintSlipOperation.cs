@@ -3,9 +3,9 @@ using TK302FBPrinter.Device.Commands.Disconnect;
 using TK302FBPrinter.Device.Commands.TextDocTextAdd;
 using TK302FBPrinter.Device.Commands.TextDocClose;
 using TK302FBPrinter.Device.Commands.TextDocOpen;
-using TK302FBPrinter.Dto;
 using TK302FBPrinter.Configuration;
 using Microsoft.Extensions.Options;
+using TK302FBPrinter.Business.Models;
 
 namespace TK302FBPrinter.Business.Operations.PrintSlip
 {
@@ -34,7 +34,7 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
             _textDocCloseCommand = textDocCloseCommand;
         }
 
-        public bool Execute(SlipDto slip)
+        public bool Execute(Slip slip)
         {
             var lines = slip.Text.Split(_slipConfig.LineSeparators, System.StringSplitOptions.None);
 

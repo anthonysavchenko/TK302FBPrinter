@@ -95,8 +95,13 @@ namespace TK302FBPrinter
 
         // POST /api/print/slip
         [HttpPost("print/slip")]
-        public ActionResult<ExecutionResultDto> PrintSlip(SlipDto slip)
+        public ActionResult<ExecutionResultDto> PrintSlip(SlipDto slipDto)
         {
+            var slip = new Slip
+            {
+                Text = slipDto.Text
+            };
+
             return Ok(new ExecutionResultDto(!_printSlipOperation.Execute(slip)
                 ? _printSlipOperation.ErrorDescriptions
                 : null));
@@ -115,7 +120,14 @@ namespace TK302FBPrinter
         [HttpPost("print/ticket")]
         public ActionResult<ExecutionResultDto> PrintTicket(TicketDto ticketDto)
         {
-            var ticket = new Ticket()
+            var slip = ticketDto.Slip != null
+                ? new Slip
+                {
+                    Text = ticketDto.Slip.Text
+                }
+                : null;
+
+            var ticket = new Ticket
             {
                 TemplateName = ticketDto.TemplateName,
                 Placeholders = ticketDto.Placeholders
@@ -133,7 +145,8 @@ namespace TK302FBPrinter
                             Row = x.Row,
                             Place = x.Place
                         })
-                    .ToArray()
+                    .ToArray(),
+                Slip = slip
             };
 
             return Ok(new ExecutionResultDto(!_printTicketOperation.Execute(ticket)

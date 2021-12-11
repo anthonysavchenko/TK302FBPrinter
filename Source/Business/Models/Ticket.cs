@@ -21,5 +21,7 @@ namespace TK302FBPrinter.Business.Models
         public Placeholder[] Placeholders { get; set; }
 
         public Seat[] Seats { get; set; }
+
+        public Slip Slip { get; set; }
     }
 }
