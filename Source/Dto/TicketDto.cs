@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TK302FBPrinter.Dto
 {
-    public class Placeholder
+    public class PlaceholderDto
     {
         [Required]
         [MaxLength(250)]
@@ -19,6 +19,6 @@ namespace TK302FBPrinter.Dto
         [MaxLength(250)]
         public string TemplateName { get; set; }
 
-        public Placeholder[] Placeholders { get; set; } = {};
+        public PlaceholderDto[] Placeholders { get; set; } = {};
     }
 }
