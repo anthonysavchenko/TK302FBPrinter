@@ -65,7 +65,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (!_printSlipOperation.Execute(ticket.Slip))
+            if (ticket.Slip != null && !_printSlipOperation.Execute(ticket.Slip))
             {
                 AddErrorDescription(_printSlipOperation.ErrorDescriptions);
                 Disconnect();
@@ -77,7 +77,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (!_printReceiptOperation.Execute(ticket.Receipt))
+            if (ticket.Receipt != null && !_printReceiptOperation.Execute(ticket.Receipt))
             {
                 AddErrorDescription(_printReceiptOperation.ErrorDescriptions);
                 Disconnect();
@@ -190,7 +190,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             var seatNames = seats
                 .Select(x => _ticketConfig.SeatsName
                     .Replace(_ticketConfig.SeatsRowPlaceholder, x.Row.ToString())
-                    .Replace(_ticketConfig.SeatsPlaceholder, x.Place.ToString()))
+                    .Replace(_ticketConfig.SeatsPlacePlaceholder, x.Place.ToString()))
                 .ToArray();
 
             foreach (var textLine in seatTextLines)
@@ -214,7 +214,12 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     text = text.Replace(_ticketConfig.SeatsPlaceholder.Replace("1", $"{index + 1}"), seatName);
                 }
 
-                if (text != textLine.Text)
+                for (int index = 0; index < 20; index++)
+                {
+                    text = text.Replace(_ticketConfig.SeatsPlaceholder.Replace("1", $"{index + 1}"), string.Empty);
+                }
+
+                if (text != textLine.Text && !string.IsNullOrWhiteSpace(text))
                 {
                     if (!_graphicDocTextAddCommand.Execute(
                         text,
