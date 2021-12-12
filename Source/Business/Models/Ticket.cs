@@ -22,7 +22,7 @@ namespace TK302FBPrinter.Business.Models
 
         public Seat[] Seats { get; set; }
 
-        public Slip Slip { get; set; }
+        public string SlipText { get; set; }
 
         public Receipt Receipt { get; set; }
     }

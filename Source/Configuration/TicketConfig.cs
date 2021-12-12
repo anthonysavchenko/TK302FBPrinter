@@ -92,6 +92,8 @@ namespace TK302FBPrinter.Configuration
 
         public string SeatsName { get; set; }
 
+        public string[] SlipLineSeparators { get; set; } = {};
+
         public Template[] Templates { get; set; } = {};
     }
 }

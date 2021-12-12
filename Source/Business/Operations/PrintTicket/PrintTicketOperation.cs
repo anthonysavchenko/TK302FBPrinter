@@ -65,13 +65,6 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (ticket.Slip != null && !_printSlipOperation.Execute(ticket.Slip))
-            {
-                AddErrorDescription(_printSlipOperation.ErrorDescriptions);
-                Disconnect();
-                return false;
-            }
-
             if (!PrintTicket(template, ticket, cut: ticket.Receipt == null))
             {
                 return false;
@@ -90,38 +83,50 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
 
         private bool PrintTicket(Template template, Ticket ticket, bool cut)
         {
-            if (!_graphicDocOpenCommand.Execute(template.SizeX, template.SizeY))
+            var slipLines = !string.IsNullOrEmpty(ticket.SlipText)
+                ? ticket.SlipText.Split(_ticketConfig.SlipLineSeparators, System.StringSplitOptions.None)
+                : null;
+
+            var slipHeight = slipLines != null ? (slipLines.Length + 1) * 35 : 0;
+
+            if (!_graphicDocOpenCommand.Execute(template.SizeX, template.SizeY + slipHeight))
             {
                 AddErrorDescription(_graphicDocOpenCommand.ErrorDescription);
                 Disconnect();
                 return false;
             }
 
-            if (!PrintLines(template.Lines))
+            if (slipLines != null && !PrintSlipLines(slipLines))
             {
                 Disconnect();
                 return false;
             }
 
-            if (!PrintTextLines(template.TextLines, ticket.Placeholders))
+            if (!PrintLines(template.Lines, slipHeight))
             {
                 Disconnect();
                 return false;
             }
 
-            if (!PrintSeats(ticket.Seats, template.SeatTextLines))
+            if (!PrintTextLines(template.TextLines, ticket.Placeholders, slipHeight))
             {
                 Disconnect();
                 return false;
             }
 
-            if (!PrintQrCodes(template.QrCodes))
+            if (!PrintSeats(ticket.Seats, template.SeatTextLines, slipHeight))
             {
                 Disconnect();
                 return false;
             }
 
-            if (!PrintBitmaps(template.Bitmaps))
+            if (!PrintQrCodes(template.QrCodes, slipHeight))
+            {
+                Disconnect();
+                return false;
+            }
+
+            if (!PrintBitmaps(template.Bitmaps, slipHeight))
             {
                 Disconnect();
                 return false;
@@ -137,15 +142,38 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintLines(Line[] lines)
+        private bool PrintSlipLines(string[] slipLines)
+        {
+            for (var index = 0; index < slipLines.Length; index++)
+            {
+                if (!string.IsNullOrEmpty(slipLines[index])
+                    && !_graphicDocTextAddCommand.Execute(
+                        slipLines[index],
+                        rotation: 1,
+                        positionX: 0,
+                        positionY: index * 35,
+                        fontSize: 3,
+                        scaleX: 1,
+                        scaleY: 2,
+                        fontStyle: 11))
+                {
+                    AddErrorDescription(_graphicDocTextAddCommand.ErrorDescription);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool PrintLines(Line[] lines, int offsetY)
         {
             foreach (var line in lines)
             {
                 if (!_graphicDocLineAddCommand.Execute(
                     line.PositionX1,
-                    line.PositionY1,
+                    line.PositionY1 + offsetY,
                     line.PositionX2,
-                    line.PositionY2,
+                    line.PositionY2 + offsetY,
                     line.Width))
                 {
                     AddErrorDescription(_graphicDocLineAddCommand.ErrorDescription);
@@ -156,7 +184,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintTextLines(TextLine[] textLines, Placeholder[] placeholders)
+        private bool PrintTextLines(TextLine[] textLines, Placeholder[] placeholders, int offsetY)
         {
             foreach (var textLine in textLines)
             {
@@ -171,7 +199,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     text,
                     textLine.Rotation,
                     textLine.PositionX,
-                    textLine.PositionY,
+                    textLine.PositionY + offsetY,
                     textLine.FontSize,
                     textLine.ScaleX,
                     textLine.ScaleY,
@@ -185,7 +213,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintSeats(Seat[] seats, TextLine[] seatTextLines)
+        private bool PrintSeats(Seat[] seats, TextLine[] seatTextLines, int offsetY)
         {
             var seatNames = seats
                 .Select(x => _ticketConfig.SeatsName
@@ -225,7 +253,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                         text,
                         textLine.Rotation,
                         textLine.PositionX,
-                        textLine.PositionY,
+                        textLine.PositionY + offsetY,
                         textLine.FontSize,
                         textLine.ScaleX,
                         textLine.ScaleY,
@@ -240,7 +268,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintQrCodes(QrCode[] qrCodes)
+        private bool PrintQrCodes(QrCode[] qrCodes, int offsetY)
         {
             foreach (var qrCode in qrCodes)
             {
@@ -248,7 +276,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     qrCode.Text,
                     qrCode.Rotation,
                     qrCode.PositionX,
-                    qrCode.PositionY,
+                    qrCode.PositionY + offsetY,
                     qrCode.Scale
                 ))
                 {
@@ -260,7 +288,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintBitmaps(Bitmap[] bitmaps)
+        private bool PrintBitmaps(Bitmap[] bitmaps, int offsetY)
         {
             foreach (var bitmap in bitmaps)
             {
@@ -268,7 +296,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     bitmap.BitmapId,
                     bitmap.Rotation,
                     bitmap.PositionX,
-                    bitmap.PositionY,
+                    bitmap.PositionY + offsetY,
                     bitmap.ScaleX,
                     bitmap.ScaleY))
                 {

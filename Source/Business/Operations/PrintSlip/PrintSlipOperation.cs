@@ -38,7 +38,7 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
         {
             var lines = slip.Text.Split(_slipConfig.LineSeparators, System.StringSplitOptions.None);
 
-            if (slip.WithConnection && !_connectCommand.Execute())
+            if (!_connectCommand.Execute())
             {
                 AddErrorDescription(_connectCommand.ErrorDescription);
                 return false;
@@ -47,7 +47,7 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
             if (!_textDocOpenCommand.Execute())
             {
                 AddErrorDescription(_textDocOpenCommand.ErrorDescription);
-                Disconnect(slip.WithConnection);
+                Disconnect();
                 return false;
             }
 
@@ -56,33 +56,33 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
                 if (!_textDocTextAddCommand.Execute(line))
                 {
                     AddErrorDescription(_textDocTextAddCommand.ErrorDescription);
-                    CloseDoc(cut: true);
-                    Disconnect(slip.WithConnection);
+                    CloseDoc();
+                    Disconnect();
                     return false;
                 }
             }
 
-            if (!CloseDoc(slip.Cut))
+            if (!CloseDoc())
             {
-                Disconnect(slip.WithConnection);
+                Disconnect();
                 return false;
             }
 
-            Disconnect(slip.WithConnection);
+            Disconnect();
             return true;
         }
 
-        private void Disconnect(bool withConnection)
+        private void Disconnect()
         {
-            if (withConnection && !_disconnectCommand.Execute())
+            if (!_disconnectCommand.Execute())
             {
                 AddErrorDescription(_disconnectCommand.ErrorDescription);
             }
         }
 
-        private bool CloseDoc(bool cut)
+        private bool CloseDoc()
         {
-            if (!_textDocCloseCommand.Execute(cut))
+            if (!_textDocCloseCommand.Execute())
             {
                 AddErrorDescription(_textDocCloseCommand.ErrorDescription);
                 return false;

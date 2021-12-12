@@ -100,9 +100,7 @@ namespace TK302FBPrinter
         {
             var slip = new Slip
             {
-                Text = slipDto.Text,
-                WithConnection = true,
-                Cut = true
+                Text = slipDto.Text
             };
 
             return Ok(new ExecutionResultDto(!_printSlipOperation.Execute(slip)
@@ -141,15 +139,6 @@ namespace TK302FBPrinter
         [HttpPost("print/ticket")]
         public ActionResult<ExecutionResultDto> PrintTicket(TicketDto ticketDto)
         {
-            var slip = ticketDto.Slip != null
-                ? new Slip
-                {
-                    Text = ticketDto.Slip.Text,
-                    WithConnection = false,
-                    Cut = false
-                }
-                : null;
-
             var receipt = ticketDto.Receipt != null
                 ? new Receipt
                 {
@@ -191,7 +180,7 @@ namespace TK302FBPrinter
                             Place = x.Place
                         })
                     .ToArray(),
-                Slip = slip,
+                SlipText = ticketDto.SlipText,
                 Receipt = receipt
             };
 
