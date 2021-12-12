@@ -1,9 +1,9 @@
-using TK302FBPrinter.Dto;
+using TK302FBPrinter.Business.Models;
 
 namespace TK302FBPrinter.Business.Operations.PrintReceipt
 {
     public interface IPrintReceiptOperation : IOperation
     {
-        bool Execute(ReceiptDto receipt);
+        bool Execute(Receipt receipt);
     }
 }

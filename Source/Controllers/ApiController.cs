@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using TK302FBPrinter.Business.Models;
@@ -99,7 +100,9 @@ namespace TK302FBPrinter
         {
             var slip = new Slip
             {
-                Text = slipDto.Text
+                Text = slipDto.Text,
+                WithConnection = true,
+                Cut = true
             };
 
             return Ok(new ExecutionResultDto(!_printSlipOperation.Execute(slip)
@@ -109,8 +112,26 @@ namespace TK302FBPrinter
 
         // POST /api/print/receipt
         [HttpPost("print/receipt")]
-        public ActionResult<ExecutionResultDto> PrintReceipt(ReceiptDto receipt)
+        public ActionResult<ExecutionResultDto> PrintReceipt(ReceiptDto receiptDto)
         {
+            var receipt = new Receipt
+            {
+                Tax = Enum.TryParse<TaxType>(receiptDto.Tax.ToString(), out TaxType tax) ? tax : TaxType.AutomaticMode,
+                IsReturn = receiptDto.IsReturn,
+                Total = receiptDto.Total,
+                WithConnection = true,
+                Items = receiptDto.Items
+                    .Select(x =>
+                        new ReceiptItem
+                        {
+                            Description = x.Description,
+                            Quantity = x.Quantity,
+                            Price = x.Price,
+                            VAT = Enum.TryParse<VATType>(x.VAT.ToString(), out VATType vat) ? vat : VATType.NoVAT
+                        })
+                    .ToArray()
+            };
+
             return Ok(new ExecutionResultDto(!_printReceiptOperation.Execute(receipt)
                 ? _printReceiptOperation.ErrorDescriptions
                 : null));
@@ -123,7 +144,31 @@ namespace TK302FBPrinter
             var slip = ticketDto.Slip != null
                 ? new Slip
                 {
-                    Text = ticketDto.Slip.Text
+                    Text = ticketDto.Slip.Text,
+                    WithConnection = false,
+                    Cut = false
+                }
+                : null;
+
+            var receipt = ticketDto.Receipt != null
+                ? new Receipt
+                {
+                    Tax = Enum.TryParse<TaxType>(ticketDto.Receipt.Tax.ToString(), out TaxType tax)
+                        ? tax
+                        : TaxType.AutomaticMode,
+                    IsReturn = ticketDto.Receipt.IsReturn,
+                    Total = ticketDto.Receipt.Total,
+                    WithConnection = false,
+                    Items = ticketDto.Receipt.Items
+                        .Select(x =>
+                            new ReceiptItem
+                            {
+                                Description = x.Description,
+                                Quantity = x.Quantity,
+                                Price = x.Price,
+                                VAT = Enum.TryParse<VATType>(x.VAT.ToString(), out VATType vat) ? vat : VATType.NoVAT
+                            })
+                        .ToArray()
                 }
                 : null;
 
@@ -146,7 +191,8 @@ namespace TK302FBPrinter
                             Place = x.Place
                         })
                     .ToArray(),
-                Slip = slip
+                Slip = slip,
+                Receipt = receipt
             };
 
             return Ok(new ExecutionResultDto(!_printTicketOperation.Execute(ticket)

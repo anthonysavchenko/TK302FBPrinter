@@ -1,7 +1,6 @@
 using System;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
-using TK302FBPrinter.Dto;
 
 namespace TK302FBPrinter.Device.Commands.ReceiptClose
 {
@@ -11,10 +10,10 @@ namespace TK302FBPrinter.Device.Commands.ReceiptClose
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
-        public bool Execute(ReceiptDto receipt)
+        public bool Execute(int total)
         {
             long amountPaymentCash = 0; // Итого наличными
-            long amountPaymentCashless = receipt.Total; // Итого безналичными
+            long amountPaymentCashless = total; // Итого безналичными
             long amountPaymentPrepay = 0;// Итого аванс
             long amountPaymentCredit = 0; // Итого кредит
             long amountPaymentOther = 0; // Итого другие типы оплаты

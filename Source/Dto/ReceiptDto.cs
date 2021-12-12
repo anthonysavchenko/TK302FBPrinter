@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace TK302FBPrinter.Dto
 {
-    public enum TaxType
+    public enum TaxTypeDto
     {
         AutomaticMode = 1,
         Traditional,
@@ -14,7 +13,7 @@ namespace TK302FBPrinter.Dto
         Patent
     }
 
-    public enum VATType
+    public enum VATTypeDto
     {
         NoVAT = 1,
         Percent0,
@@ -39,18 +38,18 @@ namespace TK302FBPrinter.Dto
         public int Price { get; set; }
 
         [Required]
-        [EnumDataType(typeof(VATType))]
-        public VATType VAT { get; set; }
-    }    
+        [EnumDataType(typeof(VATTypeDto))]
+        public VATTypeDto VAT { get; set; }
+    }
 
     public class ReceiptDto
     {
         [Required]
-        public List<ReceiptItemDto> Items { get; set; }
+        public ReceiptItemDto[] Items { get; set; }
 
         [Required]
-        [EnumDataType(typeof(TaxType))]
-        public TaxType Tax { get; set; }
+        [EnumDataType(typeof(TaxTypeDto))]
+        public TaxTypeDto Tax { get; set; }
         
         public bool IsReturn { get; set; }
 

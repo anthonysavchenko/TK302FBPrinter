@@ -10,6 +10,8 @@ using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocBitmapAdd;
 using TK302FBPrinter.Business.Models;
+using TK302FBPrinter.Business.Operations.PrintSlip;
+using TK302FBPrinter.Business.Operations.PrintReceipt;
 
 namespace TK302FBPrinter.Business.Operations.PrintTicket
 {
@@ -24,6 +26,8 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
         private readonly IGraphicDocLineAddCommand _graphicDocLineAddCommand;
         private readonly IGraphicDocQrCodeAddCommand _graphicDocQrCodeAddCommand;
         private readonly IGraphicDocBitmapAddCommand _graphicDocBitmapAddCommand;
+        private readonly IPrintSlipOperation _printSlipOperation;
+        private readonly IPrintReceiptOperation _printReceiptOperation;
 
         public PrintTicketOperation(
             IOptions<TicketConfig> ticketConfig,
@@ -34,7 +38,9 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             IGraphicDocTextAddCommand graphicDocTextAddCommand,
             IGraphicDocLineAddCommand graphicDocLineAddCommand,
             IGraphicDocQrCodeAddCommand graphicDocQrCodeAddCommand,
-            IGraphicDocBitmapAddCommand graphicDocBitmapAddCommand)
+            IGraphicDocBitmapAddCommand graphicDocBitmapAddCommand,
+            IPrintSlipOperation printSlipOperation,
+            IPrintReceiptOperation printReceiptOperation)
         {
             _ticketConfig = ticketConfig.Value;
             _connectCommand = connectCommand;
@@ -45,6 +51,8 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             _graphicDocLineAddCommand = graphicDocLineAddCommand;
             _graphicDocQrCodeAddCommand = graphicDocQrCodeAddCommand;
             _graphicDocBitmapAddCommand = graphicDocBitmapAddCommand;
+            _printSlipOperation = printSlipOperation;
+            _printReceiptOperation = printReceiptOperation;
         }
 
         public bool Execute(Ticket ticket)
@@ -57,6 +65,31 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
+            if (!_printSlipOperation.Execute(ticket.Slip))
+            {
+                AddErrorDescription(_printSlipOperation.ErrorDescriptions);
+                Disconnect();
+                return false;
+            }
+
+            if (!PrintTicket(template, ticket, cut: ticket.Receipt == null))
+            {
+                return false;
+            }
+
+            if (!_printReceiptOperation.Execute(ticket.Receipt))
+            {
+                AddErrorDescription(_printReceiptOperation.ErrorDescriptions);
+                Disconnect();
+                return false;
+            }
+
+            Disconnect();
+            return true;
+        }
+
+        private bool PrintTicket(Template template, Ticket ticket, bool cut)
+        {
             if (!_graphicDocOpenCommand.Execute(template.SizeX, template.SizeY))
             {
                 AddErrorDescription(_graphicDocOpenCommand.ErrorDescription);
@@ -94,14 +127,13 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (!_graphicDocCloseCommand.Execute(cut: true))
+            if (!_graphicDocCloseCommand.Execute(cut))
             {
                 AddErrorDescription(_graphicDocCloseCommand.ErrorDescription);
                 Disconnect();
                 return false;
             }
 
-            Disconnect();
             return true;
         }
 

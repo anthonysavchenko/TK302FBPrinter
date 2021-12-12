@@ -5,7 +5,7 @@ using TK302FBPrinter.Device.Commands.ReceiptItemCancel;
 using TK302FBPrinter.Device.Commands.ReceiptCancel;
 using TK302FBPrinter.Device.Commands.ReceiptClose;
 using TK302FBPrinter.Device.Commands.ReceiptOpen;
-using TK302FBPrinter.Dto;
+using TK302FBPrinter.Business.Models;
 
 namespace TK302FBPrinter.Business.Operations.PrintReceipt
 {
@@ -37,49 +37,54 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
             _receiptItemCancelCommand = receiptItemCancelCommand;            
         }
 
-        public bool Execute(ReceiptDto receipt)
+        public bool Execute(Receipt receipt)
         {
-            if (!_connectCommand.Execute())
+            if (receipt.WithConnection && !_connectCommand.Execute())
             {
                 AddErrorDescription(_connectCommand.ErrorDescription);
                 return false;
             }
 
-            if (!_receiptOpenCommand.Execute(receipt))
+            if (!_receiptOpenCommand.Execute(receipt.IsReturn, (int)receipt.Tax))
             {
                 AddErrorDescription(_receiptOpenCommand.ErrorDescription);
-                Disconnect();
+                Disconnect(receipt.WithConnection);
                 return false;
             }
 
-            for (int i = 0; i < receipt.Items.Count; i++)
+            for (int i = 0; i < receipt.Items.Length; i++)
             {
-                if (!_receiptItemAddCommand.Execute(receipt.Items[i], receipt.IsReturn))
+                if (!_receiptItemAddCommand.Execute(
+                    receipt.Items[i].Description,
+                    receipt.Items[i].Quantity,
+                    receipt.Items[i].Price,
+                    (int)receipt.Items[i].VAT,
+                    receipt.IsReturn))
                 {
                     AddErrorDescription(_receiptItemAddCommand.ErrorDescription);
                     RemoveItems(i - 1);
                     CancelReceipt();
-                    Disconnect();
+                    Disconnect(receipt.WithConnection);
                     return false;
                 }
             }
 
-            if (!_receiptCloseCommand.Execute(receipt))
+            if (!_receiptCloseCommand.Execute(receipt.Total))
             {
                 AddErrorDescription(_receiptCloseCommand.ErrorDescription);
-                RemoveItems(receipt.Items.Count - 1);
+                RemoveItems(receipt.Items.Length - 1);
                 CancelReceipt();
-                Disconnect();
+                Disconnect(receipt.WithConnection);
                 return false;
             }
 
-            Disconnect();
+            Disconnect(receipt.WithConnection);
             return true;
         }
 
-        private void Disconnect()
+        private void Disconnect(bool withConnection)
         {
-            if (!_disconnectCommand.Execute())
+            if (withConnection && !_disconnectCommand.Execute())
             {
                 AddErrorDescription(_disconnectCommand.ErrorDescription);
             }

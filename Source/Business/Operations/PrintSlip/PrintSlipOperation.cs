@@ -38,7 +38,7 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
         {
             var lines = slip.Text.Split(_slipConfig.LineSeparators, System.StringSplitOptions.None);
 
-            if (!_connectCommand.Execute())
+            if (slip.WithConnection && !_connectCommand.Execute())
             {
                 AddErrorDescription(_connectCommand.ErrorDescription);
                 return false;
@@ -47,7 +47,7 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
             if (!_textDocOpenCommand.Execute())
             {
                 AddErrorDescription(_textDocOpenCommand.ErrorDescription);
-                Disconnect();
+                Disconnect(slip.WithConnection);
                 return false;
             }
 
@@ -56,33 +56,33 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
                 if (!_textDocTextAddCommand.Execute(line))
                 {
                     AddErrorDescription(_textDocTextAddCommand.ErrorDescription);
-                    CloseDoc();
-                    Disconnect();
+                    CloseDoc(cut: true);
+                    Disconnect(slip.WithConnection);
                     return false;
                 }
             }
 
-            if (!CloseDoc())
+            if (!CloseDoc(slip.Cut))
             {
-                Disconnect();
+                Disconnect(slip.WithConnection);
                 return false;
             }
 
-            Disconnect();
+            Disconnect(slip.WithConnection);
             return true;
         }
 
-        private void Disconnect()
+        private void Disconnect(bool withConnection)
         {
-            if (!_disconnectCommand.Execute())
+            if (withConnection && !_disconnectCommand.Execute())
             {
                 AddErrorDescription(_disconnectCommand.ErrorDescription);
             }
         }
 
-        private bool CloseDoc()
+        private bool CloseDoc(bool cut)
         {
-            if (!_textDocCloseCommand.Execute())
+            if (!_textDocCloseCommand.Execute(cut))
             {
                 AddErrorDescription(_textDocCloseCommand.ErrorDescription);
                 return false;

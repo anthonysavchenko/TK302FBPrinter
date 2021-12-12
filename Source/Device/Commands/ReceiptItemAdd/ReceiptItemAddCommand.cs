@@ -2,7 +2,6 @@ using System;
 using Custom.Fiscal.RUSProtocolAPI.Enums;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
-using TK302FBPrinter.Dto;
 
 namespace TK302FBPrinter.Device.Commands.ReceiptItemAdd
 {
@@ -12,38 +11,33 @@ namespace TK302FBPrinter.Device.Commands.ReceiptItemAdd
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
-        public bool Execute(ReceiptItemDto item, bool isReceiptReturn = false)
+        public bool Execute(string description, long quantity, long price, int vatType, bool isReturn)
         {
-            string text = item.Description; // Наименование предмета продажи
-            long quantity = item.Quantity; // Количество
-            long amount = item.Price; // Стоимость за единицу
-            
-            int deptNumber; // Отдел (НДС)
-
-            switch (item.VAT)
+            int vat;
+            switch (vatType)
             {
-                case VATType.Percent0:
-                    deptNumber = 3;
-                    break;
-                case VATType.Percent10:
-                    deptNumber = 2;
-                    break;
-                case VATType.Percent20:
-                    deptNumber = 1;
-                    break;
-                case VATType.Percent10Base110:
-                    deptNumber = 6;
-                    break;
-                case VATType.Percent20Base120:
-                    deptNumber = 5;
-                    break;
-                case VATType.NoVAT:
+                case 1:
                 default:
-                    deptNumber = 4;
+                    vat = 4;
+                    break;
+                case 2:
+                    vat = 3;
+                    break;
+                case 3:
+                    vat = 2;
+                    break;
+                case 4:
+                    vat = 1;
+                    break;
+                case 5:
+                    vat = 6;
+                    break;
+                case 6:
+                    vat = 5;
                     break;
             }
             
-            var itemType = !isReceiptReturn // Тип расчета - приход
+            var itemType = !isReturn // Тип расчета - приход
                 ? ReceiptItemTypeEnum.Sale
                 : ReceiptItemTypeEnum.SaleReturn;
 
@@ -76,7 +70,10 @@ namespace TK302FBPrinter.Device.Commands.ReceiptItemAdd
             {
                 var deviceResponse = _deviceConnector.Connection.PrintRecItem(
                     _deviceConfig.OperatorPassword,
-                    itemType,
+
+                    // Тип расчета - приход или возврат прихода
+                    itemType: !isReturn ? ReceiptItemTypeEnum.Sale : ReceiptItemTypeEnum.SaleReturn,
+
                     hasDiscountAddon,
                     hasPaymentSubj,
                     hasGoodsAssortment,
@@ -85,14 +82,14 @@ namespace TK302FBPrinter.Device.Commands.ReceiptItemAdd
                     paymentWayType,
                     paymentSubject,
                     codeCountryProducer,
-                    quantity,
-                    amount,
+                    quantity: quantity, // Количество
+                    amount: price, // Стоимость за единицу
                     excise,
-                    deptNumber,
+                    deptNumber: vat, // Отдел (НДС)
                     discountAddonType1,
                     discountAddonType2,
                     discountAddonAmount,
-                    text,
+                    text: description, // Наименование предмета продажи
                     paymentSubjectText,
                     goodsType,
                     goodsAssortmentGTIN,

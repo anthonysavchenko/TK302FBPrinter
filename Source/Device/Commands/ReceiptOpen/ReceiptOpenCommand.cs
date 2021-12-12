@@ -2,7 +2,6 @@ using System;
 using Custom.Fiscal.RUSProtocolAPI.Enums;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Configuration;
-using TK302FBPrinter.Dto;
 
 namespace TK302FBPrinter.Device.Commands.ReceiptOpen
 {
@@ -12,39 +11,38 @@ namespace TK302FBPrinter.Device.Commands.ReceiptOpen
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
-        public bool Execute(ReceiptDto receipt)
+        public bool Execute(bool isReturn, int taxType)
         {
             bool print = true; // Печатать фискальный документ (ФД)
             bool saveOnFile = false; // Не сохранять ФД в памяти ККТ (формат документа .spl)
 
-            var docType = !receipt.IsReturn // Тип документа (приход, возврат и т.д.)
-                ? ReceiptTypeEnum.Sale
-                : ReceiptTypeEnum.SaleReturn;
+            // Тип документа (приход, возврат и т.д.)
+            var docType = !isReturn ? ReceiptTypeEnum.Sale : ReceiptTypeEnum.SaleReturn;
 
             TaxCodeEnum taxCode; // Система налогооблажения (СНО)
-            switch (receipt.Tax)
+            switch (taxType)
             {
-                case TaxType.Traditional:
-                    taxCode = TaxCodeEnum.Traditional;
-                    break;
-                case TaxType.LightIncome:
-                    taxCode = TaxCodeEnum.LightIncome;
-                    break;
-                case TaxType.LightIncomeNoExpenses:
-                    taxCode = TaxCodeEnum.LightIncomeNoExpenses;
-                    break;
-                case TaxType.SingleTax:
-                    taxCode = TaxCodeEnum.SingleTax;
-                    break;
-                case TaxType.Agricultural:
-                    taxCode = TaxCodeEnum.AgriculturalTax;
-                    break;
-                case TaxType.Patent:
-                    taxCode = TaxCodeEnum.PatentTaxSystem;
-                    break;
-                case TaxType.AutomaticMode:
+                case 1:
                 default:
                     taxCode = TaxCodeEnum.AutomaticMode;
+                    break;
+                case 2:
+                    taxCode = TaxCodeEnum.Traditional;
+                    break;
+                case 3:
+                    taxCode = TaxCodeEnum.LightIncome;
+                    break;
+                case 4:
+                    taxCode = TaxCodeEnum.LightIncomeNoExpenses;
+                    break;
+                case 5:
+                    taxCode = TaxCodeEnum.SingleTax;
+                    break;
+                case 6:
+                    taxCode = TaxCodeEnum.AgriculturalTax;
+                    break;
+                case 7:
+                    taxCode = TaxCodeEnum.PatentTaxSystem;
                     break;
             }
 
