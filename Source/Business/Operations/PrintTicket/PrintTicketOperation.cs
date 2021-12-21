@@ -10,8 +10,6 @@ using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocBitmapAdd;
 using TK302FBPrinter.Business.Models;
-using TK302FBPrinter.Business.Operations.PrintSlip;
-using TK302FBPrinter.Business.Operations.PrintReceipt;
 
 namespace TK302FBPrinter.Business.Operations.PrintTicket
 {
@@ -26,8 +24,6 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
         private readonly IGraphicDocLineAddCommand _graphicDocLineAddCommand;
         private readonly IGraphicDocQrCodeAddCommand _graphicDocQrCodeAddCommand;
         private readonly IGraphicDocBitmapAddCommand _graphicDocBitmapAddCommand;
-        private readonly IPrintSlipOperation _printSlipOperation;
-        private readonly IPrintReceiptOperation _printReceiptOperation;
 
         public PrintTicketOperation(
             IOptions<TicketConfig> ticketConfig,
@@ -38,9 +34,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             IGraphicDocTextAddCommand graphicDocTextAddCommand,
             IGraphicDocLineAddCommand graphicDocLineAddCommand,
             IGraphicDocQrCodeAddCommand graphicDocQrCodeAddCommand,
-            IGraphicDocBitmapAddCommand graphicDocBitmapAddCommand,
-            IPrintSlipOperation printSlipOperation,
-            IPrintReceiptOperation printReceiptOperation)
+            IGraphicDocBitmapAddCommand graphicDocBitmapAddCommand)
         {
             _ticketConfig = ticketConfig.Value;
             _connectCommand = connectCommand;
@@ -51,129 +45,75 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             _graphicDocLineAddCommand = graphicDocLineAddCommand;
             _graphicDocQrCodeAddCommand = graphicDocQrCodeAddCommand;
             _graphicDocBitmapAddCommand = graphicDocBitmapAddCommand;
-            _printSlipOperation = printSlipOperation;
-            _printReceiptOperation = printReceiptOperation;
         }
 
         public bool Execute(Ticket ticket)
         {
             var template = System.Array.Find(_ticketConfig.Templates, t => t.TemplateName == ticket.TemplateName);
 
-            if (!_connectCommand.Execute())
+            if (ticket.WithConnection && !_connectCommand.Execute())
             {
                 AddErrorDescription(_connectCommand.ErrorDescription);
                 return false;
             }
 
-            if (!PrintTicket(template, ticket, cut: ticket.Receipt == null))
-            {
-                return false;
-            }
-
-            if (ticket.Receipt != null && !_printReceiptOperation.Execute(ticket.Receipt))
-            {
-                AddErrorDescription(_printReceiptOperation.ErrorDescriptions);
-                Disconnect();
-                return false;
-            }
-
-            Disconnect();
-            return true;
-        }
-
-        private bool PrintTicket(Template template, Ticket ticket, bool cut)
-        {
-            var slipLines = !string.IsNullOrEmpty(ticket.SlipText)
-                ? ticket.SlipText.Split(_ticketConfig.SlipLineSeparators, System.StringSplitOptions.None)
-                : null;
-
-            var slipHeight = slipLines != null ? (slipLines.Length + 1) * 35 : 0;
-
-            if (!_graphicDocOpenCommand.Execute(template.SizeX, template.SizeY + slipHeight))
+            if (!_graphicDocOpenCommand.Execute(template.SizeX, template.SizeY))
             {
                 AddErrorDescription(_graphicDocOpenCommand.ErrorDescription);
-                Disconnect();
+                Disconnect(ticket.WithConnection);
                 return false;
             }
 
-            if (slipLines != null && !PrintSlipLines(slipLines))
+            if (!PrintLines(template.Lines))
             {
-                Disconnect();
+                Disconnect(ticket.WithConnection);
                 return false;
             }
 
-            if (!PrintLines(template.Lines, slipHeight))
+            if (!PrintTextLines(template.TextLines, ticket.Placeholders))
             {
-                Disconnect();
+                Disconnect(ticket.WithConnection);
                 return false;
             }
 
-            if (!PrintTextLines(template.TextLines, ticket.Placeholders, slipHeight))
+            if (!PrintSeats(ticket.Seats, template.SeatTextLines))
             {
-                Disconnect();
+                Disconnect(ticket.WithConnection);
                 return false;
             }
 
-            if (!PrintSeats(ticket.Seats, template.SeatTextLines, slipHeight))
+            if (!PrintQrCodes(template.QrCodes))
             {
-                Disconnect();
+                Disconnect(ticket.WithConnection);
                 return false;
             }
 
-            if (!PrintQrCodes(template.QrCodes, slipHeight))
+            if (!PrintBitmaps(template.Bitmaps))
             {
-                Disconnect();
+                Disconnect(ticket.WithConnection);
                 return false;
             }
 
-            if (!PrintBitmaps(template.Bitmaps, slipHeight))
-            {
-                Disconnect();
-                return false;
-            }
-
-            if (!_graphicDocCloseCommand.Execute(cut))
+            if (!_graphicDocCloseCommand.Execute(ticket.Cut))
             {
                 AddErrorDescription(_graphicDocCloseCommand.ErrorDescription);
-                Disconnect();
+                Disconnect(ticket.WithConnection);
                 return false;
             }
 
+            Disconnect(ticket.WithConnection);
             return true;
         }
 
-        private bool PrintSlipLines(string[] slipLines)
-        {
-            for (var index = 0; index < slipLines.Length; index++)
-            {
-                if (!string.IsNullOrEmpty(slipLines[index])
-                    && !_graphicDocTextAddCommand.Execute(
-                        slipLines[index],
-                        rotation: 1,
-                        positionX: 0,
-                        positionY: index * 35,
-                        fontSize: 3,
-                        scaleX: 1,
-                        scaleY: 2,
-                        fontStyle: 11))
-                {
-                    AddErrorDescription(_graphicDocTextAddCommand.ErrorDescription);
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool PrintLines(Line[] lines, int offsetY)
+        private bool PrintLines(Line[] lines)
         {
             foreach (var line in lines)
             {
                 if (!_graphicDocLineAddCommand.Execute(
                     line.PositionX1,
-                    line.PositionY1 + offsetY,
+                    line.PositionY1,
                     line.PositionX2,
-                    line.PositionY2 + offsetY,
+                    line.PositionY2,
                     line.Width))
                 {
                     AddErrorDescription(_graphicDocLineAddCommand.ErrorDescription);
@@ -184,7 +124,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintTextLines(TextLine[] textLines, Placeholder[] placeholders, int offsetY)
+        private bool PrintTextLines(TextLine[] textLines, Placeholder[] placeholders)
         {
             foreach (var textLine in textLines)
             {
@@ -199,7 +139,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     text,
                     textLine.Rotation,
                     textLine.PositionX,
-                    textLine.PositionY + offsetY,
+                    textLine.PositionY,
                     textLine.FontSize,
                     textLine.ScaleX,
                     textLine.ScaleY,
@@ -213,7 +153,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintSeats(Seat[] seats, TextLine[] seatTextLines, int offsetY)
+        private bool PrintSeats(Seat[] seats, TextLine[] seatTextLines)
         {
             var seatNames = seats
                 .Select(x => _ticketConfig.SeatsName
@@ -253,7 +193,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                         text,
                         textLine.Rotation,
                         textLine.PositionX,
-                        textLine.PositionY + offsetY,
+                        textLine.PositionY,
                         textLine.FontSize,
                         textLine.ScaleX,
                         textLine.ScaleY,
@@ -268,7 +208,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintQrCodes(QrCode[] qrCodes, int offsetY)
+        private bool PrintQrCodes(QrCode[] qrCodes)
         {
             foreach (var qrCode in qrCodes)
             {
@@ -276,7 +216,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     qrCode.Text,
                     qrCode.Rotation,
                     qrCode.PositionX,
-                    qrCode.PositionY + offsetY,
+                    qrCode.PositionY,
                     qrCode.Scale
                 ))
                 {
@@ -288,7 +228,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintBitmaps(Bitmap[] bitmaps, int offsetY)
+        private bool PrintBitmaps(Bitmap[] bitmaps)
         {
             foreach (var bitmap in bitmaps)
             {
@@ -296,12 +236,11 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     bitmap.BitmapId,
                     bitmap.Rotation,
                     bitmap.PositionX,
-                    bitmap.PositionY + offsetY,
+                    bitmap.PositionY,
                     bitmap.ScaleX,
                     bitmap.ScaleY))
                 {
                     AddErrorDescription(_graphicDocBitmapAddCommand.ErrorDescription);
-                    Disconnect();
                     return false;
                 }
             }
@@ -309,9 +248,9 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private void Disconnect()
+        private void Disconnect(bool withConnection)
         {
-            if (!_disconnectCommand.Execute())
+            if (withConnection && !_disconnectCommand.Execute())
             {
                 AddErrorDescription(_disconnectCommand.ErrorDescription);
             }

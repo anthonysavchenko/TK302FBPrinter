@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +34,7 @@ using TK302FBPrinter.Business.Operations.PrintTicket;
 using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocBitmapAdd;
+using TK302FBPrinter.Business.Operations.PrintComplexDoc;
 
 namespace TK302FBPrinter
 {
@@ -49,10 +49,7 @@ namespace TK302FBPrinter
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddJsonOptions(opt =>
-            {
-                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            });
+            services.AddControllers().AddNewtonsoftJson();
 
             var deviceConfig = Configuration.GetSection(DeviceConfig.SectionName);
 
@@ -119,6 +116,7 @@ namespace TK302FBPrinter
             services.AddScoped<IPrintReportXOperation, PrintReportXOperation>();
             services.AddScoped<IGetStatusOperation, GetStatusOperation>();
             services.AddScoped<IPrintTicketOperation, PrintTicketOperation>();
+            services.AddScoped<IPrintComplexDocOperation, PrintComplexDocOperation>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

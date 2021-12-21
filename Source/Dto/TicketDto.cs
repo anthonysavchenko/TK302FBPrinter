@@ -33,9 +33,5 @@ namespace TK302FBPrinter.Dto
         public PlaceholderDto[] Placeholders { get; set; } = {};
 
         public SeatDto[] Seats { get; set; } = {};
-
-        public string SlipText { get; set; }
-
-        public ReceiptDto Receipt { get; set; }
     }
 }

@@ -22,8 +22,8 @@ namespace TK302FBPrinter.Business.Models
 
         public Seat[] Seats { get; set; }
 
-        public string SlipText { get; set; }
+        public bool WithConnection { get; set; }
 
-        public Receipt Receipt { get; set; }
+        public bool Cut { get; set; }
     }
 }
