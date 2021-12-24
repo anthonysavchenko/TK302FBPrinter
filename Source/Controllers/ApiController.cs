@@ -173,10 +173,8 @@ namespace TK302FBPrinter
         }
 
         // POST /api/print/complex-doc
-        // POST /api/print
         [HttpPost("print/complex-doc")]
-        [HttpPost("print")]
-        public ActionResult<ExecutionResultDto> PrintComplexDoc(ComplexDocDto complexDocDto)
+        public ActionResult<ComplexDocExecutionResultDto> PrintComplexDoc(ComplexDocDto complexDocDto)
         {
             var complexDoc = new ComplexDoc
             {
@@ -227,22 +225,22 @@ namespace TK302FBPrinter
                     : null
             };
 
-            return Ok(new ExecutionResultDto(!_printComplexDocOperation.Execute(complexDoc)
+            return Ok(new ComplexDocExecutionResultDto(!_printComplexDocOperation.Execute(complexDoc)
                 ? _printComplexDocOperation.ErrorDescriptions
                 : null));
         }
 
+        // Возвращает в виде массива список плейсхолдеров и строк для их замены
         private Placeholder[] MapPlaceholders(ComplexDocTicketsDto complexDocTicketsDto)
         {
-            var placeholders = new Placeholder[] {};
-
             if (complexDocTicketsDto == null)
             {
-                return placeholders;
+                return new Placeholder[] {};
             }
 
-            var placeholderList = new List<Placeholder>()
+            var placeholders = new List<Placeholder>()
             {
+                // Далее добавляются обязательные плейсхолдеры, которые всегда передаются в запросе
                 new Placeholder
                 {
                     Key = "theater_name",
@@ -322,12 +320,19 @@ namespace TK302FBPrinter
                 {
                     Key = "order_id",
                     Value = complexDocTicketsDto.OrderId
+                },
+                new Placeholder
+                {
+                    Key = "viewers_count",
+                    Value = complexDocTicketsDto.ViewersCount.ToString()
                 }
             };
             
+            // Далее добавляются необязательные плейсхолдеры, если они переданы в запросе
+            
             if (complexDocTicketsDto.Discount != null)
             {
-                placeholderList.Add(new Placeholder
+                placeholders.Add(new Placeholder
                 {
                     Key = "discount",
                     Value = complexDocTicketsDto.Discount.ToString()
@@ -336,7 +341,7 @@ namespace TK302FBPrinter
 
             if (string.IsNullOrEmpty(complexDocTicketsDto.Certificate))
             {
-                placeholderList.Add(new Placeholder
+                placeholders.Add(new Placeholder
                 {
                     Key = "certificate",
                     Value = complexDocTicketsDto.Certificate
@@ -345,7 +350,7 @@ namespace TK302FBPrinter
 
             if (string.IsNullOrEmpty(complexDocTicketsDto.BonusCard))
             {
-                placeholderList.Add(new Placeholder
+                placeholders.Add(new Placeholder
                 {
                     Key = "bonus_card",
                     Value = complexDocTicketsDto.BonusCard
@@ -354,7 +359,7 @@ namespace TK302FBPrinter
 
             if (complexDocTicketsDto.BonusType != null)
             {
-                placeholderList.Add(new Placeholder
+                placeholders.Add(new Placeholder
                 {
                     Key = "bonus_type",
                     Value = Enum.GetName(typeof(BonusTypeDto), complexDocTicketsDto.BonusType).ToLower()
@@ -363,7 +368,7 @@ namespace TK302FBPrinter
 
             if (complexDocTicketsDto.PaymentType != null)
             {
-                placeholderList.Add(new Placeholder
+                placeholders.Add(new Placeholder
                 {
                     Key = "payment_type",
                     Value = Enum.GetName(typeof(PaymentTypeDto), complexDocTicketsDto.PaymentType).ToLower()
@@ -372,7 +377,7 @@ namespace TK302FBPrinter
 
             if (string.IsNullOrEmpty(complexDocTicketsDto.Cashier))
             {
-                placeholderList.Add(new Placeholder
+                placeholders.Add(new Placeholder
                 {
                     Key = "cashier",
                     Value = complexDocTicketsDto.Cashier
@@ -381,7 +386,7 @@ namespace TK302FBPrinter
 
             if (string.IsNullOrEmpty(complexDocTicketsDto.Tax))
             {
-                placeholderList.Add(new Placeholder
+                placeholders.Add(new Placeholder
                 {
                     Key = "tax",
                     Value = complexDocTicketsDto.Tax
@@ -390,7 +395,7 @@ namespace TK302FBPrinter
 
             if (string.IsNullOrEmpty(complexDocTicketsDto.Comment))
             {
-                placeholderList.Add(new Placeholder
+                placeholders.Add(new Placeholder
                 {
                     Key = "comment",
                     Value = complexDocTicketsDto.Comment
@@ -399,14 +404,14 @@ namespace TK302FBPrinter
 
             if (string.IsNullOrEmpty(complexDocTicketsDto.Email))
             {
-                placeholderList.Add(new Placeholder
+                placeholders.Add(new Placeholder
                 {
                     Key = "email",
                     Value = complexDocTicketsDto.Email
                 });
             }
 
-            return placeholderList.ToArray();            
+            return placeholders.ToArray();            
         }
     }
 }
