@@ -43,5 +43,7 @@ namespace TK302FBPrinter.Business.Models
         public int Total { get; set; }
 
         public bool WithConnection { get; set; }
+
+        public bool Cut { get; set; }
     }
 }

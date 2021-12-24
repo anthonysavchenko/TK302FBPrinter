@@ -123,6 +123,7 @@ namespace TK302FBPrinter
                 IsReturn = receiptDto.IsReturn,
                 Total = receiptDto.Total,
                 WithConnection = true,
+                Cut = true,
                 Items = receiptDto.Items
                     .Select(x =>
                         new ReceiptItem
@@ -211,6 +212,7 @@ namespace TK302FBPrinter
                         IsReturn = false,
                         Total = complexDocDto.Goods.Amount,
                         WithConnection = false,
+                        Cut = true,
                         Items = complexDocDto.Goods.Items
                             .Select(x =>
                                 new ReceiptItem

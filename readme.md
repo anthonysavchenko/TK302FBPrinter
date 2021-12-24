@@ -549,7 +549,7 @@ status | enum[string] [success, error] | Да | Статус ответа
     "comment": "Комментарий"
   },
   "tickets": {
-    "viewers_count": 0,
+    "viewers_count": 3,
     "agent": true,
     "theater_name": "Кинотеатр КИНО",
     "theater_legal_name": "АО \"Фильм Фильм Фильм\"",

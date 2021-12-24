@@ -6,6 +6,7 @@ using TK302FBPrinter.Device.Commands.ReceiptCancel;
 using TK302FBPrinter.Device.Commands.ReceiptClose;
 using TK302FBPrinter.Device.Commands.ReceiptOpen;
 using TK302FBPrinter.Business.Models;
+using TK302FBPrinter.Device.Commands.Cut;
 
 namespace TK302FBPrinter.Business.Operations.PrintReceipt
 {
@@ -18,6 +19,7 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
         private readonly IReceiptItemAddCommand _receiptItemAddCommand;
         private readonly IReceiptCancelCommand _receiptCancelCommand;
         private readonly IReceiptItemCancelCommand _receiptItemCancelCommand;
+        private readonly ICutCommand _cutCommand;
 
         public PrintReceiptOperation(
             IConnectCommand connectCommand,
@@ -26,7 +28,8 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
             IReceiptCloseCommand receiptCloseCommand,
             IReceiptItemAddCommand receiptItemAddCommand,
             IReceiptCancelCommand receiptCancelCommand,
-            IReceiptItemCancelCommand receiptItemCancelCommand)
+            IReceiptItemCancelCommand receiptItemCancelCommand,
+            ICutCommand cutCommand)
         {
             _connectCommand = connectCommand;
             _disconnectCommand = disconnectCommand;
@@ -35,6 +38,7 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
             _receiptItemAddCommand = receiptItemAddCommand;
             _receiptCancelCommand = receiptCancelCommand;
             _receiptItemCancelCommand = receiptItemCancelCommand;            
+            _cutCommand = cutCommand;            
         }
 
         public bool Execute(Receipt receipt)
@@ -72,6 +76,13 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
             {
                 AddErrorDescription(_receiptCloseCommand.ErrorDescription);
                 CancelReceipt();
+                Disconnect(receipt.WithConnection);
+                return false;
+            }
+
+            if (!_cutCommand.Execute())
+            {
+                AddErrorDescription(_cutCommand.ErrorDescription);
                 Disconnect(receipt.WithConnection);
                 return false;
             }
