@@ -2,7 +2,7 @@ namespace TK302FBPrinter.Business.Models
 {
     public enum TaxType
     {
-        AutomaticMode = 1,
+        AutomaticMode,
         Traditional,
         LightIncome,
         LightIncomeNoExpenses,
@@ -13,7 +13,7 @@ namespace TK302FBPrinter.Business.Models
 
     public enum VATType
     {
-        NoVAT = 1,
+        NoVAT,
         Percent0,
         Percent10,
         Percent20,

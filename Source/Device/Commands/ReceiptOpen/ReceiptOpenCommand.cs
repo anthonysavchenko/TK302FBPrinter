@@ -22,26 +22,26 @@ namespace TK302FBPrinter.Device.Commands.ReceiptOpen
             TaxCodeEnum taxCode; // Система налогооблажения (СНО)
             switch (taxType)
             {
-                case 1:
+                case 0:
                 default:
                     taxCode = TaxCodeEnum.AutomaticMode;
                     break;
-                case 2:
+                case 1:
                     taxCode = TaxCodeEnum.Traditional;
                     break;
-                case 3:
+                case 2:
                     taxCode = TaxCodeEnum.LightIncome;
                     break;
-                case 4:
+                case 3:
                     taxCode = TaxCodeEnum.LightIncomeNoExpenses;
                     break;
-                case 5:
+                case 4:
                     taxCode = TaxCodeEnum.SingleTax;
                     break;
-                case 6:
+                case 5:
                     taxCode = TaxCodeEnum.AgriculturalTax;
                     break;
-                case 7:
+                case 6:
                     taxCode = TaxCodeEnum.PatentTaxSystem;
                     break;
             }
