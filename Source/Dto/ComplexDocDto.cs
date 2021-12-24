@@ -124,6 +124,10 @@ namespace TK302FBPrinter.Dto
         public string OrderId { get; set; }
 
         [Required]
+        [JsonProperty("viewers_count")]
+        public int ViewersCount { get; set; }
+
+        [Required]
         public ComplexDocSeatDto[] Seats { get; set; }
     }
 
