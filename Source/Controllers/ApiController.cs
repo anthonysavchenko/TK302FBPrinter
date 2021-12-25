@@ -126,6 +126,14 @@ namespace TK302FBPrinter
                     ? tax
                     : TaxType.AutomaticMode,
                 IsReturn = receiptDto.IsReturn,
+                Supplier = receiptDto.Supplier != null
+                    ? new Supplier
+                    {
+                        INN = receiptDto.Supplier.INN,
+                        CompanyName = receiptDto.Supplier.CompanyName,
+                        Phone = receiptDto.Supplier.Phone
+                    }
+                    : null,
                 Total = receiptDto.Total,
                 WithConnection = true,
                 Cut = true,
@@ -259,6 +267,14 @@ namespace TK302FBPrinter
                             ? ticketTax
                             : TaxType.AutomaticMode,
                         IsReturn = false,
+                        Supplier = complexDocDto.Tickets.Agent
+                            ? new Supplier
+                            {
+                                INN = complexDocDto.Tickets.INN,
+                                CompanyName = complexDocDto.Tickets.AgentName,
+                                Phone = complexDocDto.Tickets.AgentPhone
+                            }
+                            : null,
                         Total = complexDocDto.Tickets.Amount,
                         WithConnection = false,
                         Cut = goodsItems == null,
@@ -275,6 +291,14 @@ namespace TK302FBPrinter
                             ? goodsTax
                             : TaxType.AutomaticMode,
                         IsReturn = false,
+                        Supplier = complexDocDto.Goods.Agent
+                            ? new Supplier
+                            {
+                                INN = complexDocDto.Goods.INN,
+                                CompanyName = complexDocDto.Goods.AgentName,
+                                Phone = complexDocDto.Goods.AgentPhone
+                            }
+                            : null,
                         Total = complexDocDto.Goods.Amount,
                         WithConnection = false,
                         Cut = true,

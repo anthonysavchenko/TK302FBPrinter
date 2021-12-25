@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 using TK302FBPrinter.Configuration;
 using TK302FBPrinter.Device;
 using TK302FBPrinter.Device.Commands.Beep;
-using TK302FBPrinter.Device.Commands.ReceiptItemCancel;
 using TK302FBPrinter.Device.Commands.Connect;
 using TK302FBPrinter.Device.Commands.Disconnect;
 using TK302FBPrinter.Device.Commands.PrinterStatusGet;
@@ -36,6 +35,10 @@ using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocBitmapAdd;
 using TK302FBPrinter.Business.Operations.PrintComplexDoc;
 using TK302FBPrinter.Device.Commands.Cut;
+using TK302FBPrinter.Device.Commands.ReceiptItemAgentFlagSet;
+using TK302FBPrinter.Device.Commands.ReceiptItemSupplierNameSet;
+using TK302FBPrinter.Device.Commands.ReceiptItemSupplierINNSet;
+using TK302FBPrinter.Device.Commands.ReceiptItemSupplierPhoneSet;
 
 namespace TK302FBPrinter
 {
@@ -68,8 +71,11 @@ namespace TK302FBPrinter
                 services.AddScoped<IReceiptOpenCommand, ReceiptOpenMockCommand>();
                 services.AddScoped<IReceiptCloseCommand, ReceiptCloseMockCommand>();
                 services.AddScoped<IReceiptItemAddCommand, ReceiptItemAddMockCommand>();
+                services.AddScoped<IReceiptItemAgentFlagSetCommand, ReceiptItemAgentFlagSetMockCommand>();
+                services.AddScoped<IReceiptItemSupplierNameSetCommand, ReceiptItemSupplierNameSetMockCommand>();
+                services.AddScoped<IReceiptItemSupplierINNSetCommand, ReceiptItemSupplierINNSetMockCommand>();
+                services.AddScoped<IReceiptItemSupplierPhoneSetCommand, ReceiptItemSupplierPhoneSetMockCommand>();
                 services.AddScoped<IReceiptCancelCommand, ReceiptCancelMockCommand>();
-                services.AddScoped<IReceiptItemCancelCommand, ReceiptItemCancelMockCommand>();
                 services.AddScoped<ITextDocOpenCommand, TextDocOpenMockCommand>();
                 services.AddScoped<ITextDocCloseCommand, TextDocCloseMockCommand>();
                 services.AddScoped<ITextDocTextAddCommand, TextDocTextAddMockCommand>();
@@ -86,7 +92,6 @@ namespace TK302FBPrinter
             else
             {
                 services.AddScoped<DeviceConnector>();
-
                 services.AddScoped<IConnectCommand, ConnectCommand>();
                 services.AddScoped<IDisconnectCommand, DisconnectCommand>();
                 services.AddScoped<IBeepCommand, BeepCommand>();
@@ -95,8 +100,11 @@ namespace TK302FBPrinter
                 services.AddScoped<IReceiptOpenCommand, ReceiptOpenCommand>();
                 services.AddScoped<IReceiptCloseCommand, ReceiptCloseCommand>();
                 services.AddScoped<IReceiptItemAddCommand, ReceiptItemAddCommand>();
+                services.AddScoped<IReceiptItemAgentFlagSetCommand, ReceiptItemAgentFlagSetCommand>();
+                services.AddScoped<IReceiptItemSupplierNameSetCommand, ReceiptItemSupplierNameSetCommand>();
+                services.AddScoped<IReceiptItemSupplierINNSetCommand, ReceiptItemSupplierINNSetCommand>();
+                services.AddScoped<IReceiptItemSupplierPhoneSetCommand, ReceiptItemSupplierPhoneSetCommand>();
                 services.AddScoped<IReceiptCancelCommand, ReceiptCancelCommand>();
-                services.AddScoped<IReceiptItemCancelCommand, ReceiptItemCancelCommand>();
                 services.AddScoped<ITextDocOpenCommand, TextDocOpenCommand>();
                 services.AddScoped<ITextDocCloseCommand, TextDocCloseCommand>();
                 services.AddScoped<ITextDocTextAddCommand, TextDocTextAddCommand>();

@@ -1,12 +1,15 @@
 using TK302FBPrinter.Device.Commands.Connect;
 using TK302FBPrinter.Device.Commands.Disconnect;
 using TK302FBPrinter.Device.Commands.ReceiptItemAdd;
-using TK302FBPrinter.Device.Commands.ReceiptItemCancel;
 using TK302FBPrinter.Device.Commands.ReceiptCancel;
 using TK302FBPrinter.Device.Commands.ReceiptClose;
 using TK302FBPrinter.Device.Commands.ReceiptOpen;
 using TK302FBPrinter.Business.Models;
 using TK302FBPrinter.Device.Commands.Cut;
+using TK302FBPrinter.Device.Commands.ReceiptItemAgentFlagSet;
+using TK302FBPrinter.Device.Commands.ReceiptItemSupplierNameSet;
+using TK302FBPrinter.Device.Commands.ReceiptItemSupplierPhoneSet;
+using TK302FBPrinter.Device.Commands.ReceiptItemSupplierINNSet;
 
 namespace TK302FBPrinter.Business.Operations.PrintReceipt
 {
@@ -18,7 +21,10 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
         private readonly IReceiptCloseCommand _receiptCloseCommand;
         private readonly IReceiptItemAddCommand _receiptItemAddCommand;
         private readonly IReceiptCancelCommand _receiptCancelCommand;
-        private readonly IReceiptItemCancelCommand _receiptItemCancelCommand;
+        private readonly IReceiptItemAgentFlagSetCommand _receiptItemAgentFlagSetCommand;
+        private readonly IReceiptItemSupplierNameSetCommand _receiptItemSupplierNameSetCommand;
+        private readonly IReceiptItemSupplierINNSetCommand _receiptItemSupplierINNSetCommand;
+        private readonly IReceiptItemSupplierPhoneSetCommand _receiptItemSupplierPhoneSetCommand;
         private readonly ICutCommand _cutCommand;
 
         public PrintReceiptOperation(
@@ -28,7 +34,10 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
             IReceiptCloseCommand receiptCloseCommand,
             IReceiptItemAddCommand receiptItemAddCommand,
             IReceiptCancelCommand receiptCancelCommand,
-            IReceiptItemCancelCommand receiptItemCancelCommand,
+            IReceiptItemAgentFlagSetCommand receiptItemAgentFlagSetCommand,
+            IReceiptItemSupplierNameSetCommand receiptItemSupplierNameSetCommand,
+            IReceiptItemSupplierINNSetCommand receiptItemSupplierINNSetCommand,
+            IReceiptItemSupplierPhoneSetCommand receiptItemSupplierPhoneSetCommand,
             ICutCommand cutCommand)
         {
             _connectCommand = connectCommand;
@@ -37,7 +46,10 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
             _receiptCloseCommand = receiptCloseCommand;
             _receiptItemAddCommand = receiptItemAddCommand;
             _receiptCancelCommand = receiptCancelCommand;
-            _receiptItemCancelCommand = receiptItemCancelCommand;            
+            _receiptItemAgentFlagSetCommand = receiptItemAgentFlagSetCommand;
+            _receiptItemSupplierNameSetCommand = receiptItemSupplierNameSetCommand;
+            _receiptItemSupplierINNSetCommand = receiptItemSupplierINNSetCommand;
+            _receiptItemSupplierPhoneSetCommand = receiptItemSupplierPhoneSetCommand;
             _cutCommand = cutCommand;            
         }
 
@@ -58,6 +70,41 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
 
             foreach (var item in receipt.Items)
             {
+                if (receipt.Supplier != null)
+                {
+                    if (!_receiptItemAgentFlagSetCommand.Execute())
+                    {
+                        AddErrorDescription(_receiptItemAgentFlagSetCommand.ErrorDescription);
+                        CancelReceipt();
+                        Disconnect(receipt.WithConnection);
+                        return false;
+                    }
+
+                    if (!_receiptItemSupplierNameSetCommand.Execute(receipt.Supplier.CompanyName))
+                    {
+                        AddErrorDescription(_receiptItemSupplierNameSetCommand.ErrorDescription);
+                        CancelReceipt();
+                        Disconnect(receipt.WithConnection);
+                        return false;
+                    }
+
+                    if (!_receiptItemSupplierINNSetCommand.Execute(receipt.Supplier.INN))
+                    {
+                        AddErrorDescription(_receiptItemSupplierINNSetCommand.ErrorDescription);
+                        CancelReceipt();
+                        Disconnect(receipt.WithConnection);
+                        return false;
+                    }
+
+                    if (!_receiptItemSupplierPhoneSetCommand.Execute(receipt.Supplier.Phone))
+                    {
+                        AddErrorDescription(_receiptItemSupplierPhoneSetCommand.ErrorDescription);
+                        CancelReceipt();
+                        Disconnect(receipt.WithConnection);
+                        return false;
+                    }
+                }
+
                 if (!_receiptItemAddCommand.Execute(
                     item.Description,
                     item.Quantity,

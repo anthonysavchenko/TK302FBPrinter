@@ -32,11 +32,22 @@ namespace TK302FBPrinter.Business.Models
         public VATType VAT { get; set; }
     }    
 
+    public class Supplier
+    {
+        public string INN { get; set; }
+
+        public string CompanyName { get; set; }
+
+        public string Phone { get; set; }        
+    }
+
     public class Receipt
     {
         public ReceiptItem[] Items { get; set; }
 
         public TaxType Tax { get; set; }
+
+        public Supplier Supplier { get; set; }
         
         public bool IsReturn { get; set; }
 

@@ -42,6 +42,21 @@ namespace TK302FBPrinter.Dto
         public VATTypeDto VAT { get; set; }
     }
 
+    public class SupplierDto
+    {
+        [Required]
+        [MaxLength(250)]
+        public string INN { get; set; }
+
+        [Required]
+        [MaxLength(250)]
+        public string CompanyName { get; set; }
+
+        [Required]
+        [MaxLength(250)]
+        public string Phone { get; set; }        
+    }
+
     public class ReceiptDto
     {
         [Required]
@@ -51,6 +66,8 @@ namespace TK302FBPrinter.Dto
         [EnumDataType(typeof(TaxTypeDto))]
         public TaxTypeDto Tax { get; set; }
         
+        public SupplierDto Supplier { get; set; }
+
         public bool IsReturn { get; set; }
 
         [Required]

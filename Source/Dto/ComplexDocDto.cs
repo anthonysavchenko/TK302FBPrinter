@@ -128,6 +128,13 @@ namespace TK302FBPrinter.Dto
         [JsonProperty("viewers_count")]
         public int ViewersCount { get; set; }
 
+        [JsonProperty("agent_name")]
+        public string AgentName { get; set; }
+
+        [JsonProperty("agent_phone")]
+        public string AgentPhone { get; set; }
+
+
         [Required]
         public ComplexDocSeatDto[] Seats { get; set; }
 
@@ -166,6 +173,9 @@ namespace TK302FBPrinter.Dto
 
         [JsonProperty("agent_name")]
         public string AgentName { get; set; }
+
+        [JsonProperty("agent_phone")]
+        public string AgentPhone { get; set; }
 
         [Required]
         public ItemDto[] Items { get; set; }
