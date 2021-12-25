@@ -552,7 +552,7 @@ status | enum[string] [success, error] | Да | Статус ответа
         "name": "Кинобилет",
         "count": 1000,
         "price": 2000
-      },
+      }
     ],
     "amount": 1200,
     "tax": "patent",

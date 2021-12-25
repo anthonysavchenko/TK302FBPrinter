@@ -80,7 +80,7 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
                 return false;
             }
 
-            if (!_cutCommand.Execute())
+            if (receipt.Cut && !_cutCommand.Execute())
             {
                 AddErrorDescription(_cutCommand.ErrorDescription);
                 Disconnect(receipt.WithConnection);
