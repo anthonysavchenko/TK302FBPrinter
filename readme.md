@@ -534,6 +534,11 @@ status | enum[string] [success, error] | Да | Статус ответа
         "price": 500
       },
       {
+        "name": "Кинобилет",
+        "count": 1000,
+        "price": 1000
+      },
+      {
         "name": "Кола",
         "count": 2000,
         "price": 200
@@ -542,10 +547,16 @@ status | enum[string] [success, error] | Да | Статус ответа
         "name": "Жвачка",
         "count": 3000,
         "price": 100
-      }
+      },
+      {
+        "name": "Кинобилет",
+        "count": 1000,
+        "price": 2000
+      },
     ],
     "amount": 1200,
     "tax": "patent",
+    "nds": 0,
     "comment": "Комментарий"
   },
   "tickets": {
@@ -562,7 +573,7 @@ status | enum[string] [success, error] | Да | Статус ответа
     "age": "12+",
     "show_date": "15.11.2021 17:05",
     "hall": "8",
-    "amount": 1000,
+    "amount": 3000,
     "discount": 200,
     "print_code": "12345678",
     "certificate": "456efg",
@@ -571,23 +582,24 @@ status | enum[string] [success, error] | Да | Статус ответа
     "payment_type": "card",
     "cashier": "Иванов Иван Иванович",
     "payment_date": "14.11.2021 16:00",
-    "tax": "123klm",
+    "tax": "patent",
     "comment": "456nop",
     "email": "789qrs@tuv.com",
     "order_id": "123qrs",
+    "nds": 0,
     "seats": [
       {
         "row": 2,
         "place": 3,
         "type": "simple",
-        "price": 100,
+        "price": 1000,
         "ticket_number": "123wxy"
       },
       {
         "row": 2,
         "place": 42,
         "type": "sofa",
-        "price": 200,
+        "price": 2000,
         "ticket_numbet": "456zab"
       }
     ]

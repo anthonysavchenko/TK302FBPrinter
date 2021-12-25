@@ -50,12 +50,6 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
                 return false;
             }
 
-            if (complexDoc.Slip != null && !PrintSlip(complexDoc.Slip))
-            {
-                Disconnect();
-                return false;
-            }
-
             if (complexDoc.Ticket != null && !_printTicketOperation.Execute(complexDoc.Ticket))
             {
                 AddErrorDescription(_printTicketOperation.ErrorDescriptions);
@@ -63,7 +57,20 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
                 return false;
             }
 
-            if (complexDoc.Receipt != null && !_printReceiptOperation.Execute(complexDoc.Receipt))
+            if (complexDoc.Slip != null && !PrintSlip(complexDoc.Slip))
+            {
+                Disconnect();
+                return false;
+            }
+
+            if (complexDoc.TicketReceipt != null && !_printReceiptOperation.Execute(complexDoc.TicketReceipt))
+            {
+                AddErrorDescription(_printReceiptOperation.ErrorDescriptions);
+                Disconnect();
+                return false;
+            }
+
+            if (complexDoc.GoodsReceipt != null && !_printReceiptOperation.Execute(complexDoc.GoodsReceipt))
             {
                 AddErrorDescription(_printReceiptOperation.ErrorDescriptions);
                 Disconnect();

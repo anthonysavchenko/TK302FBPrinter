@@ -41,8 +41,6 @@ namespace TK302FBPrinter.Device.Commands.ReceiptItemAdd
                 ? ReceiptItemTypeEnum.Sale
                 : ReceiptItemTypeEnum.SaleReturn;
 
-            var paymentSubject = PaymentSubjectEnum.GoodsForSelling; // Товар
-            var paymentWayType = PaymentWayEnum.CompletePayment; // Полный расчет
             long excise = 0; // Акциз
             bool hasPaymentSubj = false; // Нет тега #1191 - Дополнительный реквизит предмета продажи
             string paymentSubjectText = "";
@@ -79,8 +77,8 @@ namespace TK302FBPrinter.Device.Commands.ReceiptItemAdd
                     hasGoodsAssortment,
                     hasNumberCustomsDeclaration,
                     excludeModifier,
-                    paymentWayType,
-                    paymentSubject,
+                    paymentWayType: PaymentWayEnum.CompletePayment, // Способ расчета - Полный расчет
+                    paymentSubject: PaymentSubjectEnum.RenderedServices, // Предмет расчета - Услуга,
                     codeCountryProducer,
                     quantity: quantity, // Количество
                     amount: price, // Стоимость за единицу

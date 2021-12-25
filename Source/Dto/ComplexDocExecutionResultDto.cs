@@ -24,6 +24,7 @@ namespace TK302FBPrinter.Dto
         }
 
         [Required]
+        [EnumDataType(typeof(ComplexDocStatus))]
         public ComplexDocStatus Status { get; set; }
 
         [Required]

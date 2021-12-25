@@ -113,7 +113,8 @@ namespace TK302FBPrinter.Dto
         [JsonProperty("payment_date")]
         public string PaymentDate { get; set; }
 
-        public string Tax { get; set; }
+        [EnumDataType(typeof(ComplexDocTaxTypeDto))]
+        public ComplexDocTaxTypeDto Tax { get; set; }
 
         public string Comment { get; set; }
 
@@ -129,6 +130,8 @@ namespace TK302FBPrinter.Dto
 
         [Required]
         public ComplexDocSeatDto[] Seats { get; set; }
+
+        public int? NDS { get; set; }        
     }
 
     public enum ComplexDocTaxTypeDto
@@ -174,6 +177,8 @@ namespace TK302FBPrinter.Dto
         public ComplexDocTaxTypeDto Tax { get; set; }
 
         public string Comment { get; set; }
+
+        public int? NDS { get; set; }
 	}
 
     public class ComplexDocDto
