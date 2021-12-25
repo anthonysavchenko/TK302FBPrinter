@@ -119,7 +119,12 @@ namespace TK302FBPrinter
         {
             var receipt = new Receipt
             {
-                Tax = Enum.TryParse<TaxType>(receiptDto.Tax.ToString(), out TaxType tax) ? tax : TaxType.AutomaticMode,
+                Tax =
+                    Enum.TryParse<TaxType>(
+                        Enum.GetName(typeof(TaxTypeDto), receiptDto.Tax),
+                        out TaxType tax)
+                    ? tax
+                    : TaxType.AutomaticMode,
                 IsReturn = receiptDto.IsReturn,
                 Total = receiptDto.Total,
                 WithConnection = true,
@@ -131,7 +136,12 @@ namespace TK302FBPrinter
                             Description = x.Description,
                             Quantity = x.Quantity,
                             Price = x.Price,
-                            VAT = Enum.TryParse<VATType>(x.VAT.ToString(), out VATType vat) ? vat : VATType.NoVAT
+                            VAT =
+                                Enum.TryParse<VATType>(
+                                    Enum.GetName(typeof(VATTypeDto), x.VAT),
+                                    out VATType vat)
+                                ? vat
+                                : VATType.NoVAT
                         })
                     .ToArray()
             };
@@ -177,21 +187,50 @@ namespace TK302FBPrinter
         [HttpPost("print/complex-doc")]
         public ActionResult<ComplexDocExecutionResultDto> PrintComplexDoc(ComplexDocDto complexDocDto)
         {
+            // Кассовый чек для билетов содержит только те позиции, название которых равно "Кинобилет"
+            var ticketItems = complexDocDto.Goods != null
+                ? complexDocDto.Goods.Items
+                    .Where(x => x.Name == "Кинобилет")
+                    .Select(x =>
+                        new ReceiptItem
+                        {
+                            Description = x.Name,
+                            Quantity = x.Count,
+                            Price = x.Price,
+                            VAT = MapVATType(complexDocDto.Tickets.NDS)
+                        })
+                    .ToArray()
+                : null;
+
+            ticketItems = ticketItems != null && ticketItems.Length == 0 ? null : ticketItems;
+
+            // Кассовый чек для товаров содержит только те позиции, название которых НЕ равно "Кинобилет"
+            var goodsItems = complexDocDto.Goods != null
+                ? complexDocDto.Goods.Items
+                    .Where(x => x.Name != "Кинобилет")
+                    .Select(x =>
+                        new ReceiptItem
+                        {
+                            Description = x.Name,
+                            Quantity = x.Count,
+                            Price = x.Price,
+                            VAT = MapVATType(complexDocDto.Goods.NDS)
+                        })
+                    .ToArray()
+                : null;
+
+            goodsItems = goodsItems != null && goodsItems.Length == 0 ? null : goodsItems;
+
             var complexDoc = new ComplexDoc
             {
-                Slip = !string.IsNullOrEmpty(complexDocDto.SlipCheck)
-                    ? new ComplexDocSlip
-                    {
-                        Text = complexDocDto.SlipCheck,
-                        Cut = complexDocDto.Tickets == null && (complexDocDto.Goods == null || complexDocDto.Reprint)
-                    }
-                    : null,
                 Ticket = complexDocDto.Tickets != null
                     ? new Ticket
                     {
                         TemplateName = "Template1",
                         WithConnection = false,
-                        Cut = complexDocDto.Goods == null || complexDocDto.Reprint,
+                        Cut =
+                            (string.IsNullOrEmpty(complexDocDto.SlipCheck) && ticketItems == null && goodsItems == null)
+                            || complexDocDto.Reprint,
                         Placeholders = MapPlaceholders(complexDocDto.Tickets),
                         Seats = complexDocDto.Tickets.Seats
                             .Select(x =>
@@ -203,26 +242,43 @@ namespace TK302FBPrinter
                             .ToArray()
                     }
                     : null,
-                Receipt = complexDocDto.Goods != null && !complexDocDto.Reprint
+                Slip = !string.IsNullOrEmpty(complexDocDto.SlipCheck) && !complexDocDto.Reprint
+                    ? new ComplexDocSlip
+                    {
+                        Text = complexDocDto.SlipCheck,
+                        Cut = ticketItems == null && goodsItems == null
+                    }
+                    : null,
+                TicketReceipt = ticketItems != null && !complexDocDto.Reprint
                     ? new Receipt
                     {
-                        Tax = Enum.TryParse<TaxType>(complexDocDto.Goods.Tax.ToString(), out TaxType tax)
-                            ? tax
+                        Tax =
+                            Enum.TryParse<TaxType>(
+                                Enum.GetName(typeof(ComplexDocTaxTypeDto), complexDocDto.Tickets.Tax),
+                                out TaxType ticketTax)
+                            ? ticketTax
+                            : TaxType.AutomaticMode,
+                        IsReturn = false,
+                        Total = complexDocDto.Tickets.Amount,
+                        WithConnection = false,
+                        Cut = goodsItems == null,
+                        Items = ticketItems
+                    }
+                    : null,
+                GoodsReceipt = goodsItems != null && !complexDocDto.Reprint
+                    ? new Receipt
+                    {
+                        Tax =
+                            Enum.TryParse<TaxType>(
+                                Enum.GetName(typeof(ComplexDocTaxTypeDto), complexDocDto.Goods.Tax),
+                                out TaxType goodsTax)
+                            ? goodsTax
                             : TaxType.AutomaticMode,
                         IsReturn = false,
                         Total = complexDocDto.Goods.Amount,
                         WithConnection = false,
                         Cut = true,
-                        Items = complexDocDto.Goods.Items
-                            .Select(x =>
-                                new ReceiptItem
-                                {
-                                    Description = x.Name,
-                                    Quantity = x.Count,
-                                    Price = x.Price,
-                                    VAT = VATType.Percent0
-                                })
-                            .ToArray()
+                        Items = goodsItems
                     }
                     : null
             };
@@ -297,11 +353,6 @@ namespace TK302FBPrinter
                 {
                     Key = "hall",
                     Value = complexDocTicketsDto.Hall
-                },
-                new Placeholder
-                {
-                    Key = "amount",
-                    Value = complexDocTicketsDto.Amount.ToString()
                 },
                 new Placeholder
                 {
@@ -386,15 +437,6 @@ namespace TK302FBPrinter
                 });
             }
 
-            if (string.IsNullOrEmpty(complexDocTicketsDto.Tax))
-            {
-                placeholders.Add(new Placeholder
-                {
-                    Key = "tax",
-                    Value = complexDocTicketsDto.Tax
-                });
-            }
-
             if (string.IsNullOrEmpty(complexDocTicketsDto.Comment))
             {
                 placeholders.Add(new Placeholder
@@ -414,6 +456,23 @@ namespace TK302FBPrinter
             }
 
             return placeholders.ToArray();            
+        }
+
+        // Преобразует тип НДС из int? в VATType
+        private VATType MapVATType(int? vatType)
+        {
+            switch (vatType)
+            {
+                case null:
+                default:
+                    return VATType.NoVAT;
+                case 0:
+                    return VATType.Percent0;
+                case 10:
+                    return VATType.Percent10;
+                case 20:
+                    return VATType.Percent20;
+            }
         }
     }
 }
