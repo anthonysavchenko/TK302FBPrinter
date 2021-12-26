@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace TK302FBPrinter.Dto
@@ -73,5 +74,8 @@ namespace TK302FBPrinter.Dto
         [Required]
         [Range(1, 1e7)]
         public int Total { get; set; }
+
+        [DefaultValue(true)]
+        public bool Cut { get; set; }
     }
 }

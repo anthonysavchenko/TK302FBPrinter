@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace TK302FBPrinter.Dto
@@ -29,6 +30,9 @@ namespace TK302FBPrinter.Dto
         [Required]
         [MaxLength(250)]
         public string TemplateName { get; set; }
+
+        [DefaultValue(true)]
+        public bool Cut { get; set; }
 
         public PlaceholderDto[] Placeholders { get; set; } = {};
 

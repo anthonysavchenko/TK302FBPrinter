@@ -1,9 +1,7 @@
 namespace TK302FBPrinter.Business.Models
 {
-    public class Slip
+    public class ShiftClose
     {
-        public string Text { get; set; }
-        
         public bool Cut { get; set; }
     }
 }

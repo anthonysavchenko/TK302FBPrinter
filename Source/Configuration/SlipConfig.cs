@@ -4,6 +4,6 @@ namespace TK302FBPrinter.Configuration
     {
         public const string SectionName = "Slip";
 
-        public string[] LineSeparators { get; set; } = {};
+        public string[] LineSeparators { get; set; }
     }
 }

@@ -1,27 +1,31 @@
-using TK302FBPrinter.Device.Commands;
+using TK302FBPrinter.Business.Models;
 using TK302FBPrinter.Device.Commands.Connect;
+using TK302FBPrinter.Device.Commands.Cut;
 using TK302FBPrinter.Device.Commands.Disconnect;
+using TK302FBPrinter.Device.Commands.ReportXPrint;
 
-namespace TK302FBPrinter.Business.Operations
+namespace TK302FBPrinter.Business.Operations.PrintReportX
 {
-    public class SingleCommandOperation<TDeviceCommand> : Operation, INoParamsOperation
-        where TDeviceCommand : INoParamsCommand
+    public class PrintReportXOperation : Operation, IPrintReportXOperation
     {
         private readonly IConnectCommand _connectCommand;
         private readonly IDisconnectCommand _disconnectCommand;
-        private readonly TDeviceCommand _deviceCommand;
+        private readonly IReportXPrintCommand _reportXPrintCommand;
+        private readonly ICutCommand _cutCommand;
 
-        public SingleCommandOperation(
+        public PrintReportXOperation(
             IConnectCommand connectCommand,
             IDisconnectCommand disconnectCommand,
-            TDeviceCommand deviceCommand)
+            IReportXPrintCommand reportXPrintCommand,
+            ICutCommand cutCommand)
         {
             _connectCommand = connectCommand;
             _disconnectCommand = disconnectCommand;
-            _deviceCommand = deviceCommand;
+            _reportXPrintCommand = reportXPrintCommand;
+            _cutCommand = cutCommand;
         }
 
-        public bool Execute()
+        public bool Execute(ReportX reportX)
         {
             if (!_connectCommand.Execute())
             {
@@ -29,9 +33,16 @@ namespace TK302FBPrinter.Business.Operations
                 return false;
             }
 
-            if (!_deviceCommand.Execute())
+            if (!_reportXPrintCommand.Execute())
             {
-                AddErrorDescription(_deviceCommand.ErrorDescription);
+                AddErrorDescription(_reportXPrintCommand.ErrorDescription);
+                Disconnect();
+                return false;
+            }
+
+            if (reportX.Cut && !_cutCommand.Execute())
+            {
+                AddErrorDescription(_cutCommand.ErrorDescription);
                 Disconnect();
                 return false;
             }
@@ -39,7 +50,6 @@ namespace TK302FBPrinter.Business.Operations
             Disconnect();
             return true;
         }
-
         private void Disconnect()
         {
             if (!_disconnectCommand.Execute())

@@ -1,6 +1,6 @@
 namespace TK302FBPrinter.Business.Operations
 {
-    public interface INoParamsOperation : IOperation
+    public interface ISingleCommandOperation : IOperation
     {
         bool Execute();
     }

@@ -4,7 +4,7 @@ namespace TK302FBPrinter.Device.Commands.TextDocClose
     {
         public TextDocCloseMockCommand() : base(null, null) {}
 
-        public bool Execute()
+        public bool Execute(bool cut)
         {
             return true;
         }

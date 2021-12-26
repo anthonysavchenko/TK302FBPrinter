@@ -10,14 +10,14 @@ namespace TK302FBPrinter.Device.Commands.TextDocClose
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
-        public bool Execute()
+        public bool Execute(bool cut)
         {
             try
             {
                 var deviceResponse = _deviceConnector.Connection.CloseNotFiscallDocument(
                     _deviceConfig.OperatorPassword,
                     printSerialNum: false,
-                    paperCut: true);
+                    paperCut: cut);
 
                 return CheckRespose(deviceResponse);
             }

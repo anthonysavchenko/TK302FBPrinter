@@ -74,27 +74,42 @@ namespace TK302FBPrinter
 
         // POST /api/shift/open
         [HttpPost("shift/open")]
-        public ActionResult<ExecutionResultDto> ShiftOpen()
+        public ActionResult<ExecutionResultDto> ShiftOpen(ShiftOpenDto shiftOpenDto)
         {
-            return Ok(new ExecutionResultDto(!_shiftOpenOperation.Execute()
+            var shiftOpen = new ShiftOpen
+            {
+                Cut = shiftOpenDto.Cut
+            };
+
+            return Ok(new ExecutionResultDto(!_shiftOpenOperation.Execute(shiftOpen)
                 ? _shiftOpenOperation.ErrorDescriptions
                 : null));
         }
 
         // POST /api/shift/close
         [HttpPost("shift/close")]
-        public ActionResult<ExecutionResultDto> ShiftClose()
+        public ActionResult<ExecutionResultDto> ShiftClose(ShiftCloseDto shiftCloseDto)
         {
-            return Ok(new ExecutionResultDto(!_shiftCloseOperation.Execute()
+            var shiftClose = new ShiftClose
+            {
+                Cut = shiftCloseDto.Cut
+            };
+
+            return Ok(new ExecutionResultDto(!_shiftCloseOperation.Execute(shiftClose)
                 ? _shiftCloseOperation.ErrorDescriptions
                 : null));
         }
 
         // POST /api/print/report/x
         [HttpPost("print/report/x")]
-        public ActionResult<ExecutionResultDto> PrintReportX()
+        public ActionResult<ExecutionResultDto> PrintReportX(ReportXDto reportXDto)
         {
-            return Ok(new ExecutionResultDto(!_printReportXOperation.Execute()
+            var reportX = new ReportX
+            {
+                Cut = reportXDto.Cut
+            };
+
+            return Ok(new ExecutionResultDto(!_printReportXOperation.Execute(reportX)
                 ? _printReportXOperation.ErrorDescriptions
                 : null));
         }
@@ -105,7 +120,8 @@ namespace TK302FBPrinter
         {
             var slip = new Slip
             {
-                Text = slipDto.Text
+                Text = slipDto.Text,
+                Cut = slipDto.Cut
             };
 
             return Ok(new ExecutionResultDto(!_printSlipOperation.Execute(slip)
@@ -136,7 +152,7 @@ namespace TK302FBPrinter
                     : null,
                 Total = receiptDto.Total,
                 WithConnection = true,
-                Cut = true,
+                Cut = receiptDto.Cut,
                 Items = receiptDto.Items
                     .Select(x =>
                         new ReceiptItem
@@ -167,7 +183,7 @@ namespace TK302FBPrinter
             {
                 TemplateName = ticketDto.TemplateName,
                 WithConnection = true,
-                Cut = true,
+                Cut = ticketDto.Cut,
                 Placeholders = ticketDto.Placeholders
                     .Select(x =>
                         new Placeholder
@@ -192,6 +208,8 @@ namespace TK302FBPrinter
         }
 
         // POST /api/print/complex-doc
+        // Для коррекстной отрезки данного документа нужно убрать автоотрезку в настройках принтера
+        // (Custom-RU Test Tool -> Настройкт ККТ -> Параметры чека -> Автоотрезчик активирован)
         [HttpPost("print/complex-doc")]
         public ActionResult<ComplexDocExecutionResultDto> PrintComplexDoc(ComplexDocDto complexDocDto)
         {

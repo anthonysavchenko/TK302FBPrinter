@@ -56,13 +56,13 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
                 if (!_textDocTextAddCommand.Execute(line))
                 {
                     AddErrorDescription(_textDocTextAddCommand.ErrorDescription);
-                    CloseDoc();
+                    CloseDoc(slip.Cut);
                     Disconnect();
                     return false;
                 }
             }
 
-            if (!CloseDoc())
+            if (!CloseDoc(slip.Cut))
             {
                 Disconnect();
                 return false;
@@ -80,9 +80,9 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
             }
         }
 
-        private bool CloseDoc()
+        private bool CloseDoc(bool cut)
         {
-            if (!_textDocCloseCommand.Execute())
+            if (!_textDocCloseCommand.Execute(cut))
             {
                 AddErrorDescription(_textDocCloseCommand.ErrorDescription);
                 return false;
