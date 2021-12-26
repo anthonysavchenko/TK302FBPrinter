@@ -53,7 +53,7 @@ namespace TK302FBPrinter
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers(options => options.AllowEmptyInputInBodyModelBinding = true).AddNewtonsoftJson();
 
             var deviceConfig = Configuration.GetSection(DeviceConfig.SectionName);
 

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace TK302FBPrinter.Dto
 {
@@ -32,6 +33,7 @@ namespace TK302FBPrinter.Dto
         public string TemplateName { get; set; }
 
         [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool Cut { get; set; }
 
         public PlaceholderDto[] Placeholders { get; set; } = {};

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using TK302FBPrinter.Business.Models;
@@ -78,7 +79,7 @@ namespace TK302FBPrinter
         {
             var shiftOpen = new ShiftOpen
             {
-                Cut = shiftOpenDto.Cut
+                Cut = shiftOpenDto?.Cut ?? true
             };
 
             return Ok(new ExecutionResultDto(!_shiftOpenOperation.Execute(shiftOpen)
@@ -92,7 +93,7 @@ namespace TK302FBPrinter
         {
             var shiftClose = new ShiftClose
             {
-                Cut = shiftCloseDto.Cut
+                Cut = shiftCloseDto?.Cut ?? true
             };
 
             return Ok(new ExecutionResultDto(!_shiftCloseOperation.Execute(shiftClose)
@@ -106,7 +107,7 @@ namespace TK302FBPrinter
         {
             var reportX = new ReportX
             {
-                Cut = reportXDto.Cut
+                Cut = reportXDto?.Cut ?? true
             };
 
             return Ok(new ExecutionResultDto(!_printReportXOperation.Execute(reportX)
@@ -116,7 +117,7 @@ namespace TK302FBPrinter
 
         // POST /api/print/slip
         [HttpPost("print/slip")]
-        public ActionResult<ExecutionResultDto> PrintSlip(SlipDto slipDto)
+        public ActionResult<ExecutionResultDto> PrintSlip([Required] SlipDto slipDto)
         {
             var slip = new Slip
             {
@@ -131,7 +132,7 @@ namespace TK302FBPrinter
 
         // POST /api/print/receipt
         [HttpPost("print/receipt")]
-        public ActionResult<ExecutionResultDto> PrintReceipt(ReceiptDto receiptDto)
+        public ActionResult<ExecutionResultDto> PrintReceipt([Required] ReceiptDto receiptDto)
         {
             var receipt = new Receipt
             {
@@ -177,7 +178,7 @@ namespace TK302FBPrinter
 
         // POST /api/print/ticket
         [HttpPost("print/ticket")]
-        public ActionResult<ExecutionResultDto> PrintTicket(TicketDto ticketDto)
+        public ActionResult<ExecutionResultDto> PrintTicket([Required] TicketDto ticketDto)
         {
             var ticket = new Ticket
             {
@@ -211,7 +212,7 @@ namespace TK302FBPrinter
         // Для коррекстной отрезки данного документа нужно убрать автоотрезку в настройках принтера
         // (Custom-RU Test Tool -> Настройкт ККТ -> Параметры чека -> Автоотрезчик активирован)
         [HttpPost("print/complex-doc")]
-        public ActionResult<ComplexDocExecutionResultDto> PrintComplexDoc(ComplexDocDto complexDocDto)
+        public ActionResult<ComplexDocExecutionResultDto> PrintComplexDoc([Required] ComplexDocDto complexDocDto)
         {
             // Кассовый чек для билетов содержит только те позиции, название которых равно "Кинобилет"
             var ticketItems = complexDocDto.Goods != null

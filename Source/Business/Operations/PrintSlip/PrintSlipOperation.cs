@@ -6,6 +6,7 @@ using TK302FBPrinter.Device.Commands.TextDocOpen;
 using TK302FBPrinter.Configuration;
 using Microsoft.Extensions.Options;
 using TK302FBPrinter.Business.Models;
+using TK302FBPrinter.Device.Commands.Cut;
 
 namespace TK302FBPrinter.Business.Operations.PrintSlip
 {
@@ -17,6 +18,7 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
         private readonly ITextDocOpenCommand _textDocOpenCommand;
         private readonly ITextDocTextAddCommand _textDocTextAddCommand;
         private readonly ITextDocCloseCommand _textDocCloseCommand;
+        private readonly ICutCommand _cutCommand;
 
         public PrintSlipOperation(
             IOptions<SlipConfig> slipConfig,
@@ -24,7 +26,8 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
             IDisconnectCommand disconnectCommand,
             ITextDocOpenCommand textDocOpenCommand,
             ITextDocTextAddCommand textDocTextAddCommand,
-            ITextDocCloseCommand textDocCloseCommand)
+            ITextDocCloseCommand textDocCloseCommand,
+            ICutCommand cutCommand)
         {
             _slipConfig = slipConfig.Value;
             _connectCommand = connectCommand;
@@ -32,6 +35,7 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
             _textDocOpenCommand = textDocOpenCommand;
             _textDocTextAddCommand = textDocTextAddCommand;
             _textDocCloseCommand = textDocCloseCommand;
+            _cutCommand = cutCommand;
         }
 
         public bool Execute(Slip slip)
@@ -82,11 +86,18 @@ namespace TK302FBPrinter.Business.Operations.PrintSlip
 
         private bool CloseDoc(bool cut)
         {
-            if (!_textDocCloseCommand.Execute(cut))
+            if (!_textDocCloseCommand.Execute())
             {
                 AddErrorDescription(_textDocCloseCommand.ErrorDescription);
                 return false;
             }
+
+            if (cut && !_cutCommand.Execute())
+            {
+                AddErrorDescription(_cutCommand.ErrorDescription);
+                return false;
+            }
+
             return true;
         }
     }
