@@ -189,6 +189,9 @@ namespace TK302FBPrinter.Dto
         public string Comment { get; set; }
 
         public int? NDS { get; set; }
+
+        [Required]
+        public bool Refund { get; set; }
 	}
 
     public class ComplexDocDto

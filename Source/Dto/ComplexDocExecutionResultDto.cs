@@ -1,11 +1,17 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace TK302FBPrinter.Dto
 {
 
     public enum ComplexDocStatus
     {
+        [EnumMember(Value = "success")]
         Success,
+
+        [EnumMember(Value = "error")]
         Error
     }
 
@@ -24,7 +30,7 @@ namespace TK302FBPrinter.Dto
         }
 
         [Required]
-        [EnumDataType(typeof(ComplexDocStatus))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ComplexDocStatus Status { get; set; }
 
         [Required]

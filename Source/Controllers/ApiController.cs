@@ -276,7 +276,7 @@ namespace TK302FBPrinter
                         Cut = ticketItems == null && goodsItems == null
                     }
                     : null,
-                TicketReceipt = ticketItems != null && !complexDocDto.Reprint
+                TicketReceipt = complexDocDto.Tickets != null && ticketItems != null && !complexDocDto.Reprint
                     ? new Receipt
                     {
                         Tax =
@@ -285,7 +285,7 @@ namespace TK302FBPrinter
                                 out TaxType ticketTax)
                             ? ticketTax
                             : TaxType.AutomaticMode,
-                        IsReturn = false,
+                        IsReturn = complexDocDto.Goods?.Refund ?? false,
                         Supplier = complexDocDto.Tickets.Agent
                             ? new Supplier
                             {
@@ -300,7 +300,7 @@ namespace TK302FBPrinter
                         Items = ticketItems
                     }
                     : null,
-                GoodsReceipt = goodsItems != null && !complexDocDto.Reprint
+                GoodsReceipt = complexDocDto.Goods != null && goodsItems != null && !complexDocDto.Reprint
                     ? new Receipt
                     {
                         Tax =
@@ -309,7 +309,7 @@ namespace TK302FBPrinter
                                 out TaxType goodsTax)
                             ? goodsTax
                             : TaxType.AutomaticMode,
-                        IsReturn = false,
+                        IsReturn = complexDocDto.Goods.Refund,
                         Supplier = complexDocDto.Goods.Agent
                             ? new Supplier
                             {
