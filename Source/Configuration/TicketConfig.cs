@@ -67,15 +67,15 @@ namespace TK302FBPrinter.Configuration
 
         public int SizeY { get; set; }
 
-        public Line[] Lines { get; set; }
+        public Line[] Lines { get; set; } = {};
 
-        public TextLine[] TextLines { get; set; }
+        public TextLine[] TextLines { get; set; } = {};
         
-        public TextLine[] SeatTextLines { get; set; }
+        public TextLine[] SeatTextLines { get; set; } = {};
 
-        public QrCode[] QrCodes { get; set; }
+        public QrCode[] QrCodes { get; set; } = {};
 
-        public Bitmap[] Bitmaps { get; set; }
+        public Bitmap[] Bitmaps { get; set; } = {};
     }
 
     public class TicketConfig
@@ -92,6 +92,6 @@ namespace TK302FBPrinter.Configuration
 
         public string SeatsName { get; set; }
 
-        public Template[] Templates { get; set; }
+        public Template[] Templates { get; set; } = {};
     }
 }

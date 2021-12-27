@@ -8,6 +8,7 @@ using TK302FBPrinter.Business.Operations.PrintTicket;
 using TK302FBPrinter.Device.Commands.GraphicDocOpen;
 using TK302FBPrinter.Device.Commands.GraphicDocClose;
 using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
+using TK302FBPrinter.Device.Commands.Cut;
 
 namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
 {
@@ -21,6 +22,7 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
         private readonly IGraphicDocTextAddCommand _graphicDocTextAddCommand;
         private readonly IPrintTicketOperation _printTicketOperation;
         private readonly IPrintReceiptOperation _printReceiptOperation;
+        private readonly ICutCommand _cutCommand;
 
         public PrintComplexDocOperation(
             IOptions<SlipConfig> slipConfig,
@@ -30,7 +32,8 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
             IGraphicDocCloseCommand graphicDocCloseCommand,
             IGraphicDocTextAddCommand graphicDocTextAddCommand,
             IPrintTicketOperation printTicketOperation,
-            IPrintReceiptOperation printReceiptOperation)
+            IPrintReceiptOperation printReceiptOperation,
+            ICutCommand cutCommand)
         {
             _slipConfig = slipConfig.Value;
             _connectCommand = connectCommand;
@@ -40,6 +43,7 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
             _graphicDocTextAddCommand = graphicDocTextAddCommand;
             _printTicketOperation = printTicketOperation;
             _printReceiptOperation = printReceiptOperation;
+            _cutCommand = cutCommand;
         }
 
         public bool Execute(ComplexDoc complexDoc)
@@ -85,7 +89,7 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
         {
             var slipLines = slip.Text.Split(_slipConfig.LineSeparators, System.StringSplitOptions.None);
             var sizeX = 576;
-            var sizeY = (slipLines.Length + 1) * 35;
+            var sizeY = (slipLines.Length + 1) * 25;
 
             if (!_graphicDocOpenCommand.Execute(sizeX, sizeY))
             {
@@ -98,11 +102,17 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
                 return false;
             }
 
-            if (!_graphicDocCloseCommand.Execute(slip.Cut))
+            if (!_graphicDocCloseCommand.Execute())
             {
                 AddErrorDescription(_graphicDocCloseCommand.ErrorDescription);
                 return false;
             }
+
+            if (slip.Cut && !_cutCommand.Execute())
+            {
+                AddErrorDescription(_cutCommand.ErrorDescription);
+                return false;
+            }            
 
             return true;
         }
@@ -116,8 +126,8 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
                         slipLines[index],
                         rotation: 1,
                         positionX: 0,
-                        positionY: index * 35,
-                        fontSize: 3,
+                        positionY: index * 25,
+                        fontSize: 1,
                         scaleX: 1,
                         scaleY: 2,
                         fontStyle: 11))

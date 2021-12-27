@@ -10,6 +10,8 @@ using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
 using TK302FBPrinter.Device.Commands.GraphicDocBitmapAdd;
 using TK302FBPrinter.Business.Models;
+using TK302FBPrinter.Device.Commands.Cut;
+using System.Globalization;
 
 namespace TK302FBPrinter.Business.Operations.PrintTicket
 {
@@ -24,6 +26,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
         private readonly IGraphicDocLineAddCommand _graphicDocLineAddCommand;
         private readonly IGraphicDocQrCodeAddCommand _graphicDocQrCodeAddCommand;
         private readonly IGraphicDocBitmapAddCommand _graphicDocBitmapAddCommand;
+        private readonly ICutCommand _cutCommand;
 
         public PrintTicketOperation(
             IOptions<TicketConfig> ticketConfig,
@@ -34,7 +37,8 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             IGraphicDocTextAddCommand graphicDocTextAddCommand,
             IGraphicDocLineAddCommand graphicDocLineAddCommand,
             IGraphicDocQrCodeAddCommand graphicDocQrCodeAddCommand,
-            IGraphicDocBitmapAddCommand graphicDocBitmapAddCommand)
+            IGraphicDocBitmapAddCommand graphicDocBitmapAddCommand,
+            ICutCommand cutCommand)
         {
             _ticketConfig = ticketConfig.Value;
             _connectCommand = connectCommand;
@@ -45,6 +49,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             _graphicDocLineAddCommand = graphicDocLineAddCommand;
             _graphicDocQrCodeAddCommand = graphicDocQrCodeAddCommand;
             _graphicDocBitmapAddCommand = graphicDocBitmapAddCommand;
+            _cutCommand = cutCommand;
         }
 
         public bool Execute(Ticket ticket)
@@ -82,7 +87,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (!PrintQrCodes(template.QrCodes))
+            if (!PrintQrCodes(template.QrCodes, ticket.Placeholders))
             {
                 Disconnect(ticket.WithConnection);
                 return false;
@@ -94,10 +99,16 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (!_graphicDocCloseCommand.Execute(ticket.Cut))
+            if (!_graphicDocCloseCommand.Execute())
             {
                 AddErrorDescription(_graphicDocCloseCommand.ErrorDescription);
                 Disconnect(ticket.WithConnection);
+                return false;
+            }
+
+            if (ticket.Cut && !_cutCommand.Execute())
+            {
+                AddErrorDescription(_cutCommand.ErrorDescription);
                 return false;
             }
 
@@ -132,7 +143,11 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
 
                 foreach (var placeholder in placeholders)
                 {
-                    text = text.Replace(placeholder.Key, placeholder.Value);
+                    text = text.Replace(
+                        placeholder.Key,
+                        placeholder.Value,
+                        ignoreCase: true,
+                        CultureInfo.InvariantCulture);
                 }
 
                 if (!_graphicDocTextAddCommand.Execute(
@@ -208,12 +223,23 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintQrCodes(QrCode[] qrCodes)
+        private bool PrintQrCodes(QrCode[] qrCodes, Placeholder[] placeholders)
         {
             foreach (var qrCode in qrCodes)
             {
+                var qrCodeText = qrCode.Text;
+
+                foreach (var placeholder in placeholders)
+                {
+                    qrCodeText = qrCodeText.Replace(
+                        placeholder.Key,
+                        placeholder.Value,
+                        ignoreCase: true,
+                        CultureInfo.InvariantCulture);
+                }
+
                 if (!_graphicDocQrCodeAddCommand.Execute(
-                    qrCode.Text,
+                    qrCodeText,
                     qrCode.Rotation,
                     qrCode.PositionX,
                     qrCode.PositionY,

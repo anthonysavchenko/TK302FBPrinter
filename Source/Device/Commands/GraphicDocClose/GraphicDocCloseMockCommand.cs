@@ -4,7 +4,7 @@ namespace TK302FBPrinter.Device.Commands.GraphicDocClose
     {
         public GraphicDocCloseMockCommand() : base(null, null) {}
 
-        public bool Execute(bool cut)
+        public bool Execute()
         {
             return true;
         }

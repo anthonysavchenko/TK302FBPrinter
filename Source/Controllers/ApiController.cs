@@ -344,82 +344,82 @@ namespace TK302FBPrinter
                 // Далее добавляются обязательные плейсхолдеры, которые всегда передаются в запросе
                 new Placeholder
                 {
-                    Key = "theater_name",
+                    Key = "[theater_name]",
                     Value = complexDocTicketsDto.TheatreName
                 },
                 new Placeholder
                 {
-                    Key = "theater_legal_name",
+                    Key = "[theater_legal_name]",
                     Value = complexDocTicketsDto.TheatreLegalName
                 },
                 new Placeholder
                 {
-                    Key = "ogrn",
+                    Key = "[ogrn]",
                     Value = complexDocTicketsDto.OGRN
                 },
                 new Placeholder
                 {
-                    Key = "inn",
+                    Key = "[inn]",
                     Value = complexDocTicketsDto.INN
                 },
                 new Placeholder
                 {
-                    Key = "legal_address",
+                    Key = "[legal_address]",
                     Value = complexDocTicketsDto.LegalAddress
                 },
                 new Placeholder
                 {
-                    Key = "movie",
+                    Key = "[movie]",
                     Value = complexDocTicketsDto.Movie
                 },
                 new Placeholder
                 {
-                    Key = "format",
+                    Key = "[format]",
                     Value = complexDocTicketsDto.Format
                 },
                 new Placeholder
                 {
-                    Key = "license",
+                    Key = "[license]",
                     Value = complexDocTicketsDto.License
                 },
                 new Placeholder
                 {
-                    Key = "age",
+                    Key = "[age]",
                     Value = complexDocTicketsDto.Age
                 },
                 new Placeholder
                 {
-                    Key = "show_date",
+                    Key = "[show_date]",
                     Value = complexDocTicketsDto.ShowDate
                 },
                 new Placeholder
                 {
-                    Key = "hall",
+                    Key = "[hall]",
                     Value = complexDocTicketsDto.Hall
                 },
                 new Placeholder
                 {
-                    Key = "print_code",
+                    Key = "[print_code]",
                     Value = complexDocTicketsDto.PrintCode
                 },
                 new Placeholder
                 {
-                    Key = "payment_type",
+                    Key = "[payment_type]",
                     Value = Enum.GetName(typeof(PaymentTypeDto), complexDocTicketsDto.PaymentType).ToLower()
                 },
                 new Placeholder
                 {
-                    Key = "payment_date",
+                    Key = "[payment_date]",
                     Value = complexDocTicketsDto.PaymentDate
                 },
                 new Placeholder
                 {
-                    Key = "order_id",
+                    Key = "[order_id]",
                     Value = complexDocTicketsDto.OrderId
                 },
                 new Placeholder
                 {
-                    Key = "viewers_count",
+                    Key = "[viewers_count]",
                     Value = complexDocTicketsDto.ViewersCount.ToString()
                 }
             };
@@ -430,7 +430,7 @@ namespace TK302FBPrinter
             {
                 placeholders.Add(new Placeholder
                 {
-                    Key = "discount",
+                    Key = "[discount]",
                     Value = complexDocTicketsDto.Discount.ToString()
                 });
             }
@@ -439,7 +439,7 @@ namespace TK302FBPrinter
             {
                 placeholders.Add(new Placeholder
                 {
-                    Key = "certificate",
+                    Key = "[certificate]",
                     Value = complexDocTicketsDto.Certificate
                 });
             }
@@ -448,7 +448,7 @@ namespace TK302FBPrinter
             {
                 placeholders.Add(new Placeholder
                 {
-                    Key = "bonus_card",
+                    Key = "[bonus_card]",
                     Value = complexDocTicketsDto.BonusCard
                 });
             }
@@ -457,7 +457,7 @@ namespace TK302FBPrinter
             {
                 placeholders.Add(new Placeholder
                 {
-                    Key = "bonus_type",
+                    Key = "[bonus_type]",
                     Value = Enum.GetName(typeof(BonusTypeDto), complexDocTicketsDto.BonusType).ToLower()
                 });
             }
@@ -466,7 +466,7 @@ namespace TK302FBPrinter
             {
                 placeholders.Add(new Placeholder
                 {
-                    Key = "payment_type",
+                    Key = "[payment_type]",
                     Value = Enum.GetName(typeof(PaymentTypeDto), complexDocTicketsDto.PaymentType).ToLower()
                 });
             }
@@ -475,7 +475,7 @@ namespace TK302FBPrinter
             {
                 placeholders.Add(new Placeholder
                 {
-                    Key = "cashier",
+                    Key = "[cashier]",
                     Value = complexDocTicketsDto.Cashier
                 });
             }
@@ -484,7 +484,7 @@ namespace TK302FBPrinter
             {
                 placeholders.Add(new Placeholder
                 {
-                    Key = "comment",
+                    Key = "[comment]",
                     Value = complexDocTicketsDto.Comment
                 });
             }
@@ -493,7 +493,7 @@ namespace TK302FBPrinter
             {
                 placeholders.Add(new Placeholder
                 {
-                    Key = "email",
+                    Key = "[email]",
                     Value = complexDocTicketsDto.Email
                 });
             }
