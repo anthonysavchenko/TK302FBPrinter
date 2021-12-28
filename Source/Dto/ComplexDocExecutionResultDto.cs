@@ -21,11 +21,13 @@ namespace TK302FBPrinter.Dto
         {
             if (!string.IsNullOrEmpty(errorDescription))
             {
-                ErrorDescription = errorDescription;
+                Error = errorDescription;
+                Description = errorDescription;
                 Status = ComplexDocStatus.Error;
                 return;
             }
-            ErrorDescription = string.Empty;
+            Error = string.Empty;
+            Description = string.Empty;
             Status = ComplexDocStatus.Success;
         }
 
@@ -35,6 +37,10 @@ namespace TK302FBPrinter.Dto
 
         [Required]
         [MaxLength(1000)]
-        public string ErrorDescription { get; set; }
+        public string Error { get; set; }
+
+        [Required]
+        [MaxLength(1000)]
+        public string Description { get; set; }
     }
 }

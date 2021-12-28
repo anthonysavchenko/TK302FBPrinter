@@ -248,9 +248,11 @@ namespace TK302FBPrinter
 
             goodsItems = goodsItems != null && goodsItems.Length == 0 ? null : goodsItems;
 
+            var refund = complexDocDto.Goods?.Refund ?? false;
+
             var complexDoc = new ComplexDoc
             {
-                Ticket = complexDocDto.Tickets != null
+                Ticket = complexDocDto.Tickets != null && !refund
                     ? new Ticket
                     {
                         TemplateName = "Template1",
@@ -269,7 +271,7 @@ namespace TK302FBPrinter
                             .ToArray()
                     }
                     : null,
-                Slip = !string.IsNullOrEmpty(complexDocDto.SlipCheck) && !complexDocDto.Reprint
+                Slip = !string.IsNullOrEmpty(complexDocDto.SlipCheck) && !complexDocDto.Reprint && !refund
                     ? new ComplexDocSlip
                     {
                         Text = complexDocDto.SlipCheck,
@@ -285,7 +287,7 @@ namespace TK302FBPrinter
                                 out TaxType ticketTax)
                             ? ticketTax
                             : TaxType.AutomaticMode,
-                        IsReturn = complexDocDto.Goods?.Refund ?? false,
+                        IsReturn = refund,
                         Supplier = complexDocDto.Tickets.Agent
                             ? new Supplier
                             {
@@ -309,7 +311,7 @@ namespace TK302FBPrinter
                                 out TaxType goodsTax)
                             ? goodsTax
                             : TaxType.AutomaticMode,
-                        IsReturn = complexDocDto.Goods.Refund,
+                        IsReturn = refund,
                         Supplier = complexDocDto.Goods.Agent
                             ? new Supplier
                             {
