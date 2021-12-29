@@ -344,6 +344,7 @@ namespace TK302FBPrinter
             var placeholders = new List<Placeholder>()
             {
                 // Далее добавляются обязательные плейсхолдеры, которые всегда передаются в запросе
+
                 new Placeholder
                 {
                     Key = "[theater_name]",
@@ -443,73 +444,58 @@ namespace TK302FBPrinter
                 {
                     Key = "[viewers_count]",
                     Value = complexDocTicketsDto.ViewersCount.ToString()
-                }
-            };
-            
-            // Далее добавляются необязательные плейсхолдеры, если они переданы в запросе
-            
-            if (complexDocTicketsDto.Discount != null)
-            {
-                placeholders.Add(new Placeholder
-                {
-                    Key = "[discount]",
-                    Value = MapAmount(complexDocTicketsDto.Discount ?? 0)
-                });
-            }
-
-            if (!string.IsNullOrEmpty(complexDocTicketsDto.Certificate))
-            {
-                placeholders.Add(new Placeholder
-                {
-                    Key = "[certificate]",
-                    Value = complexDocTicketsDto.Certificate
-                });
-            }
-
-            if (!string.IsNullOrEmpty(complexDocTicketsDto.BonusCard))
-            {
-                placeholders.Add(new Placeholder
-                {
-                    Key = "[bonus_card]",
-                    Value = complexDocTicketsDto.BonusCard
-                });
-            }
-
-            if (complexDocTicketsDto.BonusType != null)
-            {
-                placeholders.Add(new Placeholder
-                {
-                    Key = "[bonus_type]",
-                    Value = MapBonusType(complexDocTicketsDto.BonusType)
-                });
-            }
-
-            if (!string.IsNullOrEmpty(complexDocTicketsDto.Cashier))
-            {
-                placeholders.Add(new Placeholder
+                },
+                new Placeholder
                 {
                     Key = "[cashier]",
                     Value = complexDocTicketsDto.Cashier
-                });
-            }
+                },
 
-            if (!string.IsNullOrEmpty(complexDocTicketsDto.Comment))
-            {
-                placeholders.Add(new Placeholder
+                // Далее добавляются необязательные плейсхолдеры, которые могут отсутствовать в запросе
+    
+                new Placeholder
+                {
+                    Key = "[discount]",
+                    Value = complexDocTicketsDto.Discount != null
+                        ? MapAmount(complexDocTicketsDto.Discount.Value)
+                        : string.Empty
+                },
+                new Placeholder
+                {
+                    Key = "[certificate]",
+                    Value = !string.IsNullOrEmpty(complexDocTicketsDto.Certificate)
+                        ? complexDocTicketsDto.Certificate
+                        : string.Empty
+                },
+                new Placeholder
+                {
+                    Key = "[bonus_card]",
+                    Value = !string.IsNullOrEmpty(complexDocTicketsDto.BonusCard)
+                        ? complexDocTicketsDto.BonusCard
+                        : string.Empty
+                },
+                new Placeholder
+                {
+                    Key = "[bonus_type]",
+                    Value = complexDocTicketsDto.BonusType != null
+                        ? MapBonusType(complexDocTicketsDto.BonusType)
+                        : string.Empty
+                },
+                new Placeholder
                 {
                     Key = "[comment]",
-                    Value = complexDocTicketsDto.Comment
-                });
-            }
-
-            if (!string.IsNullOrEmpty(complexDocTicketsDto.Email))
-            {
-                placeholders.Add(new Placeholder
+                    Value = !string.IsNullOrEmpty(complexDocTicketsDto.Comment)
+                        ? complexDocTicketsDto.Comment
+                        : string.Empty
+                },
+                new Placeholder
                 {
                     Key = "[email]",
-                    Value = complexDocTicketsDto.Email
-                });
-            }
+                    Value = !string.IsNullOrEmpty(complexDocTicketsDto.Email)
+                        ? complexDocTicketsDto.Email
+                        : string.Empty
+                }
+            };
 
             return placeholders.ToArray();            
         }

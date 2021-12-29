@@ -150,13 +150,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                         CultureInfo.InvariantCulture);
                 }
 
-                // Команда на печать пустой строки приводит к ошибке принтера
-                if (string.IsNullOrEmpty(text))
-                {
-                    text = " ";
-                }
-
-                if (!_graphicDocTextAddCommand.Execute(
+                if (!string.IsNullOrWhiteSpace(text) && !_graphicDocTextAddCommand.Execute(
                     text,
                     textLine.Rotation,
                     textLine.PositionX,
@@ -208,21 +202,18 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                     text = text.Replace(_ticketConfig.SeatsPlaceholder.Replace("1", $"{index + 1}"), string.Empty);
                 }
 
-                if (text != textLine.Text && !string.IsNullOrWhiteSpace(text))
+                if (text != textLine.Text && !string.IsNullOrWhiteSpace(text) && !_graphicDocTextAddCommand.Execute(
+                    text,
+                    textLine.Rotation,
+                    textLine.PositionX,
+                    textLine.PositionY,
+                    textLine.FontSize,
+                    textLine.ScaleX,
+                    textLine.ScaleY,
+                    textLine.FontStyle))
                 {
-                    if (!_graphicDocTextAddCommand.Execute(
-                        text,
-                        textLine.Rotation,
-                        textLine.PositionX,
-                        textLine.PositionY,
-                        textLine.FontSize,
-                        textLine.ScaleX,
-                        textLine.ScaleY,
-                        textLine.FontStyle))
-                    {
-                        AddErrorDescription(_graphicDocTextAddCommand.ErrorDescription);
-                        return false;
-                    }
+                    AddErrorDescription(_graphicDocTextAddCommand.ErrorDescription);
+                    return false;
                 }
             }
 
