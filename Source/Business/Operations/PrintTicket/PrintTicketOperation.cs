@@ -150,6 +150,12 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                         CultureInfo.InvariantCulture);
                 }
 
+                // Команда на печать пустой строки приводит к ошибке принтера
+                if (string.IsNullOrEmpty(text))
+                {
+                    text = " ";
+                }
+
                 if (!_graphicDocTextAddCommand.Execute(
                     text,
                     textLine.Rotation,

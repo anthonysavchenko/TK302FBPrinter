@@ -376,6 +376,21 @@ namespace TK302FBPrinter
                 },
                 new Placeholder
                 {
+                    Key = "[movie1]",
+                    Value = MapMovie(complexDocTicketsDto.Movie, 0)
+                },
+                new Placeholder
+                {
+                    Key = "[movie2]",
+                    Value = MapMovie(complexDocTicketsDto.Movie, 1)
+                },
+                new Placeholder
+                {
+                    Key = "[movie3]",
+                    Value = MapMovie(complexDocTicketsDto.Movie, 2)
+                },
+                new Placeholder
+                {
                     Key = "[format]",
                     Value = complexDocTicketsDto.Format
                 },
@@ -401,13 +416,18 @@ namespace TK302FBPrinter
                 },
                 new Placeholder
                 {
+                    Key = "[amount]",
+                    Value = MapAmount(complexDocTicketsDto.Amount)
+                },
+                new Placeholder
+                {
                     Key = "[print_code]",
                     Value = complexDocTicketsDto.PrintCode
                 },
                 new Placeholder
                 {
                     Key = "[payment_type]",
-                    Value = Enum.GetName(typeof(PaymentTypeDto), complexDocTicketsDto.PaymentType).ToLower()
+                    Value = MapPaymentType(complexDocTicketsDto.PaymentType)
                 },
                 new Placeholder
                 {
@@ -433,11 +453,11 @@ namespace TK302FBPrinter
                 placeholders.Add(new Placeholder
                 {
                     Key = "[discount]",
-                    Value = complexDocTicketsDto.Discount.ToString()
+                    Value = MapAmount(complexDocTicketsDto.Discount ?? 0)
                 });
             }
 
-            if (string.IsNullOrEmpty(complexDocTicketsDto.Certificate))
+            if (!string.IsNullOrEmpty(complexDocTicketsDto.Certificate))
             {
                 placeholders.Add(new Placeholder
                 {
@@ -446,7 +466,7 @@ namespace TK302FBPrinter
                 });
             }
 
-            if (string.IsNullOrEmpty(complexDocTicketsDto.BonusCard))
+            if (!string.IsNullOrEmpty(complexDocTicketsDto.BonusCard))
             {
                 placeholders.Add(new Placeholder
                 {
@@ -460,20 +480,11 @@ namespace TK302FBPrinter
                 placeholders.Add(new Placeholder
                 {
                     Key = "[bonus_type]",
-                    Value = Enum.GetName(typeof(BonusTypeDto), complexDocTicketsDto.BonusType).ToLower()
+                    Value = MapBonusType(complexDocTicketsDto.BonusType)
                 });
             }
 
-            if (complexDocTicketsDto.PaymentType != null)
-            {
-                placeholders.Add(new Placeholder
-                {
-                    Key = "[payment_type]",
-                    Value = Enum.GetName(typeof(PaymentTypeDto), complexDocTicketsDto.PaymentType).ToLower()
-                });
-            }
-
-            if (string.IsNullOrEmpty(complexDocTicketsDto.Cashier))
+            if (!string.IsNullOrEmpty(complexDocTicketsDto.Cashier))
             {
                 placeholders.Add(new Placeholder
                 {
@@ -482,7 +493,7 @@ namespace TK302FBPrinter
                 });
             }
 
-            if (string.IsNullOrEmpty(complexDocTicketsDto.Comment))
+            if (!string.IsNullOrEmpty(complexDocTicketsDto.Comment))
             {
                 placeholders.Add(new Placeholder
                 {
@@ -491,7 +502,7 @@ namespace TK302FBPrinter
                 });
             }
 
-            if (string.IsNullOrEmpty(complexDocTicketsDto.Email))
+            if (!string.IsNullOrEmpty(complexDocTicketsDto.Email))
             {
                 placeholders.Add(new Placeholder
                 {
@@ -501,6 +512,56 @@ namespace TK302FBPrinter
             }
 
             return placeholders.ToArray();            
+        }
+
+        private string MapMovie(string movieDto, int partIndex)
+        {
+            var length = 25;
+            var startIndex = length * partIndex;
+
+            if (startIndex >= movieDto.Length)
+            {
+                return string.Empty;
+            }
+
+            if (startIndex + length > movieDto.Length)
+            {
+                length = movieDto.Length - startIndex;
+            }
+
+            return movieDto.Substring(startIndex, length);
+        }
+
+        private string MapAmount(int amountDto)
+        {
+            var rubles = amountDto >= 100 ? amountDto / 100 : 0;
+            return rubles.ToString();
+        }
+
+        private string MapPaymentType(PaymentTypeDto paymentTypeDto)
+        {
+            switch (paymentTypeDto)
+            {
+                case PaymentTypeDto.Card:
+                    return "р. Банковская карта";
+                case PaymentTypeDto.Bonus:
+                    return "бонусные баллы";
+                default:
+                    return string.Empty;
+            }
+        }
+
+        private string MapBonusType(BonusTypeDto? bonusTypeDto)
+        {
+            switch (bonusTypeDto)
+            {
+                case BonusTypeDto.Pay:
+                    return "оплата";
+                case BonusTypeDto.Accrual:
+                    return "начисление";
+                default:
+                    return string.Empty;
+            }
         }
 
         // Преобразует тип НДС из int? в VATType

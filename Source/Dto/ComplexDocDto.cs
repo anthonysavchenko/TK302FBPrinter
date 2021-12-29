@@ -102,9 +102,10 @@ namespace TK302FBPrinter.Dto
         [EnumDataType(typeof(BonusTypeDto))]
         public BonusTypeDto? BonusType { get; set; }
 
+        [Required]
         [JsonProperty("payment_type")]
         [EnumDataType(typeof(PaymentTypeDto))]
-        public PaymentTypeDto? PaymentType { get; set; }
+        public PaymentTypeDto PaymentType { get; set; }
 
         [Required]
         public string Cashier { get; set; }
