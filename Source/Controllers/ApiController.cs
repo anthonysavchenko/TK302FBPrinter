@@ -524,14 +524,16 @@ namespace TK302FBPrinter
             return rubles.ToString();
         }
 
-        private string MapPaymentType(PaymentTypeDto paymentTypeDto)
+        private string MapPaymentType(string paymentTypeDto)
         {
-            switch (paymentTypeDto)
+            switch (paymentTypeDto?.ToLower())
             {
-                case PaymentTypeDto.Card:
+                case "card":
                     return "р. Банковская карта";
-                case PaymentTypeDto.Bonus:
+                case "bonus":
                     return "бонусные баллы";
+                case "pushkin-card":
+                    return "Пушкинская карта";
                 default:
                     return string.Empty;
             }

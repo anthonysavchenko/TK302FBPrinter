@@ -9,12 +9,6 @@ namespace TK302FBPrinter.Dto
         Accrual
     }
 
-    public enum PaymentTypeDto
-    {
-        Card,
-        Bonus
-    }
-
     public enum SeatTypeDto
     {
         Vip,
@@ -104,8 +98,7 @@ namespace TK302FBPrinter.Dto
 
         [Required]
         [JsonProperty("payment_type")]
-        [EnumDataType(typeof(PaymentTypeDto))]
-        public PaymentTypeDto PaymentType { get; set; }
+        public string PaymentType { get; set; }
 
         [Required]
         public string Cashier { get; set; }

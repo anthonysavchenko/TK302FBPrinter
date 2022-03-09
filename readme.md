@@ -539,7 +539,7 @@ show_date | datetime [dd.mm.yy hh:mm] | Да | Дата проведения с�
 hall | string | Да | Зал для проведения сеанса
 amount | integer | Да | Цена за билет в копейках
 print_code | string | Да | Принт-код билета
-payment_type | enum[string] [card, bonus] | Да | Способ оплаты
+payment_type | enum[string] [card, bonus, pushkin-card] | Да | Способ оплаты
 cashier | string | Да | ФИО кассира
 payment_date | datetime [dd.mm.yy hh:mm] | Да | Дата покупки билета
 seats | array<seat> | Да | Массив купленных мест
