@@ -15,6 +15,7 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
     public class PrintComplexDocOperation : Operation, IPrintComplexDocOperation
     {
         private readonly SlipConfig _slipConfig;
+        private readonly ComplexDocConfig _complexDocConfig;
         private readonly IConnectCommand _connectCommand;
         private readonly IDisconnectCommand _disconnectCommand;
         private readonly IGraphicDocOpenCommand _graphicDocOpenCommand;
@@ -26,6 +27,7 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
 
         public PrintComplexDocOperation(
             IOptions<SlipConfig> slipConfig,
+            IOptions<ComplexDocConfig> complexDocConfig,
             IConnectCommand connectCommand,
             IDisconnectCommand disconnectCommand,
             IGraphicDocOpenCommand graphicDocOpenCommand,
@@ -36,6 +38,7 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
             ICutCommand cutCommand)
         {
             _slipConfig = slipConfig.Value;
+            _complexDocConfig = complexDocConfig.Value;
             _connectCommand = connectCommand;
             _disconnectCommand = disconnectCommand;
             _graphicDocOpenCommand = graphicDocOpenCommand;
@@ -54,27 +57,33 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
                 return false;
             }
 
-            if (complexDoc.Ticket != null && !_printTicketOperation.Execute(complexDoc.Ticket))
+            if (complexDoc.Ticket != null && !_printTicketOperation.Execute(
+                complexDoc.Ticket,
+                _complexDocConfig.PrintTicketOnly))
             {
                 AddErrorDescription(_printTicketOperation.ErrorDescriptions);
                 Disconnect();
                 return false;
             }
 
-            if (complexDoc.Slip != null && !PrintSlip(complexDoc.Slip))
+            if (complexDoc.Slip != null && !PrintSlip(complexDoc.Slip, !_complexDocConfig.PrintTicketOnly))
             {
                 Disconnect();
                 return false;
             }
 
-            if (complexDoc.TicketReceipt != null && !_printReceiptOperation.Execute(complexDoc.TicketReceipt))
+            if (complexDoc.TicketReceipt != null && !_printReceiptOperation.Execute(
+                complexDoc.TicketReceipt,
+                !_complexDocConfig.PrintTicketOnly))
             {
                 AddErrorDescription(_printReceiptOperation.ErrorDescriptions);
                 Disconnect();
                 return false;
             }
 
-            if (complexDoc.GoodsReceipt != null && !_printReceiptOperation.Execute(complexDoc.GoodsReceipt))
+            if (complexDoc.GoodsReceipt != null && !_printReceiptOperation.Execute(
+                complexDoc.GoodsReceipt,
+                !_complexDocConfig.PrintTicketOnly))
             {
                 AddErrorDescription(_printReceiptOperation.ErrorDescriptions);
                 Disconnect();
@@ -85,8 +94,13 @@ namespace TK302FBPrinter.Business.Operations.PrintComplexDoc
             return true;
         }
 
-        private bool PrintSlip(ComplexDocSlip slip)
+        private bool PrintSlip(ComplexDocSlip slip, bool print)
         {
+            if (!print)
+            {
+                return true;
+            }
+
             var slipLines = slip.Text.Split(_slipConfig.LineSeparators, System.StringSplitOptions.None);
             var sizeX = 576;
             var sizeY = (slipLines.Length + 1) * 25;

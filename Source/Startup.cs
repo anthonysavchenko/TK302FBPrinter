@@ -60,6 +60,7 @@ namespace TK302FBPrinter
             services.Configure<DeviceConfig>(deviceConfig);
             services.Configure<SlipConfig>(Configuration.GetSection(SlipConfig.SectionName));
             services.Configure<TicketConfig>(Configuration.GetSection(TicketConfig.SectionName));
+            services.Configure<ComplexDocConfig>(Configuration.GetSection(ComplexDocConfig.SectionName));
 
             if (deviceConfig.GetValue<bool>("EmulationMode", false))
             {

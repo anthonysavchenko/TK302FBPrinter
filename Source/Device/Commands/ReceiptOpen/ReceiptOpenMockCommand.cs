@@ -4,7 +4,7 @@ namespace TK302FBPrinter.Device.Commands.ReceiptOpen
     {
         public ReceiptOpenMockCommand() : base(null, null) {}
 
-        public bool Execute(bool isReturn, int taxType)
+        public bool Execute(bool isReturn, int taxType, bool print)
         {
             return true;
         }

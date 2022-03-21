@@ -4,6 +4,6 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
 {
     public interface IPrintReceiptOperation : IOperation
     {
-        bool Execute(Receipt receipt);
+        bool Execute(Receipt receipt, bool print = true);
     }
 }

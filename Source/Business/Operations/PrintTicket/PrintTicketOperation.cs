@@ -52,7 +52,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             _cutCommand = cutCommand;
         }
 
-        public bool Execute(Ticket ticket)
+        public bool Execute(Ticket ticket, bool cut = false)
         {
             var template = System.Array.Find(_ticketConfig.Templates, t => t.TemplateName == ticket.TemplateName);
 
@@ -106,7 +106,7 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (ticket.Cut && !_cutCommand.Execute())
+            if ((cut || ticket.Cut) && !_cutCommand.Execute())
             {
                 AddErrorDescription(_cutCommand.ErrorDescription);
                 return false;

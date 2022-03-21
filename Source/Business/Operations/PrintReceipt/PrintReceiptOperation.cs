@@ -53,7 +53,7 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
             _cutCommand = cutCommand;            
         }
 
-        public bool Execute(Receipt receipt)
+        public bool Execute(Receipt receipt, bool print = true)
         {
             if (receipt.WithConnection && !_connectCommand.Execute())
             {
@@ -61,7 +61,7 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
                 return false;
             }
 
-            if (!_receiptOpenCommand.Execute(receipt.IsReturn, (int)receipt.Tax))
+            if (!_receiptOpenCommand.Execute(receipt.IsReturn, (int)receipt.Tax, print))
             {
                 AddErrorDescription(_receiptOpenCommand.ErrorDescription);
                 Disconnect(receipt.WithConnection);
@@ -127,7 +127,7 @@ namespace TK302FBPrinter.Business.Operations.PrintReceipt
                 return false;
             }
 
-            if (receipt.Cut && !_cutCommand.Execute())
+            if (print && receipt.Cut && !_cutCommand.Execute())
             {
                 AddErrorDescription(_cutCommand.ErrorDescription);
                 Disconnect(receipt.WithConnection);

@@ -11,9 +11,8 @@ namespace TK302FBPrinter.Device.Commands.ReceiptOpen
             DeviceConnector deviceConnector,
             IOptionsSnapshot<DeviceConfig> deviceConfig) : base(deviceConnector, deviceConfig.Value) {}
 
-        public bool Execute(bool isReturn, int taxType)
+        public bool Execute(bool isReturn, int taxType, bool print)
         {
-            bool print = true; // Печатать фискальный документ (ФД)
             bool saveOnFile = false; // Не сохранять ФД в памяти ККТ (формат документа .spl)
 
             // Тип документа (приход, возврат и т.д.)
@@ -50,7 +49,7 @@ namespace TK302FBPrinter.Device.Commands.ReceiptOpen
             {
                 var deviceResponse = _deviceConnector.Connection.OpenFiscalDocument(
                     _deviceConfig.OperatorPassword,
-                    print,
+                    print: print, // Печатать фискальный документ (ФД)
                     saveOnFile,
                     docType,
                     taxCode);
