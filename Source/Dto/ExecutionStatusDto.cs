@@ -6,7 +6,7 @@ using Newtonsoft.Json.Converters;
 namespace TK302FBPrinter.Dto
 {
 
-    public enum ComplexDocStatus
+    public enum ExecutionStatus
     {
         [EnumMember(Value = "success")]
         Success,
@@ -15,25 +15,25 @@ namespace TK302FBPrinter.Dto
         Error
     }
 
-    public class ComplexDocExecutionResultDto
+    public class ExecutionStatusDto
     {
-        public ComplexDocExecutionResultDto(string errorDescription = null)
+        public ExecutionStatusDto(string errorDescription = null)
         {
             if (!string.IsNullOrEmpty(errorDescription))
             {
                 Error = errorDescription;
                 Description = errorDescription;
-                Status = ComplexDocStatus.Error;
+                Status = ExecutionStatus.Error;
                 return;
             }
             Error = string.Empty;
             Description = string.Empty;
-            Status = ComplexDocStatus.Success;
+            Status = ExecutionStatus.Success;
         }
 
         [Required]
         [JsonConverter(typeof(StringEnumConverter))]
-        public ComplexDocStatus Status { get; set; }
+        public ExecutionStatus Status { get; set; }
 
         [Required]
         [MaxLength(1000)]

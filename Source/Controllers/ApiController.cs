@@ -89,28 +89,28 @@ namespace TK302FBPrinter
 
         // POST /api/shift/close
         [HttpPost("shift/close")]
-        public ActionResult<ExecutionResultDto> ShiftClose(ShiftCloseDto shiftCloseDto)
+        public ActionResult<ExecutionStatusDto> ShiftClose(ShiftCloseDto shiftCloseDto)
         {
             var shiftClose = new ShiftClose
             {
                 Cut = shiftCloseDto?.Cut ?? true
             };
 
-            return Ok(new ExecutionResultDto(!_shiftCloseOperation.Execute(shiftClose)
+            return Ok(new ExecutionStatusDto(!_shiftCloseOperation.Execute(shiftClose)
                 ? _shiftCloseOperation.ErrorDescriptions
                 : null));
         }
 
         // POST /api/print/report/x
         [HttpPost("print/report/x")]
-        public ActionResult<ExecutionResultDto> PrintReportX(ReportXDto reportXDto)
+        public ActionResult<ExecutionStatusDto> PrintReportX(ReportXDto reportXDto)
         {
             var reportX = new ReportX
             {
                 Cut = reportXDto?.Cut ?? true
             };
 
-            return Ok(new ExecutionResultDto(!_printReportXOperation.Execute(reportX)
+            return Ok(new ExecutionStatusDto(!_printReportXOperation.Execute(reportX)
                 ? _printReportXOperation.ErrorDescriptions
                 : null));
         }
@@ -212,7 +212,7 @@ namespace TK302FBPrinter
         // Для коррекстной отрезки данного документа нужно убрать автоотрезку в настройках принтера
         // (Custom-RU Test Tool -> Настройкт ККТ -> Параметры чека -> Автоотрезчик активирован)
         [HttpPost("print/complex-doc")]
-        public ActionResult<ComplexDocExecutionResultDto> PrintComplexDoc([Required] ComplexDocDto complexDocDto)
+        public ActionResult<ExecutionStatusDto> PrintComplexDoc([Required] ComplexDocDto complexDocDto)
         {
             // Кассовый чек для билетов содержит только те позиции, название которых равно "Кинобилет"
             var ticketItems = complexDocDto.Goods != null
@@ -328,7 +328,7 @@ namespace TK302FBPrinter
                     : null
             };
 
-            return Ok(new ComplexDocExecutionResultDto(!_printComplexDocOperation.Execute(complexDoc)
+            return Ok(new ExecutionStatusDto(!_printComplexDocOperation.Execute(complexDoc)
                 ? _printComplexDocOperation.ErrorDescriptions
                 : null));
         }
