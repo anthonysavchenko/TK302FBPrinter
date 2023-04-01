@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace TK302FBPrinter.Dto
@@ -15,6 +16,15 @@ namespace TK302FBPrinter.Dto
         Sofa,
         Simple,
         BeatBox
+    }
+
+    public enum ComplexDocPaymentTypeDto {
+
+        Card,
+        Bonus,
+
+        [EnumMember(Value = "pushkin-card")]
+        PushkinCard
     }
 
     public class ComplexDocSeatDto
@@ -98,7 +108,11 @@ namespace TK302FBPrinter.Dto
 
         [Required]
         [JsonProperty("payment_type")]
-        public string PaymentType { get; set; }
+        [EnumDataType(typeof(ComplexDocPaymentTypeDto))]
+        public ComplexDocPaymentTypeDto PaymentType { get; set; }
+
+        [JsonProperty("pushkin_card_owner_name")]
+        public string PushkinCardOwnerName { get; set; }
 
         [Required]
         public string Cashier { get; set; }
@@ -127,7 +141,6 @@ namespace TK302FBPrinter.Dto
 
         [JsonProperty("agent_phone")]
         public string AgentPhone { get; set; }
-
 
         [Required]
         public ComplexDocSeatDto[] Seats { get; set; }

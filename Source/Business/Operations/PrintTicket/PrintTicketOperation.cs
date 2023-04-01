@@ -1,17 +1,18 @@
+using System;
+using System.Globalization;
 using System.Linq;
 using Microsoft.Extensions.Options;
+using TK302FBPrinter.Business.Models;
 using TK302FBPrinter.Configuration;
 using TK302FBPrinter.Device.Commands.Connect;
-using TK302FBPrinter.Device.Commands.Disconnect;
-using TK302FBPrinter.Device.Commands.GraphicDocClose;
-using TK302FBPrinter.Device.Commands.GraphicDocOpen;
-using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
-using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
-using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
-using TK302FBPrinter.Device.Commands.GraphicDocBitmapAdd;
-using TK302FBPrinter.Business.Models;
 using TK302FBPrinter.Device.Commands.Cut;
-using System.Globalization;
+using TK302FBPrinter.Device.Commands.Disconnect;
+using TK302FBPrinter.Device.Commands.GraphicDocBitmapAdd;
+using TK302FBPrinter.Device.Commands.GraphicDocClose;
+using TK302FBPrinter.Device.Commands.GraphicDocLineAdd;
+using TK302FBPrinter.Device.Commands.GraphicDocOpen;
+using TK302FBPrinter.Device.Commands.GraphicDocQrCodeAdd;
+using TK302FBPrinter.Device.Commands.GraphicDocTextAdd;
 
 namespace TK302FBPrinter.Business.Operations.PrintTicket
 {
@@ -75,7 +76,12 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
                 return false;
             }
 
-            if (!PrintTextLines(template.TextLines, ticket.Placeholders))
+            if (!PrintTextLines(
+                template.TextLines,
+                ticket.Placeholders,
+                ticket.PaymentType,
+                ticket.Hall,
+                ticket.Format))
             {
                 Disconnect(ticket.WithConnection);
                 return false;
@@ -135,37 +141,76 @@ namespace TK302FBPrinter.Business.Operations.PrintTicket
             return true;
         }
 
-        private bool PrintTextLines(TextLine[] textLines, Placeholder[] placeholders)
+        private bool PrintTextLines(
+            TextLine[] textLines,
+            Placeholder[] placeholders,
+            PaymentType paymentType,
+            string hall,
+            string format)
         {
             foreach (var textLine in textLines)
             {
-                var text = textLine.Text;
+                var printTextLine = DoesTextLineSatisfyConditions(textLine, paymentType, hall, format);
 
-                foreach (var placeholder in placeholders)
+                if (printTextLine)
                 {
-                    text = text.Replace(
-                        placeholder.Key,
-                        placeholder.Value,
-                        ignoreCase: true,
-                        CultureInfo.InvariantCulture);
-                }
+                    var text = textLine.Text;
 
-                if (!string.IsNullOrWhiteSpace(text) && !_graphicDocTextAddCommand.Execute(
-                    text,
-                    textLine.Rotation,
-                    textLine.PositionX,
-                    textLine.PositionY,
-                    textLine.FontSize,
-                    textLine.ScaleX,
-                    textLine.ScaleY,
-                    textLine.FontStyle))
-                {
-                    AddErrorDescription(_graphicDocTextAddCommand.ErrorDescription);
-                    return false;
+                    foreach (var placeholder in placeholders)
+                    {
+                        text = text.Replace(
+                            placeholder.Key,
+                            placeholder.Value,
+                            ignoreCase: true,
+                            CultureInfo.InvariantCulture);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(text) && !_graphicDocTextAddCommand.Execute(
+                        text,
+                        textLine.Rotation,
+                        textLine.PositionX,
+                        textLine.PositionY,
+                        textLine.FontSize,
+                        textLine.ScaleX,
+                        textLine.ScaleY,
+                        textLine.FontStyle))
+                    {
+                        AddErrorDescription(_graphicDocTextAddCommand.ErrorDescription);
+                        return false;
+                    }
                 }
             }
 
             return true;
+        }
+
+        private bool DoesTextLineSatisfyConditions(
+            TextLine textLine,
+            PaymentType paymentType,
+            string hall,
+            string format)
+        {
+            var printTextLineForPaymentType = string.IsNullOrWhiteSpace(textLine.PrintOnlyForPaymentType) ||
+                Enum.TryParse<PaymentType>(
+                    textLine.PrintOnlyForPaymentType,
+                    out PaymentType printOnlyForPaymentType) &&
+                printOnlyForPaymentType == paymentType;
+
+            var printTextLineForHall = textLine.PrintOnlyForHallDoesNotContain == null ||
+                textLine.PrintOnlyForHallDoesNotContain.Length == 0 ||
+                string.IsNullOrWhiteSpace(hall) ||
+                textLine.PrintOnlyForHallDoesNotContain.All(x => 
+                    string.IsNullOrWhiteSpace(x) ||
+                    !hall.Contains(x, StringComparison.InvariantCultureIgnoreCase));
+
+            var printTextLineForFormat = textLine.PrintOnlyForFormatContains == null ||
+                textLine.PrintOnlyForFormatContains.Length == 0 ||
+                string.IsNullOrWhiteSpace(format) ||
+                textLine.PrintOnlyForFormatContains.All(x =>
+                    string.IsNullOrWhiteSpace(x) ||
+                    format.Contains(x, StringComparison.InvariantCultureIgnoreCase));
+
+            return printTextLineForPaymentType && printTextLineForHall && printTextLineForFormat;
         }
 
         private bool PrintSeats(Seat[] seats, TextLine[] seatTextLines)

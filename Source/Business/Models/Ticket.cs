@@ -1,5 +1,11 @@
 namespace TK302FBPrinter.Business.Models
 {
+    public enum PaymentType {
+        Card,
+        Bonus,
+        PushkinCard
+    }
+
     public class Placeholder
     {
         public string Key { get; set; }
@@ -17,6 +23,12 @@ namespace TK302FBPrinter.Business.Models
     public class Ticket
     {
         public string TemplateName { get; set; }
+
+        public PaymentType PaymentType { get; set; }
+
+        public string Hall { get; set; }
+
+        public string Format { get; set; }
 
         public Placeholder[] Placeholders { get; set; }
 

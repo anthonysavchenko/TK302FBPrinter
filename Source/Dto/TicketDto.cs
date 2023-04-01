@@ -1,9 +1,16 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace TK302FBPrinter.Dto
 {
+    public enum PaymentTypeDto {
+
+        Card,
+        Bonus,
+        PushkinCard
+    }
+
     public class PlaceholderDto
     {
         [Required]
@@ -36,8 +43,17 @@ namespace TK302FBPrinter.Dto
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool Cut { get; set; }
 
+        [EnumDataType(typeof(PaymentTypeDto))]
+        public PaymentTypeDto PaymentType { get; set; }
+
         public PlaceholderDto[] Placeholders { get; set; } = {};
 
         public SeatDto[] Seats { get; set; } = {};
+
+        [MaxLength(250)]
+        public string Hall { get; set; }
+
+        [MaxLength(250)]
+        public string Format { get; set; }
     }
 }

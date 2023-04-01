@@ -29,6 +29,12 @@ namespace TK302FBPrinter.Configuration
         public int ScaleY { get; set; }
 
         public int FontStyle { get; set; }
+
+        public string PrintOnlyForPaymentType { get; set; }
+
+        public string[] PrintOnlyForFormatContains { get; set; }
+
+        public string[] PrintOnlyForHallDoesNotContain { get; set; }
     }
 
     public class QrCode

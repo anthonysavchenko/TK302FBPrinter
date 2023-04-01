@@ -200,7 +200,15 @@ namespace TK302FBPrinter
                             Row = x.Row,
                             Place = x.Place
                         })
-                    .ToArray()
+                    .ToArray(),
+                PaymentType =
+                    Enum.TryParse<PaymentType>(
+                        Enum.GetName(typeof(PaymentTypeDto), ticketDto.PaymentType),
+                        out PaymentType paymentType)
+                    ? paymentType
+                    : PaymentType.Card,
+                Hall = ticketDto.Hall,
+                Format = ticketDto.Format
             };
 
             return Ok(new ExecutionResultDto(!_printTicketOperation.Execute(ticket)
@@ -268,7 +276,15 @@ namespace TK302FBPrinter
                                     Row = x.Row,
                                     Place = x.Place
                                 })
-                            .ToArray()
+                            .ToArray(),
+                        PaymentType =
+                            Enum.TryParse<PaymentType>(
+                                Enum.GetName(typeof(ComplexDocPaymentTypeDto), complexDocDto.Tickets.PaymentType),
+                                out PaymentType paymentType)
+                            ? paymentType
+                            : PaymentType.Card,
+                        Hall = complexDocDto.Tickets.Hall,
+                        Format = complexDocDto.Tickets.Format
                     }
                     : null,
                 Slip = !string.IsNullOrEmpty(complexDocDto.SlipCheck) && !complexDocDto.Reprint && !refund
@@ -494,6 +510,13 @@ namespace TK302FBPrinter
                     Value = !string.IsNullOrEmpty(complexDocTicketsDto.Email)
                         ? complexDocTicketsDto.Email
                         : string.Empty
+                },
+                new Placeholder
+                {
+                    Key = "[pushkin_card_owner_name]",
+                    Value = !string.IsNullOrEmpty(complexDocTicketsDto.PushkinCardOwnerName)
+                        ? complexDocTicketsDto.PushkinCardOwnerName
+                        : string.Empty
                 }
             };
 
@@ -524,18 +547,17 @@ namespace TK302FBPrinter
             return rubles.ToString();
         }
 
-        private string MapPaymentType(string paymentTypeDto)
+        private string MapPaymentType(ComplexDocPaymentTypeDto paymentTypeDto)
         {
-            switch (paymentTypeDto?.ToLower())
+            switch (paymentTypeDto)
             {
-                case "card":
-                    return "р. Банковская карта";
-                case "bonus":
-                    return "бонусные баллы";
-                case "pushkin-card":
-                    return "Пушкинская карта";
+                case ComplexDocPaymentTypeDto.Card:
                 default:
-                    return string.Empty;
+                    return "р. Банковская карта";
+                case ComplexDocPaymentTypeDto.Bonus:
+                    return "бонусные баллы";
+                case ComplexDocPaymentTypeDto.PushkinCard:
+                    return "Пушкинская карта";
             }
         }
 
