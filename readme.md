@@ -562,7 +562,7 @@ show_date | datetime [dd.mm.yy hh:mm] | Да | Дата проведения с�
 hall | string | Да | Зал для проведения сеанса
 amount | integer | Да | Цена за билет в копейках
 print_code | string | Да | Принт-код билета
-payment_type | enum[string] [card, bonus, pushkin-card] | Да | Способ оплаты
+payment_type | enum[string] [card, bonus, pushkin-card, gift-card] | Да | Способ оплаты
 cashier | string | Да | ФИО кассира
 payment_date | datetime [dd.mm.yy hh:mm] | Да | Дата покупки билета
 seats | array<seat> | Да | Массив купленных мест
@@ -580,6 +580,9 @@ email | string | Нет | Email пользователя карты Иллюзи
 agent_name | string | Нет | Название агента. Обязательно, если agent: true
 agent_phone | string | Нет | Телефон агента. Обязательно, если agent: true
 pushkin_card_owner_name | string | Нет | Имя владельца Пушкинской карты
+gift_card_number | string | Нет | Номер подарочной карты, использованной для оплаты
+gift_card_summ | integer | Нет | Сумма оплаты подарочной картой
+add_payment_summ | integer | Нет | Сумма необходимой доплаты, если на подарочной карте не достаточно средств для полной доплаты
 
 
 ##### Параметры запроса для обьектов item (в goods)
@@ -670,13 +673,13 @@ status | enum[string] [success, error] | Да | Статус ответа
     "age": "12+",
     "show_date": "15.11.2021 17:05",
     "hall": "Зал VIP",
-    "amount": 3000,
-    "discount": 200,
+    "amount": 300000,
+    "discount": 20000,
     "print_code": "12345678",
     "certificate": "456efg",
     "bonus_card": "789hij",
     "bonus_type": "accrual",
-    "payment_type": "pushkin-card",
+    "payment_type": "gift-card",
     "pushkin_card_owner_name": "Кошкин Вениамин Афанасьевич",
     "cashier": "Иванов Иван Иванович",
     "payment_date": "14.11.2021 16:00",
@@ -685,19 +688,22 @@ status | enum[string] [success, error] | Да | Статус ответа
     "email": "789qrs@tuv.com",
     "order_id": "123qrs",
     "nds": 0,
+    "gift_card_number": "958fbn",
+    "gift_card_summ": 200000,
+    "add_payment_summ": 80000,
     "seats": [
       {
         "row": 2,
         "place": 3,
         "type": "simple",
-        "price": 1000,
+        "price": 100000,
         "ticket_number": "123wxy"
       },
       {
         "row": 2,
         "place": 42,
         "type": "sofa",
-        "price": 2000,
+        "price": 200000,
         "ticket_numbet": "456zab"
       }
     ]

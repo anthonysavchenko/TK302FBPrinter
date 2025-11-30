@@ -517,7 +517,28 @@ namespace TK302FBPrinter
                     Value = !string.IsNullOrEmpty(complexDocTicketsDto.PushkinCardOwnerName)
                         ? complexDocTicketsDto.PushkinCardOwnerName
                         : string.Empty
-                }
+                },
+                new Placeholder
+                {
+                    Key = "[gift_card_number]",
+                    Value = !string.IsNullOrEmpty(complexDocTicketsDto.GiftCardNumber)
+                        ? complexDocTicketsDto.GiftCardNumber
+                        : string.Empty
+                },
+                new Placeholder
+                {
+                    Key = "[gift_card_summ]",
+                    Value = complexDocTicketsDto.GiftCardAmount != null
+                        ? MapAmount(complexDocTicketsDto.GiftCardAmount.Value)
+                        : string.Empty
+                },
+                new Placeholder
+                {
+                    Key = "[add_payment_summ]",
+                    Value = complexDocTicketsDto.GiftCardExtraAmount != null
+                        ? MapAmount(complexDocTicketsDto.GiftCardExtraAmount.Value)
+                        : string.Empty
+                },
             };
 
             return placeholders.ToArray();            
@@ -558,6 +579,8 @@ namespace TK302FBPrinter
                     return "бонусные баллы";
                 case ComplexDocPaymentTypeDto.PushkinCard:
                     return "Пушкинская карта";
+                case ComplexDocPaymentTypeDto.GiftCard:
+                    return "Подарочная карта";
             }
         }
 

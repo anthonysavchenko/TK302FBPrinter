@@ -3,7 +3,8 @@ namespace TK302FBPrinter.Business.Models
     public enum PaymentType {
         Card,
         Bonus,
-        PushkinCard
+        PushkinCard,
+        GiftCard
     }
 
     public class Placeholder

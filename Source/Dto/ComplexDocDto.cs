@@ -29,7 +29,10 @@ namespace TK302FBPrinter.Dto
         Bonus,
 
         [EnumMember(Value = "pushkin-card")]
-        PushkinCard
+        PushkinCard,
+
+        [EnumMember(Value = "gift-card")]
+        GiftCard
     }
 
     public class ComplexDocSeatDto
@@ -150,7 +153,16 @@ namespace TK302FBPrinter.Dto
         [Required]
         public ComplexDocSeatDto[] Seats { get; set; }
 
-        public int? NDS { get; set; }        
+        public int? NDS { get; set; } 
+
+        [JsonProperty("gift_card_number")]
+        public string GiftCardNumber { get; set; }
+    
+        [JsonProperty("gift_card_summ")]
+        public int? GiftCardAmount { get; set; }
+
+        [JsonProperty("add_payment_summ")]
+        public int? GiftCardExtraAmount { get; set; }
     }
 
     public enum ComplexDocTaxTypeDto

@@ -1,0 +1,107 @@
+POST http://localhost:5000/api/beep HTTP/1.1
+Content-Type: application/json
+
+###
+
+GET http://localhost:5000/api/status HTTP/1.1
+Content-Type: application/json
+
+###
+
+POST http://localhost:5000/api/print/complex-doc HTTP/1.1
+Content-Type: application/json
+
+{
+  "operation_id": "123abc",
+  "reprint": false,
+  "slip_check": "Я помню чудное мгновенье:/nПередо мной явилась ты,\nКак мимолетное виденье,/n/n/nКак гений/n/n/n          чистой/n/n/n                 красоты.",
+  "goods": {
+    "refund": false,
+    "agent": true,
+    "inn": "2222222223",
+    "agent_name": "ИП Хлапова А.А.",
+    "agent_phone": "+71111111111",
+    "items": [
+      {
+        "name": "Попкорн",
+        "count": 1000,
+        "price": 500
+      },
+      {
+        "name": "Кинобилет",
+        "count": 1000,
+        "price": 1000
+      },
+      {
+        "name": "Кола",
+        "count": 2000,
+        "price": 200
+      },
+      {
+        "name": "Жвачка",
+        "count": 3000,
+        "price": 100
+      },
+      {
+        "name": "Кинобилет",
+        "count": 1000,
+        "price": 2000
+      }
+    ],
+    "amount": 1200,
+    "tax": "patent",
+    "nds": 0,
+    "comment": "Комментарий"
+  },
+  "tickets": {
+    "viewers_count": 3,
+    "agent": true,
+    "agent_name": "ИП Хлапова А.А.",
+    "agent_phone": "+71111111111",
+    "theater_name": "Кинотеатр КИНО",
+    "theater_legal_name": "АО \"Фильм Фильм Фильм\"",
+    "ogrn": "1027739050646",
+    "inn": "7705353706",
+    "legal_address": "125212, г. Москва, 1-ый Грайвороносовский пр-д, д. 20, с. 36",
+    "movie": "Фантастические твари: Преступления Грин-де-Вальда",
+    "format": "3D",
+    "license": "121025518",
+    "age": "12+",
+    "show_date": "15.11.2021 17:05",
+    "hall": "Зал VIP",
+    "amount": 300000,
+    "discount": 20000,
+    "print_code": "12345678",
+    "certificate": "456efg",
+    "bonus_card": "789hij",
+    "bonus_type": "accrual",
+    "payment_type": "gift-card",
+    "pushkin_card_owner_name": "Кошкин Вениамин Афанасьевич",
+    "cashier": "Иванов Иван Иванович",
+    "payment_date": "14.11.2021 16:00",
+    "tax": "patent",
+    "comment": "456nop",
+    "email": "789qrs@tuv.com",
+    "order_id": "123qrs",
+    "nds": 0,
+    "gift_card_number": "958fbn",
+    "gift_card_summ": 200000,
+    "add_payment_summ": 80000,
+    "seats": [
+      {
+        "row": 2,
+        "place": 3,
+        "type": "simple",
+        "price": 100000,
+        "ticket_number": "123wxy"
+      },
+      {
+        "row": 2,
+        "place": 42,
+        "type": "sofa",
+        "price": 200000,
+        "ticket_number": "456zab"
+      }
+    ]
+  }
+}
