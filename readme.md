@@ -938,7 +938,7 @@ status | enum[string] [success, error] | Да | Статус ответа
       "fontStyle": 11
       ```
 
-    - `printOnlyForPaymentType` - способ оплаты, для которого нужно напечатать данную текстовую строку. Возможные значения: `card`, `bonus`, `pushkinCard`. Если указан, то строка печатается только при передачи соответствующего способа оплаты в запросе. Может быть скомбинирована с другими условиями (`printOnlyForFormatContains` и `printOnlyForHallDoesNotContain`)
+    - `printOnlyForPaymentType` - способ оплаты, для которого нужно напечатать данную текстовую строку. Возможные значения: `card`, `bonus`, `pushkinCard`, `giftCard`. Если указан, то строка печатается только при передачи соответствующего способа оплаты в запросе. Может быть скомбинирована с другими условиями (`printOnlyForFormatContains` и `printOnlyForHallDoesNotContain`)
 
       Пример:
 
